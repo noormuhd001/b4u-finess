@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'B4U Fitness')</title>
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('img/logo.png') }}">
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -17,24 +19,25 @@
         <!-- Logo -->
         <div class="text-center mb-4">
             <img src="{{ asset('img/logo.png') }}" alt="Project Logo" class="img-fluid" style="width: 100px;">
-            <h3 class="mt-3">Welcome Back!</h3>
+            <h3 class="mt-3">Register</h3>
         </div>
-        <!-- Session Success -->
-        @if (session('success'))
-            <div class="alert alert-success mt-3">
-                {{ session('success') }}
-            </div>
-        @endif
 
-        <!-- Session Error -->
-        @if (session('error'))
-            <div class="alert alert-warning mt-3">
-                {{ session('error') }}
-            </div>
-        @endif
         <!-- Login Form -->
-        <form method="post" action="{{ route('login.post') }}">
+        <form method="post" action="{{ route('register') }}">
             @csrf
+
+            <!-- UserName Field -->
+            <div class="mb-3">
+                <label for="username" class="form-label">Name</label>
+                <input type="text" name="username"
+                    class="form-control rounded-3 @error('username') is-invalid @enderror" id="username"
+                    placeholder="Enter your username" value="{{ old('username') }}" required>
+                @error('username')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
 
             <!-- Email Field -->
             <div class="mb-3">
@@ -61,16 +64,29 @@
                 @enderror
             </div>
 
+            <!-- Confirm Password Field -->
+            <div class="mb-3">
+                <label for="confirm_password" class="form-label">Confirm Password</label>
+                <input type="password" name="confirm_password"
+                    class="form-control rounded-3 @error('confirm_password') is-invalid @enderror" id="confirm_password"
+                    placeholder="Re-enter your password" required>
+                @error('confirm_password')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
+
             <!-- Remember & Forgot Password -->
             <div class="d-flex justify-content-between align-items-center mb-3">
                 {{-- <div class="form-check">
                     <input type="checkbox" name="remember" class="form-check-input" id="remember">
                     <label class="form-check-label" for="remember">Remember me</label>
                 </div> --}}
-                <a href="#" class="text-decoration-none small">Forgot password?</a>
+                {{-- <a href="#" class="text-decoration-none small">Forgot password?</a> --}}
             </div>
 
-            <button type="submit" class="btn btn-primary w-100 rounded-3">Login</button>
+            <button type="submit" class="btn btn-primary w-100 rounded-3">Submit</button>
 
             <!-- Session Error (e.g., wrong credentials) -->
             @if (session('error'))
@@ -81,8 +97,8 @@
         </form>
 
         <div class="text-center mt-3">
-            <p class="mb-0 small">Don't have an account? <a href="{{ route('signUp') }}"
-                    class="text-decoration-none">Register</a></p>
+            <p class="mb-0 small">Already have account? <a href="{{ route('login') }}" class="text-decoration-none">Log
+                    In</a></p>
         </div>
     </div>
 
