@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('workouts', function (Blueprint $table) {
+        Schema::create('progress', function (Blueprint $table) {
             $table->id();
-            $table->string('workout_name');
-            $table->string('body_part'); // e.g., Chest, Back, Legs, Arms, etc.
-            $table->string('image');
-            $table->float('kcal_per_minute')->default(5);
+            $table->unsignedBigInteger('user_id');
+            $table->string('workouts_completed');
+            $table->integer('avg_kcal_burned');
+            $table->string('current_weight');
+            $table->dateTime('workout_on');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('workouts');
+        Schema::dropIfExists('progress');
     }
 };

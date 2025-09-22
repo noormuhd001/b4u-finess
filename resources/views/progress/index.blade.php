@@ -1,0 +1,105 @@
+@extends('layouts.app')
+@push('styles')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+@endpush
+@section('content')
+    <div class="container">
+        <h2>Your Progress</h2>
+
+        @if (session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        {{-- Error Message --}}
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if ($progress)
+            <div class="card p-3 mb-3">
+                <p><strong>Workouts Completed:</strong>
+                    @php
+                        $completedWorkouts = json_decode($progress->workouts_completed, true);
+                        $workoutNames = \App\Models\Workout::whereIn('id', $completedWorkouts)
+                            ->pluck('workout_name')
+                            ->toArray();
+                    @endphp
+                    {{ implode(', ', $workoutNames) }}
+                </p>
+                <p>
+                    <strong>Average Kcal Burned:</strong>
+                    {{ $progress->avg_kcal_burned }}
+                    <small class="text-muted">(calculated using 10 min per workout)</small>
+                </p>
+                <p><strong>Weight:</strong> {{ $progress->current_weight }} kg</p>
+                <p><strong>Workout On:</strong> {{ $progress->workout_on->format('d M Y') }}</p>
+            </div>
+        @else
+            <p>No progress data yet. Update below:</p>
+        @endif
+
+        <form action="{{ route('progress.store') }}" method="POST">
+            @csrf
+            <div class="mb-3">
+                <label>Select Workouts Completed</label>
+                <select name="workouts_completed[]" id="workouts_completed" class="form-control select2" multiple>
+                    @foreach ($workouts as $workout)
+                        <option value="{{ $workout->id }}">{{ $workout->workout_name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- <div class="mb-3">
+                <label>Workout Duration (minutes)</label>
+                <input type="number" name="duration" step="1" class="form-control" value="{{ old('duration') }}">
+                @error('duration')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
+            </div> --}}
+
+
+            <div class="mb-3">
+                <label>Current Weight (kg)</label>
+                <input type="number" step="0.1" name="weight" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label>Workout On</label>
+                <input type="date" name="workout_on" class="form-control">
+            </div>
+
+            <button class="btn btn-primary">Save Progress</button>
+        </form>
+    </div>
+@endsection
+
+@push('scripts')
+    <!-- jQuery -->
+    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // $("#areaManagerAreaLi").addClass("active");
+
+            $('#workouts_completed').select2({
+                placeholder: "Select Workout",
+                allowClear: true,
+                width: '100%',
+                theme: 'bootstrap-5'
+            });
+
+            // $('#areas').select2({
+            //     placeholder: "Select Areas",
+            //     allowClear: true,
+            //     width: '100%',
+            //     theme: 'bootstrap-5'
+            // });
+
+        });
+    </script>
+@endpush
