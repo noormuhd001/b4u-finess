@@ -22,5 +22,7 @@ Route::prefix('')->middleware('auth')->group(function () {
     Route::prefix('progress')->name('progress.')->group(function () {
         Route::get('/', [ProgressController::class, 'index'])->name('index');
         Route::post('/store', [ProgressController::class, 'store'])->name('store');
+        Route::get('/track', [ProgressController::class, 'track'])->name('track');
+        Route::get('/track/{progress}', [ProgressController::class, 'trackDetailById'])->name('trackDetailById');
     });
 });

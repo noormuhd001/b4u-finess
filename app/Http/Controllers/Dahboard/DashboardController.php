@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Dahboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Progress;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -14,7 +17,27 @@ class DashboardController extends Controller
     public function index()
     {
         try {
-            return view('dashboard.index');
+            $userId = Auth::id();
+            $today = Carbon::today();
+
+            // Today's progress
+            $todayProgress = Progress::where('user_id', $userId)
+                ->whereDate('workout_on', $today)
+                ->first();
+
+            // All progress for graph
+            $progresses = Progress::where('user_id', $userId)
+                ->orderBy('workout_on', 'asc')
+                ->get();
+
+            $dates = $progresses->pluck('workout_on')->map(function ($date) {
+                return $date->format('d M');
+            });
+
+            $weights = $progresses->pluck('current_weight');
+
+            // return view('dashboard', compact('todayProgress', 'dates', 'weights'));
+            return view('dashboard.index', compact('todayProgress', 'dates', 'weights'));
         } catch (Exception $e) {
             report($e);
             return back()->with('error', 'Something went wrong. Please try again.');

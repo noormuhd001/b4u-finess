@@ -82,6 +82,22 @@ class ProgressController extends Controller
         }
     }
 
+    public function track()
+    {
+        $progressList = Progress::where('user_id', Auth::id())
+            ->orderBy('workout_on', 'desc')
+            ->get();
+
+        return view('progress.track', compact('progressList'));
+    }
+
+    // Display detailed progress for a specific entry
+    public function trackDetailById(Progress $progress)
+    {
+        $workouts = Workout::whereIn('id', json_decode($progress->workouts_completed, true))->get();
+        return view('progress.trackDetail', compact('progress', 'workouts'));
+    }
+
 
 
     /**
