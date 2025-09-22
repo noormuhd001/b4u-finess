@@ -3,7 +3,22 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 @endpush
-
+@push('styles')
+<style>
+      .btn {
+        display: inline-block;
+        padding: 12px 25px;
+        background: #FF8C00;
+        color: #fff;
+        text-decoration: none;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        /* transition: 0.3s; */
+    }
+</style>
+@endpush
 @section('content')
 <div class="container">
     <h2>Todays Progress</h2>
@@ -43,7 +58,7 @@
             <p><strong>Workout On:</strong> {{ $todaysProgress->workout_on->format('d M Y') }}</p>
 
             {{-- Track Workout Button --}}
-            <a href="{{ route('progress.track', $todaysProgress->id) }}" class="btn btn-success mt-2">Track Workout</a>
+            <a href="{{ route('progress.track', $todaysProgress->id) }}" class="btn mt-2">Track Workout</a>
         </div>
     @else
         <p>No progress recorded for today. You can log your workout below:</p>
@@ -80,7 +95,7 @@
                 @enderror
             </div>
 
-            <button class="btn btn-primary">Save Progress</button>
+            <button class="btn">Save Progress</button>
         </form>
     @endif
 </div>

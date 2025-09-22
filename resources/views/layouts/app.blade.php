@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,12 +14,30 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
     @stack('styles')
     <style>
-        .navbar-custom { background: linear-gradient(90deg, #B22222, #FF8C00); }
-        .navbar-brand span { font-weight: 700; font-size: 1.2rem; }
-        .dropdown-menu { min-width: 180px; }
-        footer { background: linear-gradient(90deg, #B22222, #FF8C00); }
+
+        .navbar-custom {
+            background: linear-gradient(90deg, #B22222, #FF8C00);
+        }
+
+        .navbar-brand span {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .dropdown-menu {
+            min-width: 180px;
+        }
+
+        footer {
+            background: linear-gradient(90deg, #B22222, #FF8C00);
+        }
+
+        img {
+            border-radius: 10px;
+        }
     </style>
 </head>
+
 <body class="bg-light d-flex flex-column min-vh-100">
 
     <!-- Navbar -->
@@ -43,4 +62,5 @@
 
     @stack('scripts')
 </body>
+
 </html>

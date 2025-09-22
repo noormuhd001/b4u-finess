@@ -2,7 +2,7 @@
         <div class="container">
             <!-- Logo -->
             <a class="navbar-brand d-flex align-items-center" href="{{ route('dashboard') }}">
-                <img src="{{ asset('img/logo.png') }}" alt="Logo" class="me-2" style="width: 45px;">
+                <img src="{{ asset('img/logo.png') }}" alt="Logo" class="me-2" style="width: 60px;">
                 <span>B4U Fitness</span>
             </a>
 
@@ -21,8 +21,8 @@
                             href="{{ route('workout') }}">Workouts</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('progress.index') ? 'active' : '' }}"
                             href="{{ route('progress.index') }}">Progress</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Plans</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Profile</a></li>
+                    {{-- <li class="nav-item"><a class="nav-link" href="#">Plans</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Profile</a></li> --}}
                 </ul>
 
                 <!-- User Dropdown -->

@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     @foreach($workoutsByPart as $bodyPart => $partWorkouts)
-        <h2 class="mt-5 mb-3 text-primary">{{ $bodyPart }}</h2>
+        <h2 class="mt-5 mb-3">{{ $bodyPart }}</h2>
         <div class="row">
             @foreach($partWorkouts as $workout)
                 <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
@@ -49,7 +49,7 @@
     }
 
     h2 {
-        border-bottom: 2px solid #007bff;
+        border-bottom: 2px solid #FF8C00;
         padding-bottom: 5px;
     }
 </style>
