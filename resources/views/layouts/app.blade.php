@@ -54,7 +54,8 @@
                         <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
                             href="{{ route('dashboard') }}">Dashboard</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#">Workouts</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('workout') ? 'active' : '' }}"
+                            href="{{ route('workout') }}">Workouts</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Progress</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Plans</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Profile</a></li>
@@ -75,7 +76,7 @@
                                     <hr class="dropdown-divider">
                                 </li>
                                 <li>
-                                    <form method="POST" action="#">
+                                    <form method="POST" action="{{ route('logout') }}">
                                         @csrf
                                         <button type="submit" class="dropdown-item text-danger">Logout</button>
                                     </form>

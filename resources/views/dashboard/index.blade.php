@@ -2,4 +2,5 @@
 
 @section('content')
 
+Todays Workout
 @endsection

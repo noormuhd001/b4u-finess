@@ -68,6 +68,17 @@ class AuthController extends Controller
             return back()->with('error', 'Something went wrong. Please try again.');
         }
     }
+
+    public function logout(Request $request)
+    {
+        Auth::logout(); // Logout the user
+        $request->session()->invalidate(); // Invalidate session
+        $request->session()->regenerateToken(); // Regenerate CSRF token
+
+        return redirect()->route('login'); // Redirect to login page
+    }
+
+
     /**
      * Display a listing of the resource.
      */
