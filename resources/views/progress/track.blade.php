@@ -1,4 +1,11 @@
 @extends('layouts.app')
+@push('styles')
+<style>
+    .table-striped{
+        background-color: #FF8C00;
+    }
+</style>
+@endpush
 @section('content')
 <div class="container">
     <h2>Workout History</h2>
