@@ -36,7 +36,6 @@ class DashboardController extends Controller
 
             $weights = $progresses->pluck('current_weight');
 
-            // return view('dashboard', compact('todayProgress', 'dates', 'weights'));
             return view('dashboard.index', compact('todayProgress', 'dates', 'weights'));
         } catch (Exception $e) {
             report($e);
