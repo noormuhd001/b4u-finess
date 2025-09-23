@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dahboard\DashboardController;
+use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Progress\ProgressController;
 use App\Http\Controllers\Workout\WorkoutController;
 use Illuminate\Support\Facades\Route;
@@ -24,5 +25,11 @@ Route::prefix('')->middleware('auth')->group(function () {
         Route::post('/store', [ProgressController::class, 'store'])->name('store');
         Route::get('/track', [ProgressController::class, 'track'])->name('track');
         Route::get('/track/{progress}', [ProgressController::class, 'trackDetailById'])->name('trackDetailById');
+    });
+
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/', [ProfileController::class, 'index'])->name('index');
+        Route::get('/edit/{id}', [ProfileController::class, 'edit'])->name('edit');
+        Route::post('/update', [ProfileController::class, 'update'])->name('update');
     });
 });
