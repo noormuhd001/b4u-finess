@@ -14,9 +14,9 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
     @stack('styles')
     <style>
-
         .navbar-custom {
             background: linear-gradient(90deg, #B22222, #FF8C00);
+            border-radius: 12px;
         }
 
         .navbar-brand span {
@@ -30,6 +30,7 @@
 
         footer {
             background: linear-gradient(90deg, #B22222, #FF8C00);
+            border-radius: 12px;
         }
 
         img {

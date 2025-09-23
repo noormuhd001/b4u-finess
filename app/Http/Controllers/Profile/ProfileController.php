@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Dahboard;
+namespace App\Http\Controllers\Profile;
 
 use App\Http\Controllers\Controller;
-use App\Models\Progress;
+use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
-class DashboardController extends Controller
+class ProfileController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,26 +17,10 @@ class DashboardController extends Controller
     public function index()
     {
         try {
-            $userId = Auth::id();
-            $today = Carbon::today();
-
-            // Today's progress
-            $todayProgress = Progress::where('user_id', $userId)
-                ->whereDate('workout_on', $today)
-                ->first();
-
-            // All progress for graph
-            $progresses = Progress::where('user_id', $userId)
-                ->orderBy('workout_on', 'asc')
-                ->get();
-
-            $dates = $progresses->pluck('workout_on')->map(function ($date) {
-                return $date->format('d M');
-            });
-
-            $weights = $progresses->pluck('current_weight');
-
-            return view('dashboard.index', compact('todayProgress', 'dates', 'weights'));
+            $genders = config('constant.gender');
+            $goals = config('constant.goal');
+            $user = Auth::user();
+            return view('profile.index', compact('genders', 'goals', 'user'));
         } catch (Exception $e) {
             report($e);
             return back()->with('error', 'Something went wrong. Please try again.');
@@ -78,9 +62,22 @@ class DashboardController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ProfileUpdateRequest $request)
     {
-        //
+        try {
+            $user = User::findOrFail($request->id);
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->gender = $request->gender;
+            $user->weight = $request->weight;
+            $user->height = $request->height;
+            $user->goal = $request->goal;
+            $user->save();
+            return back()->with('success', 'User details changed successfully.');
+        } catch (Exception $e) {
+            report($e);
+            return back()->with('error', 'Something went wrong. Please try again.');
+        }
     }
 
     /**

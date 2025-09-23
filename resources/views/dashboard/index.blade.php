@@ -26,7 +26,7 @@
                 </p>
             @else
                 <h4>No workout logged today</h4>
-                <a href="{{ route('progress.index') }}" class="btn btn-primary">Add Progress</a>
+                {{-- <a href="{{ route('progress.index') }}" class="btn btn-primary">Add Progress</a> --}}
             @endif
         </div>
 

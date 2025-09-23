@@ -1,56 +1,37 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    @foreach($workoutsByPart as $bodyPart => $partWorkouts)
-        <h2 class="mt-5 mb-3">{{ $bodyPart }}</h2>
-        <div class="row">
-            @foreach($partWorkouts as $workout)
-                <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-                    <div class="card h-100 shadow-sm border-0 workout-card">
-                        @if($workout->image)
-                            <img src="{{ asset($workout->image) }}"
-                                 class="card-img-top workout-img"
-                                 alt="{{ $workout->workout_name }}">
-                        @endif
-                        <div class="card-body text-center">
-                            <h5 class="card-title">{{ $workout->workout_name }}</h5>
-                        </div>
+<div class="container mt-4">
+    <h2 class="mb-3">All Workouts</h2>
+    <div class="row">
+        @foreach($workouts as $workout)
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 shadow-sm" data-bs-toggle="modal" data-bs-target="#workoutModal{{ $workout->id }}" style="cursor:pointer;">
+                <img src="{{ $workout->image }}" class="card-img-top" alt="{{ $workout->workout_name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ $workout->workout_name }}</h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workout Modal -->
+        <div class="modal fade" id="workoutModal{{ $workout->id }}" tabindex="-1" aria-labelledby="modalLabel{{ $workout->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabel{{ $workout->id }}">{{ $workout->workout_name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img src="{{ $workout->image }}" class="img-fluid mb-3">
+                        <p>Body Part: {{ $workout->body_part }}</p>
+                        {{-- <p>Sets: {{ $workout->sets }}, Reps: {{ $workout->reps }}</p>
+                        <p>{{ $workout->description ?? 'No description available.' }}</p> --}}
                     </div>
                 </div>
-            @endforeach
+            </div>
         </div>
-    @endforeach
+        @endforeach
+    </div>
 </div>
-@endsection
-
-@section('styles')
-<style>
-    .workout-card {
-        transition: transform 0.3s, box-shadow 0.3s;
-        border-radius: 15px;
-        overflow: hidden;
-    }
-
-    .workout-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-    }
-
-    .workout-img {
-        width: 100%;
-        height: 200px; /* Fixed height for uniformity */
-        object-fit: cover; /* Ensures image fills the area without distortion */
-    }
-
-    .card-title {
-        font-weight: 600;
-        color: #333;
-    }
-
-    h2 {
-        border-bottom: 2px solid #FF8C00;
-        padding-bottom: 5px;
-    }
-</style>
 @endsection
