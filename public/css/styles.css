@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+
+
+.navbar-custom {
+    background: linear-gradient(90deg, #B22222, #FF8C00);
+    border-radius: 15px 50px;
+    /* max-width: 1200px; */
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 15px;
+    /* prevent content sticking to edges */
+}
+
+.navbar-brand span {
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.dropdown-menu {
+    min-width: 180px;
+}
+
+footer {
+    background: linear-gradient(90deg, #B22222, #FF8C00);
+    border-radius: 15px 50px;
+    /* max-width: 1200px; */
+    width: 100%;
+    margin: 20px auto 0 auto;
+    padding: 10px 15px;
+    text-align: center;
+    color: #fff;
+}
+
+img {
+    border-radius: 10px;
+    max-width: 100%;
+    /* make images shrink on small screens */
+    height: auto;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+
+    .navbar-custom,
+    footer {
+        border-radius: 0;
+        /* simpler on mobile */
+        padding: 10px;
+    }
+
+    .navbar-brand span {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 500px) {
+
+    .navbar-custom,
+    footer {
+        padding: 8px;
+    }
+
+    .navbar-brand span {
+        font-size: 0.9rem;
+    }
+
+    .dropdown-menu {
+        min-width: 140px;
+    }
+}

@@ -25,6 +25,7 @@ Route::prefix('')->middleware('auth')->group(function () {
         Route::post('/store', [ProgressController::class, 'store'])->name('store');
         Route::get('/track', [ProgressController::class, 'track'])->name('track');
         Route::get('/track/{progress}', [ProgressController::class, 'trackDetailById'])->name('trackDetailById');
+        Route::get('/export', [ProgressController::class, 'export'])->name('export');
     });
 
     Route::prefix('profile')->name('profile.')->group(function () {

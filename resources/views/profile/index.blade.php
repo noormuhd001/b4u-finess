@@ -1,144 +1,218 @@
 @extends('layouts.app')
 
+@push('styles')
+    <style>
+        .profile-card {
+            max-width: 700px;
+            margin: auto;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            position: relative;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-header img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #FF8C00;
+            margin-bottom: 1rem;
+        }
+
+        .profile-header h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-info i {
+            width: 20px;
+        }
+
+        .profile-info p {
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .edit-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            border-radius: 50%;
+            padding: 0.5rem 0.6rem;
+        }
+
+        .btn-save {
+            background: #FF8C00;
+            color: #fff;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: #fff;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+        }
+    </style>
+@endpush
+
 @section('content')
-    <div class="container">
-        <h1 class="mb-4">Profile</h1>
+    <div class="container my-5">
+        <div class="profile-card">
+            <!-- Edit Button -->
+            <button class="btn btn-outline-primary edit-btn" id="editToggle" title="Edit Profile">
+                <i class="bi bi-pencil-square"></i>
+            </button>
 
-        <!-- Global Success/Error Messages -->
-        @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-        @if (session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
-        @endif
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <img id="profilePreview"
+                    src="{{ $user->image ? asset('storage/' . $user->image) : asset('img/profile.jpeg') }}"
+                    alt="Profile Picture">
 
-        <div class="row">
-            <div class="col-md-12 mb-4">
-                <div class="card shadow-sm h-100 position-relative">
-                    <div class="card-body">
-                        <div class="view-mode {{ $errors->any() ? 'd-none' : '' }}">
-                            <h5 class="card-title">{{ $user->name }}</h5>
-                            <p class="card-text mb-1"><strong>Email:</strong> {{ $user->email }}</p>
-                            <p class="card-text mb-1"><strong>Gender:</strong> {{ $genders[$user->gender] ?? 'N/A' }}</p>
-                            <p class="card-text mb-1"><strong>Height:</strong> {{ $user->height ?? 'N/A' }}</p>
-                            <p class="card-text mb-1"><strong>Weight:</strong> {{ $user->weight ?? 'N/A' }}</p>
+                <h2>{{ $user->name }}</h2>
+                <p class="text-muted">{{ $goals[$user->goal] ?? 'No Goal Set' }}</p>
+            </div>
 
-                            <p class="card-text"><strong>Goal:</strong> {{ $goals[$user->goal] ?? 'N/A' }}</p>
-                        </div>
+            <!-- View Mode -->
+            <div id="viewMode">
+                <div class="profile-info">
+                    <p><i class="bi bi-envelope-at text-info"></i> Email: {{ $user->email }}</p>
+                    <p><i class="bi bi-gender-ambiguous text-warning"></i> Gender: {{ $genders[$user->gender] ?? 'N/A' }}
+                    </p>
+                    <p><i class="bi bi-arrows-expand text-success"></i> Height: {{ $user->height ?? 'N/A' }} cm</p>
+                    <p><i class="bi bi-activity text-danger"></i> Weight: {{ $user->weight ?? 'N/A' }} kg</p>
+                </div>
+            </div>
 
-                        <form class="edit-mode {{ $errors->any() ? '' : 'd-none' }}" method="POST"
-                            action="{{ route('profile.update') }}">
-                            @csrf
-                            <input type="hidden" name="id" value="{{ $user->id }}">
+            <!-- Edit Mode -->
+            <div id="editMode" class="d-none">
+                <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="id" value="{{ $user->id }}">
 
-                            <!-- Name -->
-                            <div class="mb-2">
-                                <label class="form-label">Name</label>
-                                <input type="text" name="name"
-                                    class="form-control @error('name') is-invalid @enderror"
-                                    value="{{ old('name', $user->name) }}">
-                                @error('name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Email -->
-                            <div class="mb-2">
-                                <label class="form-label">Email</label>
-                                <input type="email" name="email"
-                                    class="form-control @error('email') is-invalid @enderror"
-                                    value="{{ old('email', $user->email) }}">
-                                @error('email')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Gender -->
-                            <div class="mb-2">
-                                <label class="form-label">Gender</label>
-                                <select name="gender" class="form-control @error('gender') is-invalid @enderror">
-                                    @foreach ($genders as $key => $value)
-                                        <option value="{{ $key }}"
-                                            {{ old('gender', $user->gender) == $key ? 'selected' : '' }}>
-                                            {{ $value }}</option>
-                                    @endforeach
-                                </select>
-                                @error('gender')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Goal -->
-                            <div class="mb-2">
-                                <label class="form-label">Goal</label>
-                                <select name="goal" class="form-control @error('goal') is-invalid @enderror">
-                                    @foreach ($goals as $key => $value)
-                                        <option value="{{ $key }}"
-                                            {{ old('goal', $user->goal) == $key ? 'selected' : '' }}>{{ $value }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('goal')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Height -->
-                            <div class="mb-2">
-                                <label class="form-label">Height (cm)</label>
-                                <input type="number" name="height"
-                                    class="form-control @error('height') is-invalid @enderror"
-                                    value="{{ old('height', $user->height) }}">
-                                @error('height')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Weight -->
-                            <div class="mb-2">
-                                <label class="form-label">Weight (kg)</label>
-                                <input type="number" name="weight"
-                                    class="form-control @error('weight') is-invalid @enderror"
-                                    value="{{ old('weight', $user->weight) }}">
-                                @error('weight')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <button type="submit" class="btn btn-success btn-sm">Save</button>
-                            <button type="button" class="btn btn-secondary btn-sm cancel-edit">Cancel</button>
-                        </form>
+                    <!-- Profile Photo -->
+                    <div class="mb-3 ">
+                        <label class="form-label"><i class="bi bi-camera"></i> Profile Photo</label>
+                        <input type="file" name="profile_picture" class="form-control" accept="image/*"
+                            onchange="previewImage(event)">
                     </div>
 
+                    <!-- Name -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-person"></i> Name</label>
+                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
+                            value="{{ old('name', $user->name) }}">
+                        @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-                    <!-- Edit Icon -->
-                    <a href="javascript:void(0);"
-                        class="position-absolute top-0 end-0 m-2 btn btn-sm btn-outline-primary edit-btn"
-                        title="Edit Profile">
-                        <i class="bi bi-pencil"></i>
-                    </a>
-                </div>
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-envelope"></i> Email</label>
+                        <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                            value="{{ old('email', $user->email) }}">
+                        @error('email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-gender-ambiguous"></i> Gender</label>
+                        <select name="gender" class="form-control @error('gender') is-invalid @enderror">
+                            @foreach ($genders as $key => $value)
+                                <option value="{{ $key }}"
+                                    {{ old('gender', $user->gender) == $key ? 'selected' : '' }}>
+                                    {{ $value }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('gender')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Height -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-arrows-expand"></i> Height (cm)</label>
+                        <input type="number" name="height" class="form-control @error('height') is-invalid @enderror"
+                            value="{{ old('height', $user->height) }}">
+                        @error('height')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Weight -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-activity"></i> Weight (kg)</label>
+                        <input type="number" name="weight" class="form-control @error('weight') is-invalid @enderror"
+                            value="{{ old('weight', $user->weight) }}">
+                        @error('weight')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Goal -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-bullseye"></i> Goal</label>
+                        <select name="goal" class="form-control @error('goal') is-invalid @enderror">
+                            @foreach ($goals as $key => $value)
+                                <option value="{{ $key }}"
+                                    {{ old('goal', $user->goal) == $key ? 'selected' : '' }}>
+                                    {{ $value }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('goal')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="submit" class="btn btn-save"><i class="bi bi-check-circle"></i> Save</button>
+                        <button type="button" class="btn btn-cancel" id="cancelEdit"><i class="bi bi-x-circle"></i>
+                            Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const card = document.querySelector('.card');
-            const editBtn = card.querySelector('.edit-btn');
-            const cancelBtn = card.querySelector('.cancel-edit');
-            const viewMode = card.querySelector('.view-mode');
-            const editMode = card.querySelector('.edit-mode');
+    @push('scripts')
+        <script>
+            const editToggle = document.getElementById('editToggle');
+            const cancelEdit = document.getElementById('cancelEdit');
+            const viewMode = document.getElementById('viewMode');
+            const editMode = document.getElementById('editMode');
 
-            editBtn.addEventListener('click', function() {
+            editToggle.addEventListener('click', () => {
                 viewMode.classList.add('d-none');
                 editMode.classList.remove('d-none');
             });
 
-            cancelBtn.addEventListener('click', function() {
+            cancelEdit.addEventListener('click', () => {
                 editMode.classList.add('d-none');
                 viewMode.classList.remove('d-none');
             });
-        });
-    </script>
+
+            function previewImage(event) {
+                const output = document.getElementById('profilePreview');
+                if (event.target.files[0]) {
+                    output.src = URL.createObjectURL(event.target.files[0]);
+                } else {
+                    output.src = "{{ asset('img/profile.jpeg') }}";
+                }
+            }
+        </script>
+    @endpush
 @endsection

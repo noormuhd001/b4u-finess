@@ -8,6 +8,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -72,6 +73,15 @@ class ProfileController extends Controller
             $user->weight = $request->weight;
             $user->height = $request->height;
             $user->goal = $request->goal;
+
+            if ($request->hasFile('profile_picture')) {
+                // Delete old image if exists
+                if ($user->profile_picture && Storage::exists($user->profile_picture)) {
+                    Storage::delete($user->profile_picture);
+                }
+                $path = $request->file('profile_picture')->store('profile_images', 'public');
+                $user->image = $path;
+            }
             $user->save();
             return back()->with('success', 'User details changed successfully.');
         } catch (Exception $e) {

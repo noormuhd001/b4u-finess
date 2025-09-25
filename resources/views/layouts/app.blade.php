@@ -12,31 +12,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+
     @stack('styles')
-    <style>
-        .navbar-custom {
-            background: linear-gradient(90deg, #B22222, #FF8C00);
-            border-radius: 12px;
-        }
-
-        .navbar-brand span {
-            font-weight: 700;
-            font-size: 1.2rem;
-        }
-
-        .dropdown-menu {
-            min-width: 180px;
-        }
-
-        footer {
-            background: linear-gradient(90deg, #B22222, #FF8C00);
-            border-radius: 12px;
-        }
-
-        img {
-            border-radius: 10px;
-        }
-    </style>
 </head>
 
 <body class="bg-light d-flex flex-column min-vh-100">

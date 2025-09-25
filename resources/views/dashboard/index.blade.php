@@ -6,16 +6,21 @@
 
 @section('content')
     <div class="container">
-        <h2>Dashboard</h2>
+        <h2><i class="bi bi-speedometer2 text-primary"></i> Dashboard</h2>
 
         {{-- Today's Progress --}}
         <div class="card mb-4 p-3">
             @if ($todayProgress)
-                <h4>Today's Workout</h4>
-                <p><strong>Weight:</strong> {{ $todayProgress->current_weight }} kg</p>
-                <p><strong>Avg Kcal Burned:</strong> {{ $todayProgress->avg_kcal_burned }} <small>(10 min per
-                        workout)</small></p>
-                <p><strong>Workouts:</strong>
+                <h4><i class="bi bi-fire text-danger"></i> Today's Workout</h4>
+                <p><i class="bi bi-person-lines-fill text-info"></i>
+                    <strong>Weight:</strong> {{ $todayProgress->current_weight }} kg
+                </p>
+                <p><i class="bi bi-lightning-charge-fill text-warning"></i>
+                    <strong>Avg Kcal Burned:</strong> {{ $todayProgress->avg_kcal_burned }}
+                    <small>(10 min per workout)</small>
+                </p>
+                <p><i class="bi bi-list-check text-success"></i>
+                    <strong>Workouts:</strong>
                     @php
                         $completedWorkouts = json_decode($todayProgress->workouts_completed, true);
                         $workoutNames = \App\Models\Workout::whereIn('id', $completedWorkouts)
@@ -25,14 +30,13 @@
                     {{ implode(', ', $workoutNames) }}
                 </p>
             @else
-                <h4>No workout logged today</h4>
-                {{-- <a href="{{ route('progress.index') }}" class="btn btn-primary">Add Progress</a> --}}
+                <h4><i class="bi bi-calendar-x text-muted"></i> No workout logged today</h4>
             @endif
         </div>
 
         {{-- Weight Progress Chart --}}
         <div class="card p-3">
-            <h4>Weight Progress</h4>
+            <h4><i class="bi bi-graph-up-arrow text-success"></i> Weight Progress</h4>
             <canvas id="weightChart" height="150"></canvas>
         </div>
     </div>

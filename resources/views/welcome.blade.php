@@ -9,6 +9,8 @@
     <link rel="icon" type="image/png" href="{{ asset('img/logo.png') }}">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+
 </head>
 
 <body class="d-flex align-items-center justify-content-center vh-100 bg-gradient-primary">
@@ -17,7 +19,7 @@
         <!-- Logo -->
         <div class="text-center mb-4">
             <img src="{{ asset('img/logo.png') }}" alt="Project Logo" class="img-fluid" style="width: 100px;">
-            <h3 class="mt-3">Welcome Back!</h3>
+            <h3 class="mt-3">Welcome!</h3>
         </div>
         <!-- Session Success -->
         @if (session('success'))
@@ -40,7 +42,7 @@
             <div class="mb-3">
                 <label for="email" class="form-label">Email address</label>
                 <input type="email" name="email" class="form-control rounded-3 @error('email') is-invalid @enderror"
-                    id="email" placeholder="Enter your email" value="{{ old('email') }}" required>
+                    id="email" placeholder="Enter your email" value="{{ old('email') }}">
                 @error('email')
                     <div class="invalid-feedback">
                         {{ $message }}
@@ -53,7 +55,7 @@
                 <label for="password" class="form-label">Password</label>
                 <input type="password" name="password"
                     class="form-control rounded-3 @error('password') is-invalid @enderror" id="password"
-                    placeholder="Enter your password" required>
+                    placeholder="Enter your password">
                 @error('password')
                     <div class="invalid-feedback">
                         {{ $message }}
@@ -63,10 +65,7 @@
 
             <!-- Remember & Forgot Password -->
             <div class="d-flex justify-content-between align-items-center mb-3">
-                {{-- <div class="form-check">
-                    <input type="checkbox" name="remember" class="form-check-input" id="remember">
-                    <label class="form-check-label" for="remember">Remember me</label>
-                </div> --}}
+
                 <a href="#" class="text-decoration-none small">Forgot password?</a>
             </div>
 
@@ -89,5 +88,3 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
-</html>
