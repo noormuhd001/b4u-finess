@@ -19,8 +19,13 @@
                 </li>
                 <li class="nav-item"><a class="nav-link {{ request()->routeIs('workout') ? 'active' : '' }}"
                         href="{{ route('workout') }}">Workouts</a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('progress.index') ? 'active' : '' }}"
-                        href="{{ route('progress.index') }}">Progress</a></li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('progress.index', 'progress.track', 'progress.trackDetailById') ? 'active' : '' }}"
+                        href="{{ route('progress.index') }}">
+                        Progress
+                    </a>
+                </li>
+
                 {{-- <li class="nav-item"><a class="nav-link" href="#">Plans</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Profile</a></li> --}}
             </ul>

@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Progress;
 
+use App\Exports\ProgressExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProgressStoreRequest;
 use App\Models\Progress;
 use App\Models\Workout;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProgressController extends Controller
 {
@@ -84,21 +87,47 @@ class ProgressController extends Controller
 
     public function track()
     {
-        $progressList = Progress::where('user_id', Auth::id())
-            ->orderBy('workout_on', 'desc')
-            ->get();
+        try {
+            $progressList = Progress::where('user_id', Auth::id())
+                ->orderBy('workout_on', 'desc')
+                ->get();
 
-        return view('progress.track', compact('progressList'));
+            return view('progress.track', compact('progressList'));
+        } catch (Exception $e) {
+            report($e);
+            return back()->with('error', 'Something went wrong. Please try again.');
+        }
     }
 
     // Display detailed progress for a specific entry
     public function trackDetailById(Progress $progress)
     {
-        $workouts = Workout::whereIn('id', json_decode($progress->workouts_completed, true))->get();
-        return view('progress.trackDetail', compact('progress', 'workouts'));
+        try {
+            $workouts = Workout::whereIn('id', json_decode($progress->workouts_completed, true))->get();
+            return view('progress.trackDetail', compact('progress', 'workouts'));
+        } catch (Exception $e) {
+            report($e);
+            return back()->with('error', 'Something went wrong. Please try again.');
+        }
     }
 
+    public function export()
+    {
+        try {
+            $user = Auth::user();
+            $progressList = Progress::where('user_id', $user->id)->get();
 
+            $pdf = Pdf::loadView('progress.export_pdf', [
+                'user' => $user,
+                'progressList' => $progressList,
+            ]);
+
+            return $pdf->download('progress_report.pdf');
+        } catch (Exception $e) {
+            report($e);
+            return back()->with('error', 'Something went wrong. Please try again.');
+        }
+    }
 
     /**
      * Display the specified resource.
