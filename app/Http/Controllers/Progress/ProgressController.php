@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Progress;
 
-use App\Exports\ProgressExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProgressStoreRequest;
 use App\Models\Progress;
+use App\Models\ProgressLog;
 use App\Models\Workout;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Maatwebsite\Excel\Facades\Excel;
 
 class ProgressController extends Controller
 {
@@ -23,7 +22,17 @@ class ProgressController extends Controller
         try {
             $progress = Progress::where('user_id', Auth::id())->latest()->first();
             $workouts = Workout::get();
-            return view('progress.index', compact('progress', 'workouts'));
+
+            $todaysLogs = null;
+            $totalKcal = null;
+            if ($progress) {
+                $today = \Carbon\Carbon::today()->toDateString();
+                if ($progress->workout_on->toDateString() === $today) {
+                    $todaysLogs = $progress->logs;
+                    $totalKcal = $progress->avg_kcal_burned;
+                }
+            }
+            return view('progress.index', compact('progress', 'workouts', 'todaysLogs', 'totalKcal'));
         } catch (Exception $e) {
             report($e);
             return back()->with('error', 'Something went wrong. Please try again.');
@@ -52,36 +61,45 @@ class ProgressController extends Controller
             if ($existing) {
                 return back()->with('error', 'You already have a progress entry for this date.');
             }
-            $progress = new Progress();
-            $progress->user_id = Auth::id();
-
-            // Save workouts as JSON
-            $progress->workouts_completed = json_encode($request->workouts_completed);
-
-            $progress->current_weight = $request->weight;
-            $progress->workout_on = $request->workout_on;
-
-            // Default duration per workout in minutes
-            $defaultDurationPerWorkout = 10;
-
-            $workoutIds = $request->workouts_completed;
-
-            // Fetch kcal_per_minute for each workout
-            $workouts = Workout::whereIn('id', $workoutIds)->get();
 
             $totalKcal = 0;
-            foreach ($workouts as $workout) {
-                $totalKcal += $workout->kcal_per_minute * $defaultDurationPerWorkout;
+
+            $progress = Progress::create([
+                'user_id' => $userId,
+                'current_weight' => $request->weight,
+                'workout_on' => $request->workout_on,
+            ]);
+
+            foreach ($request->workouts_completed as $log) {
+                $workout = Workout::find($log['workout_id']);
+                if (!$workout) continue;
+
+                $sets = $log['sets'] ?? 0;
+                $reps = $log['reps'] ?? 0;
+                $weight = $log['weight'] ?? 0;
+
+                $kcal = ($weight * $reps * $sets * 0.1);
+                $totalKcal += $kcal;
+
+                ProgressLog::create([
+                    'progress_id' => $progress->id,
+                    'user_id' => $userId,
+                    'workout_id' => $log['workout_id'],
+                    'set_number' => $sets,
+                    'reps' => $reps,
+                    'weight' => $weight,
+                    'kcal_burned' => $kcal,
+                ]);
             }
 
-            $progress->avg_kcal_burned = $totalKcal;
+            $progress->update([
+                'avg_kcal_burned' => $totalKcal,
+            ]);
 
-            $progress->save();
-
-            return back()->with('success', 'Workout Added Successfully');
+            return back()->with('success', 'Workout added successfully!');
         } catch (\Exception $e) {
             report($e);
-            return back()->with('error', 'Something went wrong. Please try again.');
+            return back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
     }
 
@@ -99,17 +117,17 @@ class ProgressController extends Controller
         }
     }
 
-    // Display detailed progress for a specific entry
     public function trackDetailById(Progress $progress)
     {
         try {
-            $workouts = Workout::whereIn('id', json_decode($progress->workouts_completed, true))->get();
-            return view('progress.trackDetail', compact('progress', 'workouts'));
+            $logs = $progress->logs()->with('workout')->get();
+            return view('progress.trackDetail', compact('progress', 'logs'));
         } catch (Exception $e) {
             report($e);
             return back()->with('error', 'Something went wrong. Please try again.');
         }
     }
+
 
     public function export()
     {

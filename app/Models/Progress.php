@@ -8,15 +8,24 @@ class Progress extends Model
 {
     protected $fillable = [
         'user_id',
-        'workouts_completed',
-        // 'part',
+        // 'workouts_completed',
+        // // 'part',
         'avg_kcal_burned',
         'current_weight',
         'workout_on'
     ];
 
+    public function logs()
+    {
+        return $this->hasMany(ProgressLog::class, 'progress_id');
+    }
+
+    public function workout()
+    {
+        return $this->belongsTo(Workout::class, 'workout_id');
+    }
+
     protected $casts = [
-        'workouts_completed' => 'array', // converts JSON to PHP array automatically
         'workout_on' => 'date',
     ];
 }
