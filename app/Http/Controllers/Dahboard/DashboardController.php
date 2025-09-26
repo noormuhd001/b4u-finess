@@ -23,6 +23,7 @@ class DashboardController extends Controller
             // Today's progress
             $todayProgress = Progress::where('user_id', $userId)
                 ->whereDate('workout_on', $today)
+                ->with(['logs.workout'])
                 ->first();
 
             // All progress for graph

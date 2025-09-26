@@ -37,25 +37,15 @@
                 <thead>
                     <tr>
                         <th><i class="bi bi-calendar-event"></i> Date</th>
-                        <th><i class="bi bi-list-task"></i> Workouts Completed</th>
                         <th><i class="bi bi-person-lines-fill"></i> Weight (kg)</th>
-                        <th><i class="bi bi-fire"></i> Avg Kcal Burned</th>
+                        <th><i class="bi bi-fire"></i> Total Kcal Burned</th>
                         <th><i class="bi bi-gear"></i> Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($progressList as $progress)
-                        @php
-                            $workoutNames = \App\Models\Workout::whereIn(
-                                'id',
-                                json_decode($progress->workouts_completed, true),
-                            )
-                                ->pluck('workout_name')
-                                ->toArray();
-                        @endphp
                         <tr>
                             <td>{{ $progress->workout_on->format('d M Y') }}</td>
-                            <td>{{ implode(', ', $workoutNames) }}</td>
                             <td>{{ $progress->current_weight }}</td>
                             <td>{{ $progress->avg_kcal_burned }}</td>
                             <td>
