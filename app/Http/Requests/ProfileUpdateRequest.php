@@ -24,15 +24,15 @@ class ProfileUpdateRequest extends FormRequest
                 Rule::unique('users', 'email')->ignore($this->id),
             ],
             'gender' => [
-                'required',
+                'nullable',
                 // Rule::in(array_keys(config('constant.gender'))), // integer keys from config
             ],
             'goal' => [
-                'required',
+                'nullable',
                 // Rule::in(array_keys(config('constant.goal'))), // integer keys from config
             ],
-            'height' => 'required|numeric|min:50|max:300',
-            'weight' => 'required|numeric|min:20|max:500',
+            'height' => 'nullable|numeric|min:50|max:300',
+            'weight' => 'nullable|numeric|min:20|max:500',
         ];
     }
 

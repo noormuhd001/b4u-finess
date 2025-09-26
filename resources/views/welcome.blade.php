@@ -13,27 +13,29 @@
 
 </head>
 
-<body class="d-flex align-items-center justify-content-center vh-100 bg-gradient-primary">
+<body class="d-flex align-items-center justify-content-center vh-100 bg-gradient-primary login-bg">
 
-    <div class="card shadow-lg rounded-4 p-4" style="width: 22rem;">
+    {{-- <div class="card shadow-lg rounded-4 p-4" style="width: 22rem;"> --}}
+
+    <!-- Session Success -->
+    @if (session('success'))
+        <div class="alert alert-success mt-3">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <!-- Session Error -->
+    @if (session('error'))
+        <div class="alert alert-warning mt-3">
+            {{ session('error') }}
+        </div>
+    @endif
+    <div class="login-card">
         <!-- Logo -->
-        <div class="text-center mb-4">
+        <div class="text-center mb-4 ">
             <img src="{{ asset('img/logo.png') }}" alt="Project Logo" class="img-fluid" style="width: 100px;">
             <h3 class="mt-3">Welcome!</h3>
         </div>
-        <!-- Session Success -->
-        @if (session('success'))
-            <div class="alert alert-success mt-3">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        <!-- Session Error -->
-        @if (session('error'))
-            <div class="alert alert-warning mt-3">
-                {{ session('error') }}
-            </div>
-        @endif
         <!-- Login Form -->
         <form method="post" action="{{ route('login.post') }}">
             @csrf
@@ -71,6 +73,10 @@
 
             <button type="submit" class="btn btn-primary w-100 rounded-3">Login</button>
 
+            <div class="text-center mt-3">
+                <p class="mb-0 small">Don't have an account? <a href="{{ route('signUp') }}"
+                        class="text-decoration-none">Register</a></p>
+            </div>
             <!-- Session Error (e.g., wrong credentials) -->
             @if (session('error'))
                 <div class="alert alert-warning mt-3">
@@ -78,12 +84,9 @@
                 </div>
             @endif
         </form>
-
-        <div class="text-center mt-3">
-            <p class="mb-0 small">Don't have an account? <a href="{{ route('signUp') }}"
-                    class="text-decoration-none">Register</a></p>
-        </div>
     </div>
+
+    {{-- </div> --}}
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
