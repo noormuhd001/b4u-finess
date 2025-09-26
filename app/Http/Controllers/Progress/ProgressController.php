@@ -133,7 +133,11 @@ class ProgressController extends Controller
     {
         try {
             $user = Auth::user();
-            $progressList = Progress::where('user_id', $user->id)->get();
+
+            // Get all progress entries for the user
+            $progressList = Progress::where('user_id', $user->id)
+                ->with(['logs.workout']) // eager load logs and workouts
+                ->get();
 
             $pdf = Pdf::loadView('progress.export_pdf', [
                 'user' => $user,
@@ -146,6 +150,7 @@ class ProgressController extends Controller
             return back()->with('error', 'Something went wrong. Please try again.');
         }
     }
+
 
     /**
      * Display the specified resource.
