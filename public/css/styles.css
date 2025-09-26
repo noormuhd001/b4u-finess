@@ -7,16 +7,50 @@
     font-family: 'Montserrat', sans-serif;
 }
 
+.login-bg {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-image: url(../img/login-background.png);
+    background-size: cover;
+    background-position: center;
+    padding: 24px;
+    animation: loginBgAnimation 30s linear infinite;
+    background-repeat: no-repeat;
+}
 
+.login-bg .container-fluid {
+    max-width: 1440px !important;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid #FFFFFF;
+    box-shadow: 0px 12px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 24px;
+    padding: 3rem;
+    max-width: 454px;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+.login-card .logo-circle {
+    display: flex;
+    align-items: center;
+    padding: 24px;
+    width: 280px;
+    height: 280px;
+    background: #FFFFFF;
+    border-radius: 50%;
+    margin: 1rem auto 3rem;
+}
 
 .navbar-custom {
     background: linear-gradient(90deg, #B22222, #FF8C00);
     border-radius: 15px 50px;
-    /* max-width: 1200px; */
     width: 100%;
     margin: 0 auto;
     padding: 0 15px;
-    /* prevent content sticking to edges */
 }
 
 .navbar-brand span {
@@ -31,7 +65,6 @@
 footer {
     background: linear-gradient(90deg, #B22222, #FF8C00);
     border-radius: 15px 50px;
-    /* max-width: 1200px; */
     width: 100%;
     margin: 20px auto 0 auto;
     padding: 10px 15px;
@@ -42,22 +75,35 @@ footer {
 img {
     border-radius: 10px;
     max-width: 100%;
-    /* make images shrink on small screens */
     height: auto;
 }
 
-/* Responsive Adjustments */
+/* ---------------------- RESPONSIVE ---------------------- */
 @media (max-width: 768px) {
 
     .navbar-custom,
     footer {
         border-radius: 0;
-        /* simpler on mobile */
         padding: 10px;
     }
 
     .navbar-brand span {
         font-size: 1rem;
+    }
+
+    .login-bg {
+        padding: 24px 12px;
+        animation: loginBgAnimationMob 10s linear infinite;
+    }
+
+    .login-card .logo-circle {
+        width: 200px;
+        height: 200px;
+        padding: 16px;
+    }
+
+    .login-card {
+        padding: 2rem;
     }
 }
 
@@ -74,5 +120,34 @@ img {
 
     .dropdown-menu {
         min-width: 140px;
+    }
+}
+
+/* ---------------------- ANIMATIONS ---------------------- */
+@keyframes loginBgAnimation {
+    0% {
+        background-size: 100%;
+    }
+
+    50% {
+        background-size: 125%;
+    }
+
+    100% {
+        background-size: 100%;
+    }
+}
+
+@keyframes loginBgAnimationMob {
+    0% {
+        background-position: center;
+    }
+
+    50% {
+        background-position: center 30%;
+    }
+
+    100% {
+        background-position: center;
     }
 }

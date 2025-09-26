@@ -15,15 +15,16 @@
 
 </head>
 
-<body class="d-flex align-items-center justify-content-center vh-100 bg-gradient-primary">
+<body class="d-flex align-items-center justify-content-center vh-100 bg-gradient-primary login-bg">
 
-    <div class="card shadow-lg rounded-4 p-4" style="width: 22rem;">
-        <!-- Logo -->
+    {{-- <div class="card shadow-lg rounded-4 p-4" style="width: 22rem;"> --}}
+    <!-- Logo -->
+
+    <div class="login-card">
         <div class="text-center mb-4">
             <img src="{{ asset('img/logo.png') }}" alt="Project Logo" class="img-fluid" style="width: 100px;">
             <h3 class="mt-3">Register</h3>
         </div>
-
         <!-- Login Form -->
         <form method="post" action="{{ route('register') }}">
             @csrf
@@ -89,6 +90,11 @@
             </div>
 
             <button type="submit" class="btn btn-primary w-100 rounded-3">Submit</button>
+            <div class="text-center mt-3">
+                <p class="mb-0 small">Already have account? <a href="{{ route('login') }}"
+                        class="text-decoration-none">Log
+                        In</a></p>
+            </div>
 
             <!-- Session Error (e.g., wrong credentials) -->
             @if (session('error'))
@@ -97,12 +103,8 @@
                 </div>
             @endif
         </form>
-
-        <div class="text-center mt-3">
-            <p class="mb-0 small">Already have account? <a href="{{ route('login') }}" class="text-decoration-none">Log
-                    In</a></p>
-        </div>
     </div>
+    {{-- </div> --}}
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
