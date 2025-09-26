@@ -14,6 +14,10 @@ Route::get('/', function () {
 Route::post('login', [AuthController::class, 'login'])->name('login.post');
 Route::get('signup', [AuthController::class, 'signUp'])->name('signUp');
 Route::post('signup.post', [AuthController::class, 'register'])->name('register');
+Route::get('forgot-password', [AuthController::class, 'forgotPassword'])->name('forgotPassword');
+Route::post('send-otp', [AuthController::class, 'sendOtp'])->name('sendOtp');
+Route::get('reset-password/{token}', [AuthController::class, 'resetPassword'])->name('resetPassword');
+Route::post('update-password', [AuthController::class, 'updatePassword'])->name('updatePassword');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::prefix('')->middleware('auth')->group(function () {
