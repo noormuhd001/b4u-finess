@@ -17,6 +17,17 @@
             /* cursor: pointer; */
             /* transition: 0.3s; */
         }
+
+        .btn-right {
+            float: right;
+            padding: 12px 25px;
+            background: #FF8C00;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+        }
     </style>
 @endpush
 @section('content')
@@ -24,7 +35,7 @@
         <a href="{{ route('progress.index') }}" class="btn">
             <i class="bi bi-arrow-left-circle"></i> Back
         </a>
-        <a href="{{ route('progress.export') }}" class="btn">
+        <a href="{{ route('progress.export') }}" class="btn-right">
             <i class="bi bi-file-earmark-arrow-down"></i> Export
         </a>
 
