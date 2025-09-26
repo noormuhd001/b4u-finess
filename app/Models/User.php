@@ -25,7 +25,9 @@ class User extends Authenticatable
         'height',
         'gender',
         'goal',
-        'image'
+        'image',
+        'forgot_token',
+        'expires_at'
     ];
 
     /**

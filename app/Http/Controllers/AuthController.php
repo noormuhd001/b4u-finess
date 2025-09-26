@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\SendOtpRequest;
+use App\Http\Requests\Auth\UpdatePasswordRequest;
 use App\Http\Requests\Auth\UserStoreRequest;
+use App\Jobs\Auth\SendForgotPasswordJob;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -69,13 +73,90 @@ class AuthController extends Controller
         }
     }
 
+    public function forgotPassword()
+    {
+        try {
+            return view('auth.forgotpassword');
+        } catch (Exception $e) {
+            report($e);
+            return back()->with('error', 'Something went wrong.please try again.');
+        }
+    }
+
+    public function sendOtp(SendOtpRequest $request)
+    {
+        try {
+            $email = $request->input('email');
+
+            $user = User::where('email', $email)->first();
+            if (!$user) {
+                return back()->with('error', 'If the email is registered with us, we will send a link to reset the password.');
+            }
+
+            $token = Str::random(60);
+            User::where('email', $email)
+                ->update([
+                    'forgot_token' => $token,
+                    'expires_at' => now()->addMinutes(5),
+                    'updated_at'   => now(),
+                ]);
+
+            $resetUrl = url('reset-password/' . $token);
+
+            SendForgotPasswordJob::dispatch($user, $resetUrl);
+
+            return back()->with('success', 'If the email is registered with us, we will send a link to reset the password.');
+        } catch (\Exception $e) {
+            report($e);
+            return back()->with('error', 'Something went wrong. Please try again.');
+        }
+    }
+
+    public function resetPassword($token)
+    {
+        try {
+            $user = User::where('forgot_token', $token)->first();
+            if (!$user || $user->expires_at < now()) {
+                return redirect()->route('forgotPassword')->with('error', 'This password reset link is invalid or has expired. Please request a new one.');
+            }
+            return view('auth.resetpassword', compact('token'));
+        } catch (Exception $e) {
+            report($e);
+            return back()->with('error', 'Something went wrong. Please try again.');
+        }
+    }
+
+
+    public function updatePassword(UpdatePasswordRequest $request)
+    {
+        try {
+            $token = $request->input('token');
+            $user = User::where('forgot_token', $token)->first();
+
+            if (!$user || $user->expires_at < now()) {
+                return redirect()->route('forgotPassword')->with('error', 'This password reset link is invalid or has expired. Please request a new one.');
+            }
+
+            $user->password = Hash::make($request->password);
+            $user->forgot_token = null;
+            $user->expires_at = null;
+            $user->save();
+
+            return redirect()->route('login')->with('success', 'Your password has been updated successfully. You can now log in with your new password.');
+        } catch (Exception $e) {
+            report($e);
+            return back()->with('error', 'Something went wrong. Please try again.');
+        }
+    }
+
+
     public function logout(Request $request)
     {
-        Auth::logout(); // Logout the user
-        $request->session()->invalidate(); // Invalidate session
-        $request->session()->regenerateToken(); // Regenerate CSRF token
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-        return redirect()->route('login'); // Redirect to login page
+        return redirect()->route('login'); 
     }
 
 

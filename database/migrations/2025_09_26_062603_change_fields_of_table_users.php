@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('height')->nullable()->change();
             $table->integer('gender')->nullable()->change();
             $table->integer('goal')->nullable()->change();
+            $table->string('forgot_token', 100)->nullable();
+            $table->dateTime('expires_at')->nullable();
         });
     }
 
@@ -29,6 +31,8 @@ return new class extends Migration
             $table->string('height')->change();
             $table->integer('gender')->change();
             $table->integer('goal')->change();
+            $table->dropColumn('forgot_token');
+            $table->dropColumn('expires_at');
         });
     }
 };
