@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Dahboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Progress;
+use App\Models\ProgressLog;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -19,6 +21,20 @@ class DashboardController extends Controller
         try {
             $userId = Auth::id();
             $today = Carbon::today();
+
+            $leaderboard = ProgressLog::leftJoin('workouts as w', 'progress_logs.workout_id', '=', 'w.id')
+                ->leftJoin('users as u', 'progress_logs.user_id', '=', 'u.id')
+                ->select(
+                    'u.name as user_name',
+                    'w.workout_name',
+                    'progress_logs.weight',
+                    'progress_logs.set_number',
+                    'progress_logs.reps'
+                )
+                ->orderByDesc('progress_logs.weight')
+                ->limit(5)
+                ->get();
+
 
             // Today's progress
             $todayProgress = Progress::where('user_id', $userId)
@@ -36,8 +52,9 @@ class DashboardController extends Controller
             });
 
             $weights = $progresses->pluck('current_weight');
+            $userData = User::findorFail($userId);
 
-            return view('dashboard.index', compact('todayProgress', 'dates', 'weights'));
+            return view('dashboard.index', compact('todayProgress', 'dates', 'weights','leaderboard','userData'));
         } catch (Exception $e) {
             report($e);
             return back()->with('error', 'Something went wrong. Please try again.');
