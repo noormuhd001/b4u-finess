@@ -25,6 +25,12 @@
         .leaderboard td strong {
             font-size: 1.1rem;
         }
+
+        .material-symbols-outlined {
+            vertical-align: middle;
+            margin-right: 6px;
+            font-size: 22px;
+        }
     </style>
 @endpush
 
@@ -34,24 +40,32 @@
 
 @section('content')
     <div class="container my-4">
-        <h2 class="dashboard-title"><i class="bi bi-speedometer2 text-primary"></i> Dashboard</h2>
+        <h2 class="dashboard-title">
+            <span class="material-symbols-outlined text-primary">speed</span> Dashboard
+        </h2>
 
         <div class="row g-4">
             {{-- Today’s Progress --}}
             <div class="col-lg-6">
                 <div class="card p-4">
-                    <h4><i class="bi bi-fire text-danger"></i> Today's Workout</h4>
+                    <h4>
+                        <span class="material-symbols-outlined text-danger">local_fire_department</span>
+                        Today's Workout
+                    </h4>
 
                     @if ($todayProgress)
-                        <p><i class="bi bi-person-lines-fill text-info"></i>
+                        <p>
+                            <span class="material-symbols-outlined text-info">person</span>
                             <strong>Weight:</strong> {{ $todayProgress->current_weight }} kg
                         </p>
 
-                        <p><i class="bi bi-lightning-charge-fill text-warning"></i>
+                        <p>
+                            <span class="material-symbols-outlined text-warning">bolt</span>
                             <strong>Total Kcal Burned:</strong> {{ $todayProgress->avg_kcal_burned }}
                         </p>
 
-                        <p><i class="bi bi-list-check text-success"></i>
+                        <p>
+                            <span class="material-symbols-outlined text-success">checklist</span>
                             <strong>Workouts:</strong>
                             @php
                                 $workoutNames = $todayProgress->logs
@@ -61,11 +75,15 @@
                             {{ implode(', ', $workoutNames) }}
                         </p>
 
-                        <p><i class="bi bi-lightning-charge-fill text-warning"></i>
+                        <p>
+                            <span class="material-symbols-outlined text-warning">flag</span>
                             <strong>Goal:</strong> {{ config('constant.goal.' . $userData->goal) }}
                         </p>
                     @else
-                        <h5 class="text-muted"><i class="bi bi-calendar-x"></i> No workout logged today</h5>
+                        <h5 class="text-muted">
+                            <span class="material-symbols-outlined">event_busy</span>
+                            No workout logged today
+                        </h5>
                     @endif
                 </div>
             </div>
@@ -73,7 +91,10 @@
             {{-- Weight Progress Chart --}}
             <div class="col-lg-6">
                 <div class="card p-4">
-                    <h4><i class="bi bi-graph-up-arrow text-success"></i> Weight Progress</h4>
+                    <h4>
+                        <span class="material-symbols-outlined text-success">monitoring</span>
+                        Weight Progress
+                    </h4>
                     <canvas id="weightChart" height="150"></canvas>
                 </div>
             </div>
@@ -83,7 +104,10 @@
             {{-- Leaderboard --}}
             <div class="col-12">
                 <div class="card p-4">
-                    <h4 class="text-success mb-3"><i class="bi bi-trophy"></i> Top Lifts Leaderboard</h4>
+                    <h4 class="text-success mb-3">
+                        <span class="material-symbols-outlined">trophy</span>
+                        Top Lifts Leaderboard
+                    </h4>
                     <div class="table-responsive">
                         <table class="table table-striped table-sm align-middle leaderboard">
                             <thead>
@@ -98,7 +122,10 @@
                             <tbody>
                                 @forelse($leaderboard as $record)
                                     <tr>
-                                        <td><i class="bi bi-person-circle text-primary"></i> {{ $record->user_name }}</td>
+                                        <td>
+                                            <span class="material-symbols-outlined text-primary">account_circle</span>
+                                            {{ $record->user_name }}
+                                        </td>
                                         <td>{{ $record->workout_name }}</td>
                                         <td><strong class="text-danger">{{ $record->weight }}</strong></td>
                                         <td>{{ $record->set_number }}</td>
