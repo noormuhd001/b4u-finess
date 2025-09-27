@@ -61,6 +61,14 @@
             border-radius: 8px;
             padding: 0.5rem 1rem;
         }
+
+        .material-symbols-outlined {
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24
+        }
     </style>
 @endpush
 
@@ -69,7 +77,7 @@
         <div class="profile-card">
             <!-- Edit Button -->
             <button class="btn btn-outline-primary edit-btn" id="editToggle" title="Edit Profile">
-                <i class="bi bi-pencil-square"></i>
+                <span class="material-symbols-outlined">edit</span>
             </button>
 
             <!-- Profile Header -->
@@ -85,11 +93,13 @@
             <!-- View Mode -->
             <div id="viewMode">
                 <div class="profile-info">
-                    <p><i class="bi bi-envelope-at text-info"></i> Email: {{ $user->email }}</p>
-                    <p><i class="bi bi-gender-ambiguous text-warning"></i> Gender: {{ $genders[$user->gender] ?? 'N/A' }}
-                    </p>
-                    <p><i class="bi bi-arrows-expand text-success"></i> Height: {{ $user->height ?? 'N/A' }} cm</p>
-                    <p><i class="bi bi-activity text-danger"></i> Weight: {{ $user->weight ?? 'N/A' }} kg</p>
+                    <p><span class="material-symbols-outlined text-info">mail</span> Email: {{ $user->email }}</p>
+                    <p><span class="material-symbols-outlined text-warning">person</span> Gender:
+                        {{ $genders[$user->gender] ?? 'N/A' }}</p>
+                    <p><span class="material-symbols-outlined text-success">straighten</span> Height:
+                        {{ $user->height ?? 'N/A' }} cm</p>
+                    <p><span class="material-symbols-outlined text-danger">monitor_weight</span> Weight:
+                        {{ $user->weight ?? 'N/A' }} kg</p>
                 </div>
             </div>
 
@@ -101,14 +111,15 @@
 
                     <!-- Profile Photo -->
                     <div class="mb-3 ">
-                        <label class="form-label"><i class="bi bi-camera"></i> Profile Photo</label>
+                        <label class="form-label"><span class="material-symbols-outlined">photo_camera</span> Profile
+                            Photo</label>
                         <input type="file" name="profile_picture" class="form-control" accept="image/*"
                             onchange="previewImage(event)">
                     </div>
 
                     <!-- Name -->
                     <div class="mb-3">
-                        <label class="form-label"><i class="bi bi-person"></i> Name</label>
+                        <label class="form-label"><span class="material-symbols-outlined">person</span> Name</label>
                         <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
                             value="{{ old('name', $user->name) }}">
                         @error('name')
@@ -118,7 +129,7 @@
 
                     <!-- Email -->
                     <div class="mb-3">
-                        <label class="form-label"><i class="bi bi-envelope"></i> Email</label>
+                        <label class="form-label"><span class="material-symbols-outlined">mail</span> Email</label>
                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
                             value="{{ old('email', $user->email) }}">
                         @error('email')
@@ -128,7 +139,7 @@
 
                     <!-- Gender -->
                     <div class="mb-3">
-                        <label class="form-label"><i class="bi bi-gender-ambiguous"></i> Gender</label>
+                        <label class="form-label"><span class="material-symbols-outlined">man</span> Gender</label>
                         <select name="gender" class="form-control @error('gender') is-invalid @enderror">
                             @foreach ($genders as $key => $value)
                                 <option value="{{ $key }}"
@@ -144,7 +155,8 @@
 
                     <!-- Height -->
                     <div class="mb-3">
-                        <label class="form-label"><i class="bi bi-arrows-expand"></i> Height (cm)</label>
+                        <label class="form-label"><span class="material-symbols-outlined">straighten</span> Height
+                            (cm)</label>
                         <input type="number" name="height" class="form-control @error('height') is-invalid @enderror"
                             value="{{ old('height', $user->height) }}">
                         @error('height')
@@ -154,7 +166,8 @@
 
                     <!-- Weight -->
                     <div class="mb-3">
-                        <label class="form-label"><i class="bi bi-activity"></i> Weight (kg)</label>
+                        <label class="form-label"><span class="material-symbols-outlined">monitor_weight</span> Weight
+                            (kg)</label>
                         <input type="number" name="weight" class="form-control @error('weight') is-invalid @enderror"
                             value="{{ old('weight', $user->weight) }}">
                         @error('weight')
@@ -164,7 +177,7 @@
 
                     <!-- Goal -->
                     <div class="mb-3">
-                        <label class="form-label"><i class="bi bi-bullseye"></i> Goal</label>
+                        <label class="form-label"><span class="material-symbols-outlined">track_changes</span> Goal</label>
                         <select name="goal" class="form-control @error('goal') is-invalid @enderror">
                             @foreach ($goals as $key => $value)
                                 <option value="{{ $key }}"
@@ -179,9 +192,13 @@
                     </div>
 
                     <div class="d-flex justify-content-end gap-2">
-                        <button type="submit" class="btn btn-save"><i class="bi bi-check-circle"></i> Save</button>
-                        <button type="button" class="btn btn-cancel" id="cancelEdit"><i class="bi bi-x-circle"></i>
-                            Cancel</button>
+                        <!-- Buttons -->
+                        <button type="submit" class="btn btn-save">
+                            <span class="material-symbols-outlined">check_circle</span> Save
+                        </button>
+                        <button type="button" class="btn btn-cancel" id="cancelEdit">
+                            <span class="material-symbols-outlined">cancel</span> Cancel
+                        </button>
                     </div>
                 </form>
             </div>

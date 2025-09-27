@@ -12,7 +12,7 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ $workout->workout_name }}</h5>
                             <p class="mb-1">
-                                <i class="bi bi-fire text-danger"></i>
+                                <span class="material-symbols-outlined text-danger">local_fire_department</span>
                                 {{ $workout->kcal_per_minute ?? 'N/A' }} kcal/min
                             </p>
                         </div>
@@ -30,11 +30,17 @@
                             </div>
                             <div class="modal-body">
                                 <img src="{{ $workout->image }}" class="img-fluid mb-3">
-                                <p><i class="bi bi-person-bounding-box text-primary"></i> Body Part:
-                                    {{ $workout->body_part }}</p>
-                                <p><i class="bi bi-fire text-danger"></i> {{ $workout->kcal_per_minute ?? 'N/A' }} kcal/min</p>
+                                <p>
+                                    <span class="material-symbols-outlined text-primary">fitness_center</span>
+                                    Body Part: {{ $workout->body_part }}
+                                </p>
+                                <p>
+                                    <span class="material-symbols-outlined text-danger">local_fire_department</span>
+                                    {{ $workout->kcal_per_minute ?? 'N/A' }} kcal/min
+                                </p>
+                                {{-- Optional details --}}
                                 {{-- <p>Sets: {{ $workout->sets }}, Reps: {{ $workout->reps }}</p>
-                        <p>{{ $workout->description ?? 'No description available.' }}</p> --}}
+                                <p>{{ $workout->description ?? 'No description available.' }}</p> --}}
                             </div>
                         </div>
                     </div>

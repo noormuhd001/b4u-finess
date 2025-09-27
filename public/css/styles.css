@@ -11,7 +11,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-image: url(../img/login-background.png);
+    background-image: url(../img/login-background.webp);
     background-size: cover;
     background-position: center;
     padding: 24px;

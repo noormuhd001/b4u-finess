@@ -30,12 +30,21 @@
         .workout-item .form-label {
             font-weight: 500;
         }
+
+        .material-symbols-outlined {
+            vertical-align: middle;
+            margin-right: 6px;
+            font-size: 22px;
+        }
     </style>
 @endpush
 
 @section('content')
     <div class="container my-4">
-        <h2 class="mb-4"><i class="bi bi-activity"></i> Today’s Progress</h2>
+        <h2 class="mb-4">
+            <span class="material-symbols-outlined text-primary">monitor_heart</span>
+            Today’s Progress
+        </h2>
 
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
@@ -52,15 +61,21 @@
         @if ($todaysProgress)
             <div class="card p-4 mb-3">
                 <h5>Today's Workout ({{ $today }})</h5>
-                <p><strong>Weight:</strong> {{ $todaysProgress->current_weight }} kg</p>
-                <p><strong>Total Kcal Burned:</strong> {{ $totalKcal ?? $todaysProgress->avg_kcal_burned }}</p>
+                <p>
+                    <span class="material-symbols-outlined text-info">monitor_weight</span>
+                    <strong>Weight:</strong> {{ $todaysProgress->current_weight }} kg
+                </p>
+                <p>
+                    <span class="material-symbols-outlined text-danger">local_fire_department</span>
+                    <strong>Total Kcal Burned:</strong> {{ $totalKcal ?? $todaysProgress->avg_kcal_burned }}
+                </p>
 
                 <h6 class="mt-3">Workout Details:</h6>
                 @if ($todaysLogs && $todaysLogs->count())
                     <ul class="list-group">
                         @foreach ($todaysLogs as $log)
                             <li class="list-group-item">
-                                <strong>{{ $log->workout->workout_name ?? 'Workout' }}</strong> -
+                                <strong>{{ $log->workout->workout_name ?? 'Workout' }}</strong> —
                                 Sets: {{ $log->set_number }}, Reps: {{ $log->reps }},
                                 Weight: {{ $log->weight }} kg,
                                 Kcal Burned: {{ $log->kcal_burned }}
@@ -72,7 +87,10 @@
                 @endif
             </div>
         @else
-            <p><i class="bi bi-info-circle"></i> No progress recorded for today. You can log your workout below:</p>
+            <p>
+                <span class="material-symbols-outlined text-secondary">info</span>
+                No progress recorded for today. You can log your workout below:
+            </p>
 
             <form action="{{ route('progress.store') }}" method="POST">
                 @csrf
@@ -120,8 +138,9 @@
                     </div>
                 </div>
 
-                <button type="button" class="btn btn-outline-secondary btn-sm mb-3" id="addWorkoutBtn">+ Add
-                    Workout</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm mb-3" id="addWorkoutBtn">
+                    + Add Workout
+                </button>
                 <br>
                 <button type="submit" class="btn btn-orange">Save Progress</button>
             </form>
@@ -129,7 +148,8 @@
 
         {{-- Track Workout Button --}}
         <a href="{{ route('progress.track') }}" class="btn mt-2">
-            <i class="bi bi-graph-up"></i> Track Workout
+            <span class="material-symbols-outlined">monitoring</span>
+            Track Workout
         </a>
     </div>
 @endsection
@@ -137,16 +157,21 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
-        let workoutIndex = 1;
-        document.getElementById('addWorkoutBtn').addEventListener('click', function() {
-            let wrapper = document.getElementById('workouts-wrapper');
-            let newItem = document.querySelector('.workout-item').cloneNode(true);
-            newItem.querySelectorAll('input, select').forEach(el => {
-                el.name = el.name.replace(/\d+/, workoutIndex);
-                el.value = '';
-            });
-            wrapper.appendChild(newItem);
-            workoutIndex++;
+        document.addEventListener('DOMContentLoaded', function() {
+            let workoutIndex = 1;
+            const addWorkoutBtn = document.getElementById('addWorkoutBtn');
+            if (addWorkoutBtn) {
+                addWorkoutBtn.addEventListener('click', function() {
+                    let wrapper = document.getElementById('workouts-wrapper');
+                    let newItem = document.querySelector('.workout-item').cloneNode(true);
+                    newItem.querySelectorAll('input, select').forEach(el => {
+                        el.name = el.name.replace(/\d+/, workoutIndex);
+                        el.value = '';
+                    });
+                    wrapper.appendChild(newItem);
+                    workoutIndex++;
+                });
+            }
         });
     </script>
 @endpush
