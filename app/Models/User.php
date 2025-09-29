@@ -52,4 +52,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function badges()
+    {
+        return $this->belongsToMany(Badges::class, 'badge_users', 'user_id', 'badge_id')->withTimestamps();
+    }
 }

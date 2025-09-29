@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Progress;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProgressStoreRequest;
+use App\Models\Badges;
 use App\Models\Progress;
 use App\Models\ProgressLog;
+use App\Models\User;
 use App\Models\Workout;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
@@ -95,6 +97,41 @@ class ProgressController extends Controller
             $progress->update([
                 'avg_kcal_burned' => $totalKcal,
             ]);
+
+            $user = User::findOrFail($userId);
+            $badgeIdsToAttach = [];
+
+            // 1. First Workout Badge
+            $firstBadge = Badges::where('name', 'First Workout')->first();
+            if ($firstBadge && !$user->badges()->where('badge_id', $firstBadge->id)->exists()) {
+                $badgeIdsToAttach[] = $firstBadge->id;
+            }
+
+            // 2. Consistency Badge (7-day streak)
+            $streakCount = Progress::where('user_id', $userId)
+                ->where('workout_on', '>=', now()->subDays(7))
+                ->count();
+
+            $consistencyBadge = Badges::where('name', 'Consistency King')->first();
+            if ($consistencyBadge && $streakCount >= 7 && !$user->badges()->where('badge_id', $consistencyBadge->id)->exists()) {
+                $badgeIdsToAttach[] = $consistencyBadge->id;
+            }
+
+            // 3. Strength Beast Badge (>100kg in any single workout)
+            foreach ($request->workouts_completed as $log) {
+                if (($log['weight'] ?? 0) >= 100) {
+                    $strengthBadge = Badges::where('name', 'Strength Beast')->first();
+                    if ($strengthBadge && !$user->badges()->where('badge_id', $strengthBadge->id)->exists()) {
+                        $badgeIdsToAttach[] = $strengthBadge->id;
+                    }
+                    break; // only award once per progress
+                }
+            }
+
+            // Attach all badges at once
+            if (!empty($badgeIdsToAttach)) {
+                $user->badges()->attach($badgeIdsToAttach);
+            }
 
             return back()->with('success', 'Workout added successfully!');
         } catch (\Exception $e) {
