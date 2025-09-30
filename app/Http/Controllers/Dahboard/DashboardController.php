@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dahboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\BadgeUser;
 use App\Models\Progress;
 use App\Models\ProgressLog;
 use App\Models\User;
@@ -53,8 +54,13 @@ class DashboardController extends Controller
 
             $weights = $progresses->pluck('current_weight');
             $userData = User::findorFail($userId);
+            $earnedBadges = BadgeUser::leftJoin('badges', 'badges.id', '=', 'badge_users.badge_id')
+                ->where('badge_users.user_id', $userId)
+                ->select('badges.*')
+                ->get();
+            // dd($earnedBadges);
 
-            return view('dashboard.index', compact('todayProgress', 'dates', 'weights','leaderboard','userData'));
+            return view('dashboard.index', compact('todayProgress', 'dates', 'weights', 'leaderboard', 'userData', 'earnedBadges'));
         } catch (Exception $e) {
             report($e);
             return back()->with('error', 'Something went wrong. Please try again.');
