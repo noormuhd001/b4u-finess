@@ -30,6 +30,13 @@
             font-weight: 500;
         }
 
+        .removeWorkoutBtn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: red
+        }
+
         .material-symbols-outlined {
             vertical-align: middle;
             margin-right: 6px;
@@ -56,22 +63,14 @@
             <div class="modal fade" id="badgeModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content text-center p-4">
-                        {{-- <h4 class="mb-3">🎉 Achievement Unlocked!</h4> --}}
-
                         @foreach (session('earned_badges') as $badge)
                             <div class="mb-3">
-                                <!-- Badge Icon -->
                                 <img src="{{ asset($badge['icon']) }}" alt="{{ $badge['name'] }}" class="img-fluid mb-2"
                                     style="max-width: 80px;">
-
-                                <!-- Badge Name -->
                                 <h5 class="fw-bold">{{ $badge['name'] }}</h5>
-
-                                <!-- Badge Description -->
                                 <p class="text-muted">{{ $badge['description'] }}</p>
                             </div>
                         @endforeach
-
                         <button type="button" class="btn btn-primary mt-2" data-bs-dismiss="modal">Awesome!</button>
                     </div>
                 </div>
@@ -86,24 +85,19 @@
         @if ($todaysProgress)
             <div class="card p-4 mb-3">
                 <h5>Today's Workout ({{ $today }})</h5>
-                <p>
-                    <span class="material-symbols-outlined text-info">monitor_weight</span>
-                    <strong>Weight:</strong> {{ $todaysProgress->current_weight }} kg
-                </p>
-                <p>
-                    <span class="material-symbols-outlined text-danger">local_fire_department</span>
-                    <strong>Total Kcal Burned:</strong> {{ $totalKcal ?? $todaysProgress->avg_kcal_burned }}
-                </p>
+                <p><span class="material-symbols-outlined text-info">monitor_weight</span><strong>Weight:</strong>
+                    {{ $todaysProgress->current_weight }} kg</p>
+                <p><span class="material-symbols-outlined text-danger">local_fire_department</span><strong>Total Kcal
+                        Burned:</strong> {{ $totalKcal ?? $todaysProgress->avg_kcal_burned }}</p>
 
                 <h6 class="mt-3">Workout Details:</h6>
                 @if ($todaysLogs && $todaysLogs->count())
                     <ul class="list-group">
                         @foreach ($todaysLogs as $log)
                             <li class="list-group-item">
-                                <strong>{{ $log->workout->workout_name ?? 'Workout' }}</strong> —
-                                Sets: {{ $log->set_number }}, Reps: {{ $log->reps }},
-                                Weight: {{ $log->weight }} kg,
-                                Kcal Burned: {{ $log->kcal_burned }}
+                                <strong>{{ $log->workout->workout_name ?? 'Workout' }}</strong> — Sets:
+                                {{ $log->set_number }}, Reps: {{ $log->reps }}, Weight: {{ $log->weight }} kg, Kcal
+                                Burned: {{ $log->kcal_burned }}
                             </li>
                         @endforeach
                     </ul>
@@ -112,10 +106,8 @@
                 @endif
             </div>
         @else
-            <p>
-                <span class="material-symbols-outlined text-secondary">info</span>
-                No progress recorded for today. You can log your workout below:
-            </p>
+            <p><span class="material-symbols-outlined text-secondary">info</span>No progress recorded for today. You can log
+                your workout below:</p>
 
             <form action="{{ route('progress.store') }}" method="POST">
                 @csrf
@@ -133,7 +125,7 @@
 
                 <h5>Workouts</h5>
                 <div id="workouts-wrapper">
-                    <div class="workout-item">
+                    <div class="workout-item position-relative">
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label class="form-label">Workout</label>
@@ -160,12 +152,13 @@
                                     class="form-control">
                             </div>
                         </div>
+                        <button type="button" class="btn btn-danger removeWorkoutBtn mt-2"
+                            style="display:none; position:absolute; top:10px; right:10px;">Remove</button>
                     </div>
                 </div>
 
-                <button type="button" class="btn btn-outline-secondary btn-sm mb-3" id="addWorkoutBtn">
-                    + Add Workout
-                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm mb-3" id="addWorkoutBtn">+ Add
+                    Workout</button>
                 <br>
                 <button type="submit" class="btn btn-orange">Save Progress</button>
             </form>
@@ -183,20 +176,27 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            @if (session('earned_badges'))
-                var badgeModal = new bootstrap.Modal(document.getElementById('badgeModal'));
-                badgeModal.show();
-            @endif
             let workoutIndex = 1;
             const addWorkoutBtn = document.getElementById('addWorkoutBtn');
+            const wrapper = document.getElementById('workouts-wrapper');
+
             if (addWorkoutBtn) {
                 addWorkoutBtn.addEventListener('click', function() {
-                    let wrapper = document.getElementById('workouts-wrapper');
                     let newItem = document.querySelector('.workout-item').cloneNode(true);
+
+                    // Update input names and reset values
                     newItem.querySelectorAll('input, select').forEach(el => {
                         el.name = el.name.replace(/\d+/, workoutIndex);
                         el.value = '';
                     });
+
+                    // Show remove button for cloned item
+                    let removeBtn = newItem.querySelector('.removeWorkoutBtn');
+                    removeBtn.style.display = 'block';
+                    removeBtn.addEventListener('click', function() {
+                        newItem.remove();
+                    });
+
                     wrapper.appendChild(newItem);
                     workoutIndex++;
                 });
