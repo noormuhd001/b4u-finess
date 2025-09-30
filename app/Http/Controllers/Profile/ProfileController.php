@@ -97,4 +97,18 @@ class ProfileController extends Controller
     {
         //
     }
+
+    public function upload(Request $request)
+    {
+        try {
+            if ($request->hasFile('img')) {
+                $file = $request->file('img');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $path = $file->move(public_path('/img/icon', $fileName));
+            }
+        } catch (Exception $e) {
+            report($e);
+            return back()->withErrors(['error' => 'eddd'], 400);
+        }
+    }
 }

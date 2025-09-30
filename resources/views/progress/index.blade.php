@@ -1,6 +1,5 @@
 @extends('layouts.app')
 @push('styles')
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
         rel="stylesheet" />
@@ -51,6 +50,32 @@
         @endif
         @if (session('error'))
             <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
+
+        @if (session('earned_badges'))
+            <div class="modal fade" id="badgeModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content text-center p-4">
+                        {{-- <h4 class="mb-3">🎉 Achievement Unlocked!</h4> --}}
+
+                        @foreach (session('earned_badges') as $badge)
+                            <div class="mb-3">
+                                <!-- Badge Icon -->
+                                <img src="{{ asset($badge['icon']) }}" alt="{{ $badge['name'] }}" class="img-fluid mb-2"
+                                    style="max-width: 80px;">
+
+                                <!-- Badge Name -->
+                                <h5 class="fw-bold">{{ $badge['name'] }}</h5>
+
+                                <!-- Badge Description -->
+                                <p class="text-muted">{{ $badge['description'] }}</p>
+                            </div>
+                        @endforeach
+
+                        <button type="button" class="btn btn-primary mt-2" data-bs-dismiss="modal">Awesome!</button>
+                    </div>
+                </div>
+            </div>
         @endif
 
         @php
@@ -158,6 +183,10 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            @if (session('earned_badges'))
+                var badgeModal = new bootstrap.Modal(document.getElementById('badgeModal'));
+                badgeModal.show();
+            @endif
             let workoutIndex = 1;
             const addWorkoutBtn = document.getElementById('addWorkoutBtn');
             if (addWorkoutBtn) {

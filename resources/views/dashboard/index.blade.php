@@ -142,6 +142,36 @@
                 </div>
             </div>
         </div>
+
+        {{-- Earned Badges --}}
+        @if ($earnedBadges->count() > 0)
+            <div class="col-12 mt-3">
+                <div class="card p-4">
+                    <h4 class="text-primary mb-3">
+                        <span class="material-symbols-outlined">military_tech</span>
+                        Your Badges
+                    </h4>
+                    <div class="d-flex flex-wrap gap-4">
+                        @foreach ($earnedBadges as $badge)
+                            <div class="text-center">
+                                <img src="{{ asset($badge->icon) }}" alt="{{ $badge->name }}" class="img-fluid mb-2"
+                                    style="max-width:80px;">
+                                <h6 class="fw-bold">{{ $badge->name }}</h6>
+                                <p class="text-muted small mb-0">{{ $badge->description }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        @else
+            <div class="col-12 mt-3">
+                <div class="card p-4 text-center text-muted">
+                    <span class="material-symbols-outlined">hourglass_empty</span>
+                    No badges earned yet — keep going!
+                </div>
+            </div>
+        @endif
+
     </div>
 
     {{-- Chart Script --}}

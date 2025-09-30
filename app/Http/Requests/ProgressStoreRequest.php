@@ -27,8 +27,7 @@ class ProgressStoreRequest extends FormRequest
             'workouts_completed.*.reps' => 'required|numeric|min:1',
             'workouts_completed.*.weight' => 'nullable|numeric|min:0',
             'weight'               => 'required|numeric|min:1|max:500',
-            'workout_on'           => 'required|date',
-
+            'workout_on'                       => 'required|date|before_or_equal:today',
         ];
     }
 
@@ -48,6 +47,7 @@ class ProgressStoreRequest extends FormRequest
             'weight.max'                    => 'Weight cannot exceed 500 kg.',
             'workout_on.required'           => 'Please select the workout date.',
             'workout_on.date'               => 'The workout date must be a valid date.',
+            'workout_on.before_or_equal'      => 'The workout date cannot be in the future.',
         ];
     }
 }
