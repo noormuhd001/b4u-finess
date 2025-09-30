@@ -15,13 +15,20 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">Dashboard</a>
+                    <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
+                        href="{{ route('dashboard') }}">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('workout') ? 'active' : '' }}" href="{{ route('workout') }}">Workouts</a>
+                    <a class="nav-link {{ request()->routeIs('workout') ? 'active' : '' }}"
+                        href="{{ route('workout') }}">Workouts</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('progress.index', 'progress.track', 'progress.trackDetailById') ? 'active' : '' }}" href="{{ route('progress.index') }}">Progress</a>
+                    <a class="nav-link {{ request()->routeIs('progress.index', 'progress.track', 'progress.trackDetailById') ? 'active' : '' }}"
+                        href="{{ route('progress.index') }}">Progress</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('about-us') ? 'active' : '' }}"
+                        href="{{ route('about-us') }}">About Us</a>
                 </li>
             </ul>
 
@@ -29,14 +36,18 @@
             <ul class="navbar-nav ms-auto">
                 @auth
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center {{ request()->routeIs('profile.*') ? 'active' : '' }}" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                            <span class="material-symbols-outlined me-1" style="transform: scale(1.4);">account_circle</span>
+                        <a class="nav-link dropdown-toggle d-flex align-items-center {{ request()->routeIs('profile.*') ? 'active' : '' }}"
+                            href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <span class="material-symbols-outlined me-1"
+                                style="transform: scale(1.4);">account_circle</span>
                             {{ Auth::user()->name }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="{{ route('profile.index') }}">Profile</a></li>
                             <li><a class="dropdown-item" href="#">Settings</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li>
                                 <form method="POST" action="{{ route('logout') }}" class="m-0">
                                     @csrf
