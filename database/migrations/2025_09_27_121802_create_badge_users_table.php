@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('badge_users', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('badge_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('badge_id');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
         });
     }

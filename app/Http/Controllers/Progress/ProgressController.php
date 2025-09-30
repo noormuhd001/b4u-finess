@@ -131,6 +131,16 @@ class ProgressController extends Controller
             // Attach all badges at once
             if (!empty($badgeIdsToAttach)) {
                 $user->badges()->attach($badgeIdsToAttach);
+
+                // Get badge details (icon, name, description)
+                $earnedBadges = Badges::whereIn('id', $badgeIdsToAttach)
+                    ->select('name', 'description', 'icon') // make sure your table has `icon` column
+                    ->get();
+
+                return back()->with([
+                    'success' => 'Workout added successfully!',
+                    'earned_badges' => $earnedBadges
+                ]);
             }
 
             return back()->with('success', 'Workout added successfully!');

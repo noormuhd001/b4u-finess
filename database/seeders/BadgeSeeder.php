@@ -14,9 +14,9 @@ class BadgeSeeder extends Seeder
     public function run(): void
     {
         $badges = [
-            ['name' => 'First Workout', 'icon' => 'first.png', 'description' => 'Completed your first workout!'],
-            ['name' => 'Consistency King', 'icon' => 'consistency.png', 'description' => 'Worked out 7 days in a row!'],
-            ['name' => 'Strength Beast', 'icon' => 'strength.png', 'description' => 'Lifted over 100kg in one session!'],
+            ['name' => 'First Workout', 'icon' => 'img/first.png', 'description' => 'Completed your first workout!'],
+            ['name' => 'Consistency King', 'icon' => 'img/consistency.png', 'description' => 'Worked out 7 days in a row!'],
+            ['name' => 'Strength Beast', 'icon' => 'img/strength.png', 'description' => 'Lifted over 100kg in one session!'],
         ];
 
         foreach ($badges as $badge) {
