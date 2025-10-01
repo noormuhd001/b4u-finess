@@ -19,7 +19,7 @@
     @stack('styles')
 </head>
 
-<body class="bg-light d-flex flex-column min-vh-100">
+<body class=" d-flex flex-column min-vh-100 {{ auth()->check() && auth()->user()->dark_mode ? 'dark-mode' : '' }}" >
 
     <!-- Navbar -->
     @include('layouts.navbar')

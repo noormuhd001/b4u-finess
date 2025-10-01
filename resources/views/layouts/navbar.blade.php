@@ -44,7 +44,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="{{ route('profile.index') }}">Profile</a></li>
-                            <li><a class="dropdown-item" href="#">Settings</a></li>
+                            <li><a class="dropdown-item" href="{{route('settings.index')}}">Settings</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

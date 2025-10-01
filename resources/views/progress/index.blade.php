@@ -42,6 +42,96 @@
             margin-right: 6px;
             font-size: 22px;
         }
+
+        /* Dark Mode Styles */
+        .dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .card,
+        .dark-mode .workout-item,
+        .dark-mode .modal-content {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+            border: 1px solid #333;
+        }
+
+        .dark-mode .form-label,
+        .dark-mode label {
+            color: #e0e0e0;
+        }
+
+        .dark-mode .form-control,
+        .dark-mode .form-select {
+            background-color: #2c2c2c;
+            color: #e0e0e0;
+            border: 1px solid #555;
+        }
+
+        .dark-mode .form-control:focus,
+        .dark-mode .form-select:focus {
+            background-color: #2c2c2c;
+            color: #fff;
+            border-color: #FF8C00;
+            box-shadow: none;
+        }
+
+        .dark-mode .btn-orange,
+        .dark-mode .btn {
+            background-color: #FF8C00;
+            color: #121212;
+        }
+
+        .dark-mode .btn-orange:hover,
+        .dark-mode .btn:hover {
+            background-color: #e07b00;
+            color: #fff;
+        }
+
+        .dark-mode .btn-outline-secondary {
+            color: #e0e0e0;
+            border-color: #555;
+        }
+
+        .dark-mode .btn-outline-secondary:hover {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .dark-mode .list-group-item {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+            border-color: #333;
+        }
+
+        .dark-mode .alert-success {
+            background-color: #2c2c2c;
+            color: #28a745;
+            border-color: #28a745;
+        }
+
+        .dark-mode .alert-danger {
+            background-color: #2c2c2c;
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .dark-mode .material-symbols-outlined.text-primary {
+            color: #4dabf7 !important;
+        }
+
+        .dark-mode .material-symbols-outlined.text-danger {
+            color: #ff6b6b !important;
+        }
+
+        .dark-mode .material-symbols-outlined.text-info {
+            color: #17a2b8 !important;
+        }
+
+        .dark-mode .material-symbols-outlined.text-secondary {
+            color: #adb5bd !important;
+        }
     </style>
 @endpush
 
@@ -65,10 +155,10 @@
                     <div class="modal-content text-center p-4">
                         @foreach (session('earned_badges') as $badge)
                             <div class="mb-3">
-                                <img src="{{ asset($badge['icon']) }}" alt="{{ $badge['name'] }}" class="img-fluid mb-2"
+                                <img src="{{ asset($badge->icon) }}" alt="{{ $badge->name }}" class="img-fluid mb-2"
                                     style="max-width: 80px;">
-                                <h5 class="fw-bold">{{ $badge['name'] }}</h5>
-                                <p class="text-muted">{{ $badge['description'] }}</p>
+                                <h5 class="fw-bold">{{ $badge->name }}</h5>
+                                <p class="text-muted">{{ $badge->description }}</p>
                             </div>
                         @endforeach
                         <button type="button" class="btn btn-primary mt-2" data-bs-dismiss="modal">Awesome!</button>
@@ -176,6 +266,10 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            @if (session('earned_badges'))
+                var badgeModal = new bootstrap.Modal(document.getElementById('badgeModal'));
+                badgeModal.show();
+            @endif
             let workoutIndex = 1;
             const addWorkoutBtn = document.getElementById('addWorkoutBtn');
             const wrapper = document.getElementById('workouts-wrapper');

@@ -26,6 +26,7 @@ class User extends Authenticatable
         'gender',
         'goal',
         'image',
+        'dark_mode',
         'forgot_token',
         'expires_at'
     ];
