@@ -18,7 +18,7 @@
         <!-- Logo -->
         <div class="text-center mb-4 ">
             <img src="{{ asset('img/logo.png') }}" alt="Project Logo" class="img-fluid" style="width: 100px;">
-            <h3 class="mt-3">Welcome!</h3>
+            <h3 class="mt-3">Login </h3>
         </div>
         <!-- Login Form -->
         <form method="post" action="{{ route('login.post') }}">
@@ -39,7 +39,7 @@
 
             <!-- Email Field -->
             <div class="mb-3">
-                <label for="email" class="form-label">Email address</label>
+                <label for="email" class="form-label">Email</label>
                 <input type="email" name="email" class="form-control rounded-3 @error('email') is-invalid @enderror"
                     id="email" placeholder="Enter your email" value="{{ old('email') }}">
                 @error('email')

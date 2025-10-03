@@ -6,12 +6,13 @@
             margin-top: 1rem;
         }
 
-        .material-symbols-outlined {
+        #editMode .material-symbols-outlined {
             font-variation-settings:
                 'FILL' 0,
                 'wght' 400,
                 'GRAD' 0,
                 'opsz' 24;
+            color: #007bff;
         }
     </style>
 @endpush

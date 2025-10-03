@@ -43,12 +43,6 @@
             font-size: 22px;
         }
 
-        /* Dark Mode Styles */
-        .dark-mode {
-            background-color: #121212;
-            color: #e0e0e0;
-        }
-
         .dark-mode .card,
         .dark-mode .workout-item,
         .dark-mode .modal-content {
@@ -103,18 +97,6 @@
             background-color: #1e1e1e;
             color: #e0e0e0;
             border-color: #333;
-        }
-
-        .dark-mode .alert-success {
-            background-color: #2c2c2c;
-            color: #28a745;
-            border-color: #28a745;
-        }
-
-        .dark-mode .alert-danger {
-            background-color: #2c2c2c;
-            color: #dc3545;
-            border-color: #dc3545;
         }
 
         .dark-mode .material-symbols-outlined.text-primary {
