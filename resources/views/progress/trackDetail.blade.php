@@ -46,7 +46,7 @@
         </ul>
 
         <a href="{{ route('progress.track') }}" class="btn btn-secondary">
-            <span class="material-symbols-outlined">arrow_back</span> Back to History
+            <span class="material-symbols-outlined">arrow_back_ios</span>Back
         </a>
     </div>
 @endsection

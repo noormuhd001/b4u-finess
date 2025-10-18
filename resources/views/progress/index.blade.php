@@ -237,7 +237,7 @@
         @endif
 
         {{-- Track Workout Button --}}
-        <a href="{{ route('progress.track') }}" class="btn mt-2">
+        <a href="{{ route('progress.track') }}" class="btn mt-2"  style="background-color: #0056b3">
             <span class="material-symbols-outlined">monitoring</span>
             Track Workout
         </a>

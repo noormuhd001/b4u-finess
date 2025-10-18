@@ -107,7 +107,7 @@
 <div class="container">
     <!-- Back -->
     <a href="{{ route('progress.index') }}" class="btn mb-3">
-        <span class="material-symbols-outlined">arrow_back</span> Back
+        <span class="material-symbols-outlined">arrow_back_ios</span>Back
     </a>
 
     <h2 class="mb-4">Workout History</h2>
@@ -171,7 +171,7 @@
                         <td>{{ $progress->avg_kcal_burned }}</td>
                         <td>
                             <a href="{{ route('progress.trackDetailById', $progress->id) }}" class="action-btn">
-                                View
+                               <span class="material-symbols-outlined">visibility</span>
                             </a>
                         </td>
                     </tr>

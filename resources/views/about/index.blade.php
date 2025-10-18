@@ -100,10 +100,10 @@
         </div>
 
         <!-- Call to Action -->
-        <div class="text-center mt-5">
+        {{-- <div class="text-center mt-5">
             <h3>Join Us Today!</h3>
             <p class="lead text-muted">Start your fitness journey with B4U Fitness.</p>
             <a href="{{ route('register') }}" class="btn btn-primary btn-lg">Get Started</a>
-        </div>
+        </div> --}}
     </div>
 @endsection
