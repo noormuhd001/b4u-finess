@@ -17,10 +17,7 @@
             margin-bottom: 1rem;
         }
 
-        .table thead {
-            background: #f8f9fa;
-            font-weight: 600;
-        }
+     
 
         .leaderboard td strong {
             font-size: 1.1rem;
@@ -40,9 +37,9 @@
 
 @section('content')
     <div class="container my-4">
-        <h2 class="dashboard-title">
+        {{-- <h2 class="dashboard-title">
             <span class="material-symbols-outlined text-primary">speed</span> Dashboard
-        </h2>
+        </h2> --}}
 
         <div class="row g-4">
             {{-- Today’s Progress --}}

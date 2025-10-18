@@ -5,13 +5,24 @@
         <style>
             .same-height-img {
                 height: 400px;
-                /* Adjust this height as needed */
                 object-fit: cover;
-                /* Ensures the image covers the area without distortion */
                 width: 100%;
-                /* Makes it responsive */
                 border-radius: 0.5rem;
-                /* Optional: same as your rounded class */
+            }
+
+
+            .dark-mode h1,
+            .dark-mode h2,
+            .dark-mode h3,
+            .dark-mode h5,
+            .dark-mode h6 {
+                color: #fff;
+            }
+
+            .dark-mode p,
+            .dark-mode li,
+            .dark-mode .card-text {
+                color: #e0e0e0;
             }
         </style>
     @endpush
@@ -89,10 +100,10 @@
         </div>
 
         <!-- Call to Action -->
-        <div class="text-center mt-5">
+        {{-- <div class="text-center mt-5">
             <h3>Join Us Today!</h3>
             <p class="lead text-muted">Start your fitness journey with B4U Fitness.</p>
             <a href="{{ route('register') }}" class="btn btn-primary btn-lg">Get Started</a>
-        </div>
+        </div> --}}
     </div>
 @endsection

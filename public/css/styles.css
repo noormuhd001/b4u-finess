@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
+/* ==========================
+   🌐 Global Styles
+   ========================== */
 * {
     margin: 0;
     padding: 0;
@@ -7,6 +10,29 @@
     font-family: 'Montserrat', sans-serif;
 }
 
+body {
+    /* Base light mode text color (assuming standard HTML is light mode by default) */
+    color: #212529;
+}
+
+img {
+    border-radius: 10px;
+    max-width: 100%;
+    height: auto;
+}
+
+/* ==========================
+   💡 Light Mode Components
+   ========================== */
+
+/* Navbar & Footer Gradient Variables */
+:root {
+    --primary-gradient: linear-gradient(90deg, #B22222, #FF8C00);
+    --dark-gradient: linear-gradient(90deg, #000000, #858484);
+    --primary-color: #FF8C00;
+}
+
+/*
 .login-bg {
     display: flex;
     flex-direction: column;
@@ -44,10 +70,13 @@
     background: #FFFFFF;
     border-radius: 50%;
     margin: 1rem auto 3rem;
-}
+} */
 
+/* Navbar */
 .navbar-custom {
-    background: linear-gradient(90deg, #B22222, #FF8C00);
+    background-image: url(../img/background-image.jpg);
+    background-size: cover;
+    background-position: center;
     border-radius: 15px 50px;
     width: 100%;
     margin: 0 auto;
@@ -57,8 +86,9 @@
 .navbar-brand span {
     font-weight: 700;
     font-size: 1.2rem;
+    color: white;
+    /* Ensure brand is visible on gradient */
 }
-
 
 /* Dropdown */
 .dropdown-menu {
@@ -79,8 +109,11 @@
     color: #fff;
 }
 
+/* Footer */
 footer {
-    background: linear-gradient(90deg, #B22222, #FF8C00);
+    background-image: url(../img/background-image.jpg);
+    background-size: cover;
+    background-position: center;
     border-radius: 15px 50px;
     width: 100%;
     margin: 20px auto 0 auto;
@@ -89,15 +122,279 @@ footer {
     color: #fff;
 }
 
-img {
-    border-radius: 10px;
-    max-width: 100%;
-    height: auto;
+/* Profile Card */
+.profile-card {
+    max-width: 700px;
+    margin: auto;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    position: relative;
 }
 
-/* ---------------------- RESPONSIVE ---------------------- */
+.profile-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.profile-header img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.profile-header h2 {
+    margin-bottom: 0.25rem;
+    font-size: 1.5rem;
+}
+
+.profile-header p {
+    margin: 0;
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+.profile-info p {
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profile-info i,
+.material-symbols-outlined {
+    font-size: 20px;
+    min-width: 24px;
+    text-align: center;
+    /* color: var(--primary-color); */
+    color: white;
+}
+
+.edit-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid #007bff;
+    background: #FF8C00;
+    color: #007bff;
+    transition: all 0.3s;
+}
+
+.edit-btn:hover {
+    background: #007bff;
+    color: #fff;
+}
+
+.btn-save,
+.btn-cancel {
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.btn-save {
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+}
+
+.btn-cancel {
+    background: #6c757d;
+    color: #fff;
+    border: none;
+}
+
+
+/* ==========================
+   🌙 Global Dark Mode
+   ========================== */
+body.dark-mode {
+    background: #121212;
+    /* Deeper dark background for better contrast */
+    color: #e0e0e0;
+}
+
+/* Dark Mode - Links */
+body.dark-mode a {
+    color: #ff9800;
+    transition: color 0.3s ease;
+}
+
+body.dark-mode a:hover {
+    color: #ffeb3b;
+}
+
+/* Dark Mode - Cards */
+body.dark-mode .card,
+body.dark-mode .shadow-sm,
+.dark-mode .profile-card,
+.dark-mode .card .card-body {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    color: #f0f0f0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Dark Mode - Inputs */
+.dark-mode .form-control,
+.dark-mode input.form-control,
+.dark-mode select.form-control,
+.dark-mode textarea.form-control {
+    background-color: #2c2c2c;
+    color: #e0e0e0;
+    border: 1px solid #555;
+    transition: all 0.3s ease;
+}
+
+.dark-mode .form-control:focus,
+.dark-mode input.form-control:focus,
+.dark-mode select.form-control:focus,
+.dark-mode textarea.form-control:focus {
+    background-color: #2c2c2c;
+    color: #fff;
+    border-color: #ff9800;
+    box-shadow: 0 0 0 0.25rem rgba(255, 152, 0, 0.25);
+    /* Added box-shadow for accessibility */
+}
+
+/* Dark Mode - Buttons (General) */
+body.dark-mode .btn {
+    background: #2c2c2c;
+    color: #f0f0f0;
+    border: 1px solid #444;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .btn:hover {
+    /* background: #ff9800; */
+    background: black;
+    color: white;
+    border-color: #ff9800;
+}
+
+/* Dark Mode - Primary Button */
+.dark-mode .btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #121212;
+}
+
+.dark-mode .btn-primary:hover {
+    background-color: #e07b00;
+    border-color: #e07b00;
+    color: #fff;
+}
+
+/* Dark Mode - Navbar & Footer */
+body.dark-mode .navbar-custom,
+body.dark-mode footer {
+    background: var(--dark-gradient);
+    color: #fff;
+}
+
+/* Dark Mode - Navbar Links */
+body.dark-mode .navbar-custom .nav-link {
+    color: #f0f0f0;
+}
+
+body.dark-mode .navbar-custom .nav-link:hover {
+    color: #ffeb3b;
+}
+
+body.dark-mode .navbar-custom .nav-link.active {
+    border-bottom: 2px solid #ff9800;
+}
+
+/* Dark Mode - Dropdown */
+body.dark-mode .navbar-custom .dropdown-menu {
+    background: #1c1c1c;
+    border: 1px solid #333;
+}
+
+body.dark-mode .navbar-custom .dropdown-item:hover {
+    background: rgba(255, 152, 0, 0.2);
+    color: #fff;
+}
+
+/* Dark Mode - Profile Card */
+.dark-mode .profile-header h2,
+.dark-mode .profile-header p {
+    color: #fff;
+}
+
+.dark-mode .profile-info p {
+    color: #e0e0e0;
+}
+
+.dark-mode .profile-info .material-symbols-outlined,
+.dark-mode .material-symbols-outlined {
+    color: #ffa500;
+}
+
+.dark-mode .edit-btn {
+    border: 1px solid #ffa500;
+    color: #ffa500;
+    background-color: #1e1e1e;
+}
+
+/* Dark Mode - Save/Cancel Buttons */
+.dark-mode .btn-save {
+    background-color: #ffa500;
+    color: #121212;
+}
+
+.dark-mode .btn-cancel {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+/* Dark Mode - Table */
+.dark-mode table {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
+.dark-mode table th {
+    background-color: #2c2c2c;
+    color: #fff;
+}
+
+.dark-mode table tr:nth-child(even) {
+    background-color: #2c2c2c;
+}
+
+.dark-mode table tr:nth-child(odd) {
+    background-color: #1e1e1e;
+}
+
+/* Dark Mode - Utility */
+.dark-mode .text-muted {
+    color: #aaa !important;
+}
+
+.dark-mode ul li::marker {
+    color: var(--primary-color);
+}
+
+
+/* ==========================
+   📱 Responsive Styles
+   ========================== */
+
 @media (max-width: 768px) {
 
+    /* Better mobile handling for navbar/footer gradients */
     .navbar-custom,
     footer {
         border-radius: 0;
@@ -108,19 +405,20 @@ img {
         font-size: 1rem;
     }
 
-    .login-bg {
-        padding: 24px 12px;
-        animation: loginBgAnimationMob 10s linear infinite;
+    /* Profile Card Adjustments */
+    .profile-card {
+        padding: 1.5rem;
     }
 
-    .login-card .logo-circle {
-        width: 200px;
-        height: 200px;
-        padding: 16px;
+    .profile-header img {
+        width: 100px;
+        height: 100px;
     }
 
-    .login-card {
-        padding: 2rem;
+    .edit-btn {
+        top: 10px;
+        right: 10px;
+        padding: 0.4rem 0.5rem;
     }
 }
 
@@ -137,34 +435,5 @@ img {
 
     .dropdown-menu {
         min-width: 140px;
-    }
-}
-
-/* ---------------------- ANIMATIONS ---------------------- */
-@keyframes loginBgAnimation {
-    0% {
-        background-size: 100%;
-    }
-
-    50% {
-        background-size: 125%;
-    }
-
-    100% {
-        background-size: 100%;
-    }
-}
-
-@keyframes loginBgAnimationMob {
-    0% {
-        background-position: center;
-    }
-
-    50% {
-        background-position: center 30%;
-    }
-
-    100% {
-        background-position: center;
     }
 }

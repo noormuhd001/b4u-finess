@@ -176,15 +176,23 @@ class ProgressController extends Controller
     }
 
 
-    public function export()
+    public function export(Request $request)
     {
         try {
             $user = Auth::user();
 
-            // Get all progress entries for the user
-            $progressList = Progress::where('user_id', $user->id)
-                ->with(['logs.workout']) // eager load logs and workouts
-                ->get();
+            $query = Progress::where('user_id', $user->id)
+                ->with(['logs.workout']);
+
+            if ($request->filled('start_date')) {
+                $query->whereDate('workout_on', '>=', $request->start_date);
+            }
+
+            if ($request->filled('end_date')) {
+                $query->whereDate('workout_on', '<=', $request->end_date);
+            }
+
+            $progressList = $query->get();
 
             $pdf = Pdf::loadView('progress.export_pdf', [
                 'user' => $user,
@@ -192,9 +200,8 @@ class ProgressController extends Controller
             ]);
 
             return $pdf->download('progress_report.pdf');
-        } catch (Exception $e) {
-            report($e);
-            return back()->with('error', 'Something went wrong. Please try again.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to export: ' . $e->getMessage());
         }
     }
 

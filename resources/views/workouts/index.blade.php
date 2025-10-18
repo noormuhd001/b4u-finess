@@ -9,7 +9,7 @@
             @foreach ($workoutsByPart as $bodyPart => $partWorkouts)
                 <li class="nav-item" role="presentation">
                     <button class="nav-link @if ($loop->first) active @endif" id="tab-{{ $loop->index }}"
-                        data-bs-toggle="tab" data-bs-target="#part-{{ $loop->index }}" type="button" role="tab">
+                        data-bs-toggle="tab" data-bs-target="#part-{{ $loop->index }}" type="button" style="color: #ff9800" role="tab">
                         {{ $bodyPart }}
                     </button>
                 </li>

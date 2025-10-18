@@ -2,7 +2,7 @@
     <div class="container">
         <!-- Logo -->
         <a class="navbar-brand d-flex align-items-center" href="{{ route('dashboard') }}">
-            <img src="{{ asset('img/logo.png') }}" alt="Logo" class="me-2" style="width: 60px;">
+            <img src="{{ asset('img/logo-rm.png') }}" alt="Logo" class="me-2" style="width: 70px;">
             <span class="fw-bold fs-5">B4U Fitness</span>
         </a>
 
@@ -44,7 +44,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="{{ route('profile.index') }}">Profile</a></li>
-                            <li><a class="dropdown-item" href="#">Settings</a></li>
+                            <li><a class="dropdown-item" href="{{route('settings.index')}}">Settings</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

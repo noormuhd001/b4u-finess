@@ -2,72 +2,17 @@
 
 @push('styles')
     <style>
-        .profile-card {
-            max-width: 700px;
-            margin: auto;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            background: #fff;
-            position: relative;
+        .d-flex.justify-content-end.gap-2 {
+            margin-top: 1rem;
         }
 
-        .profile-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .profile-header img {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 4px solid #FF8C00;
-            margin-bottom: 1rem;
-        }
-
-        .profile-header h2 {
-            margin-bottom: 0.5rem;
-        }
-
-        .profile-info i {
-            width: 20px;
-        }
-
-        .profile-info p {
-            margin-bottom: 0.75rem;
-            font-size: 1rem;
-        }
-
-        .edit-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            cursor: pointer;
-            border-radius: 50%;
-            padding: 0.5rem 0.6rem;
-        }
-
-        .btn-save {
-            background: #FF8C00;
-            color: #fff;
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
-        }
-
-        .btn-cancel {
-            background: #6c757d;
-            color: #fff;
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
-        }
-
-        .material-symbols-outlined {
+        #editMode .material-symbols-outlined {
             font-variation-settings:
                 'FILL' 0,
                 'wght' 400,
                 'GRAD' 0,
-                'opsz' 24
+                'opsz' 24;
+            color: #007bff;
         }
     </style>
 @endpush
