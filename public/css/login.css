@@ -83,20 +83,45 @@ body {
     width: 100%;
     max-width: 360px;
 }
-
-/* Responsive */
 @media (max-width: 768px) {
     .login-wrapper {
         flex-direction: column;
         height: auto;
+        width: 95%;
+        margin: 40px auto;
+        border-radius: 15px;
+    }
+
+    .login-left {
+        order: 2;
+        padding: 2rem 1.5rem;
+        text-align: center;
+    }
+
+    .login-right {
+        order: 1;
+        height: 180px;
+        background: linear-gradient(135deg, #8e24aa, #ff4081);
+    }
+
+    .login-image {
+        display: none; /* Hide large image if present */
+    }
+
+    .login-card,
+    .forgot-card {
+        max-width: 100%;
     }
 
     .forgot-wrapper {
         flex-direction: column;
         height: auto;
+        padding: 2rem 1rem;
     }
 
-    .login-right {
-        height: 200px;
+    .btn-dark {
+        width: 100%;
     }
 }
+
+

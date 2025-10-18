@@ -31,6 +31,7 @@ img {
     --dark-gradient: linear-gradient(90deg, #000000, #858484);
     --primary-color: #FF8C00;
 }
+
 /*
 .login-bg {
     display: flex;
@@ -73,7 +74,9 @@ img {
 
 /* Navbar */
 .navbar-custom {
-    background: var(--primary-gradient);
+    background-image: url(../img/background-image.jpg);
+    background-size: cover;
+    background-position: center;
     border-radius: 15px 50px;
     width: 100%;
     margin: 0 auto;
@@ -108,7 +111,9 @@ img {
 
 /* Footer */
 footer {
-    background: var(--primary-gradient);
+    background-image: url(../img/background-image.jpg);
+    background-size: cover;
+    background-position: center;
     border-radius: 15px 50px;
     width: 100%;
     margin: 20px auto 0 auto;
