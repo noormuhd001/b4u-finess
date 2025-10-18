@@ -2,7 +2,7 @@
     <div class="container">
         <!-- Logo -->
         <a class="navbar-brand d-flex align-items-center" href="{{ route('dashboard') }}">
-            <img src="{{ asset('img/logo.png') }}" alt="Logo" class="me-2" style="width: 60px;">
+            <img src="{{ asset('img/logo-rm.png') }}" alt="Logo" class="me-2" style="width: 70px;">
             <span class="fw-bold fs-5">B4U Fitness</span>
         </a>
 

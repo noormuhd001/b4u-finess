@@ -1,112 +1,102 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
 
-/* ==========================
-   🌐 Global Styles
-   ========================== */
-* {
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #fce4ec;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: 'Montserrat', sans-serif;
-}
-
-.login-bg {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    background-image: url(../img/login-background.jpg);
+    background-image: url(../img/background-image.jpg);
     background-size: cover;
     background-position: center;
-    padding: 24px;
     animation: loginBgAnimation 30s linear infinite;
     background-repeat: no-repeat;
-    color: white;
 }
 
-.login-bg .container-fluid {
-    max-width: 1440px !important;
+.login-container {
+    width: 100%;
+    height: 100vh;
+    background-color: #fce4ec;
 }
 
-.login-card {
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid #FFFFFF;
-    box-shadow: 0px 12px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 24px;
-    padding: 3rem;
-    max-width: 454px;
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-}
-
-.login-card .logo-circle {
+.login-wrapper {
     display: flex;
+    width: 90%;
+    max-width: 1100px;
+    height: 80vh;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+/* Left Section */
+.login-left {
+    flex: 1;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
     align-items: center;
-    padding: 24px;
-    width: 280px;
-    height: 280px;
-    background: #FFFFFF;
-    border-radius: 50%;
-    margin: 1rem auto 3rem;
+    padding: 2rem 3rem;
+}
+
+/* Right Section */
+.login-right {
+    flex: 1;
+    background: linear-gradient(120deg, #8e24aa, #ff4081);
+    position: relative;
+}
+
+.login-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Card Styling */
+.login-card {
+    width: 100%;
+    max-width: 380px;
+}
+
+.btn-dark {
+    background-color: #000;
+    border: none;
+    padding: 10px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-dark:hover {
+    background-color: #333;
 }
 
 
+
+.forgot-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.forgot-card {
+    width: 100%;
+    max-width: 360px;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-
-    /* Login Page Adjustments */
-    .login-bg {
-        padding: 24px 12px;
-        animation: loginBgAnimationMob 10s linear infinite;
+    .login-wrapper {
+        flex-direction: column;
+        height: auto;
     }
 
-    .login-card {
-        padding: 2rem;
+    .forgot-wrapper {
+        flex-direction: column;
+        height: auto;
     }
 
-    .login-card .logo-circle {
-        width: 200px;
+    .login-right {
         height: 200px;
-        padding: 16px;
-    }
-
-    .login-card {
-        padding: 2rem;
-    }
-}
-
-@media (max-width: 500px) {
-
-    .login-card {
-        padding: 1.5rem;
-    }
-}
-
-/* ==========================
-   ✨ Animations
-   ========================== */
-@keyframes loginBgAnimation {
-    0% {
-        background-size: 100%;
-    }
-
-    50% {
-        background-size: 125%;
-    }
-
-    100% {
-        background-size: 100%;
-    }
-}
-
-@keyframes loginBgAnimationMob {
-    0% {
-        background-position: center;
-    }
-
-    50% {
-        background-position: center 30%;
-    }
-
-    100% {
-        background-position: center;
     }
 }
