@@ -31,7 +31,7 @@ img {
     --dark-gradient: linear-gradient(90deg, #000000, #858484);
     --primary-color: #FF8C00;
 }
-
+/*
 .login-bg {
     display: flex;
     flex-direction: column;
@@ -69,7 +69,7 @@ img {
     background: #FFFFFF;
     border-radius: 50%;
     margin: 1rem auto 3rem;
-}
+} */
 
 /* Navbar */
 .navbar-custom {
@@ -400,26 +400,6 @@ body.dark-mode .navbar-custom .dropdown-item:hover {
         font-size: 1rem;
     }
 
-    /* Login Page Adjustments */
-    .login-bg {
-        padding: 24px 12px;
-        animation: loginBgAnimationMob 10s linear infinite;
-    }
-
-    .login-card {
-        padding: 2rem;
-    }
-
-    .login-card .logo-circle {
-        width: 200px;
-        height: 200px;
-        padding: 16px;
-    }
-
-    .login-card {
-        padding: 2rem;
-    }
-
     /* Profile Card Adjustments */
     .profile-card {
         padding: 1.5rem;
@@ -450,40 +430,5 @@ body.dark-mode .navbar-custom .dropdown-item:hover {
 
     .dropdown-menu {
         min-width: 140px;
-    }
-
-    .login-card {
-        padding: 1.5rem;
-    }
-}
-
-/* ==========================
-   ✨ Animations
-   ========================== */
-@keyframes loginBgAnimation {
-    0% {
-        background-size: 100%;
-    }
-
-    50% {
-        background-size: 125%;
-    }
-
-    100% {
-        background-size: 100%;
-    }
-}
-
-@keyframes loginBgAnimationMob {
-    0% {
-        background-position: center;
-    }
-
-    50% {
-        background-position: center 30%;
-    }
-
-    100% {
-        background-position: center;
     }
 }
