@@ -1,34 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
     <title>Workout Progress Report</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
     <style>
         body {
             font-family: 'Roboto', sans-serif;
             font-size: 13px;
             color: #333;
-            margin: 20px;
-            background: #FFF8E6; /* near-white warm background */
+            margin: 25px;
+            background-color: #fff;
         }
 
         h1 {
             text-align: center;
-            margin-bottom: 20px;
-            color: #FF5C00; /* deep orange/red-orange */
+            margin-bottom: 25px;
+            color: #FF5C00;
             font-size: 24px;
             letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            font-size: 16px;
+            color: #FF5C00;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #FF5C00;
+            display: inline-block;
+            padding-bottom: 4px;
         }
 
         .user-info {
-            margin-bottom: 25px;
-            padding: 15px;
+            background: #FFF4E0;
+            border: 1px solid #FFB56B;
             border-radius: 8px;
-            background: #FF8728; /* bright orange */
-            border: 1px solid #FF5C00; /* deep orange border */
-            color: #fff;
+            padding: 15px 20px;
+            margin-bottom: 25px;
         }
 
         .user-info p {
@@ -37,9 +47,9 @@
         }
 
         .user-info strong {
-            width: 100px;
             display: inline-block;
-            color: #FFC37D; /* light orange highlight */
+            width: 100px;
+            color: #FF5C00;
         }
 
         table {
@@ -48,57 +58,74 @@
             margin-bottom: 25px;
         }
 
-        table, th, td {
-            border: 1px solid #FF8728; /* bright orange border */
-        }
-
-        th, td {
-            padding: 8px 6px;
+        th,
+        td {
+            border: 1px solid #FFB56B;
+            padding: 8px;
             text-align: center;
         }
 
         th {
-            background: #FF5C00; /* deep orange */
-            color: #FFF8E6; /* near-white text */
+            background: #FF5C00;
+            color: #FFF8E6;
             font-weight: 500;
         }
 
         tbody tr:nth-child(even) {
-            background: #FFC37D; /* light orange for even rows */
+            background: #FFF4E0;
         }
 
         .workout-table {
             width: 100%;
-            margin-top: 5px;
-            border: 1px solid #FF8728;
+            border-collapse: collapse;
+            margin-top: 6px;
+        }
+
+        .workout-table th,
+        .workout-table td {
+            border: 1px solid #FFB56B;
+            padding: 4px;
+            font-size: 12px;
         }
 
         .workout-table th {
-            background: #FF8728; /* bright orange */
-            color: #FFF8E6; /* near-white */
-            font-size: 12px;
-            padding: 4px;
-        }
-
-        .workout-table td {
-            font-size: 12px;
-            padding: 4px;
+            background: #FF8728;
+            color: #FFF8E6;
         }
 
         .footer {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 40px;
             font-size: 11px;
-            color: #FF5C00; /* deep orange */
+            color: #FF5C00;
+            border-top: 1px solid #FFB56B;
+            padding-top: 8px;
+        }
+
+        /* Ensure clean page breaks for PDF */
+        .page-break {
+            page-break-after: always;
+        }
+
+        /* Optional logo styling */
+        .logo {
+            display: block;
+            margin: 0 auto 20px;
+            max-width: 120px;
         }
     </style>
 </head>
 
 <body>
+    @if (isset($logoPath))
+        <img src="{{ $logoPath }}" alt="Logo" class="logo">
+    @endif
+
     <h1>Workout Progress Report</h1>
 
-    <!-- User Info Section -->
+    <!-- User Info -->
     <div class="user-info">
+        <h2 class="section-title">User Information</h2>
         <p><strong>Name:</strong> {{ $user->name }}</p>
         <p><strong>Email:</strong> {{ $user->email }}</p>
         <p><strong>Gender:</strong> {{ config('constant.gender.' . $user->gender) }}</p>
@@ -107,7 +134,8 @@
         <p><strong>Goal:</strong> {{ config('constant.goal.' . $user->goal) }}</p>
     </div>
 
-    <!-- Progress Section -->
+    <!-- Progress Table -->
+    <h2 class="section-title">Progress Summary</h2>
     <table>
         <thead>
             <tr>
