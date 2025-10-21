@@ -199,15 +199,28 @@
                 <div id="workouts-wrapper">
                     <div class="workout-item position-relative">
                         <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="form-label">Workout</label>
-                                <select name="workouts_completed[0][workout_id]" class="form-select" required>
-                                    <option value="">-- Select Workout --</option>
-                                    @foreach ($workouts as $workout)
-                                        <option value="{{ $workout->id }}">{{ $workout->workout_name }}</option>
+                            <div class="col-md-2">
+                                <label class="form-label">Workout Part</label>
+                                <select name="workouts_completed[0][part]" class="form-select workout-part" required>
+                                    <option value="">-- Select Part --</option>
+                                    @foreach ($parts as $part)
+                                        <option value="{{ $part }}">{{ ucfirst($part) }}</option>
                                     @endforeach
                                 </select>
                             </div>
+
+                            <div class="col-md-2">
+                                <label class="form-label">Workout</label>
+                                <select name="workouts_completed[0][workout_id]" class="form-select workout-select"
+                                    required>
+                                    <option value="">-- Select Workout --</option>
+                                    @foreach ($workouts as $workout)
+                                        <option value="{{ $workout->id }}" data-part="{{ $workout->body_part }}">
+                                            {{ $workout->workout_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
                             <div class="col-md-2">
                                 <label class="form-label">Sets</label>
                                 <input type="number" name="workouts_completed[0][sets]" class="form-control" min="1"
@@ -237,7 +250,7 @@
         @endif
 
         {{-- Track Workout Button --}}
-        <a href="{{ route('progress.track') }}" class="btn mt-2"  style="background-color: #0056b3">
+        <a href="{{ route('progress.track') }}" class="btn mt-2" style="background-color: #0056b3">
             <span class="material-symbols-outlined">monitoring</span>
             Track Workout
         </a>
@@ -248,25 +261,38 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            @if (session('earned_badges'))
-                var badgeModal = new bootstrap.Modal(document.getElementById('badgeModal'));
-                badgeModal.show();
-            @endif
             let workoutIndex = 1;
             const addWorkoutBtn = document.getElementById('addWorkoutBtn');
             const wrapper = document.getElementById('workouts-wrapper');
+
+            function filterWorkouts(selectItem) {
+                const part = selectItem.value;
+                const workoutSelect = selectItem.closest('.workout-item').querySelector('.workout-select');
+
+                workoutSelect.querySelectorAll('option').forEach(option => {
+                    if (option.value === "") return;
+                    option.style.display = (option.dataset.part === part) ? 'block' : 'none';
+                });
+
+                // Reset selection
+                workoutSelect.value = "";
+            }
+
+            wrapper.addEventListener('change', function(e) {
+                if (e.target.classList.contains('workout-part')) {
+                    filterWorkouts(e.target);
+                }
+            });
 
             if (addWorkoutBtn) {
                 addWorkoutBtn.addEventListener('click', function() {
                     let newItem = document.querySelector('.workout-item').cloneNode(true);
 
-                    // Update input names and reset values
                     newItem.querySelectorAll('input, select').forEach(el => {
                         el.name = el.name.replace(/\d+/, workoutIndex);
                         el.value = '';
                     });
 
-                    // Show remove button for cloned item
                     let removeBtn = newItem.querySelector('.removeWorkoutBtn');
                     removeBtn.style.display = 'block';
                     removeBtn.addEventListener('click', function() {

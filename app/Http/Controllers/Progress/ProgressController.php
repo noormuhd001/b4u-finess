@@ -23,6 +23,7 @@ class ProgressController extends Controller
     {
         try {
             $progress = Progress::where('user_id', Auth::id())->latest()->first();
+            $parts = Workout::select('body_part')->distinct()->pluck('body_part');
             $workouts = Workout::get();
 
             $todaysLogs = null;
@@ -34,7 +35,8 @@ class ProgressController extends Controller
                     $totalKcal = $progress->avg_kcal_burned;
                 }
             }
-            return view('progress.index', compact('progress', 'workouts', 'todaysLogs', 'totalKcal'));
+
+            return view('progress.index', compact('progress', 'parts', 'workouts', 'todaysLogs', 'totalKcal'));
         } catch (Exception $e) {
             report($e);
             return back()->with('error', 'Something went wrong. Please try again.');
