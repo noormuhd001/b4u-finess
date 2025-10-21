@@ -22,7 +22,7 @@ Route::get('reset-password/{token}', [AuthController::class, 'resetPassword'])->
 Route::post('update-password', [AuthController::class, 'updatePassword'])->name('updatePassword');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::prefix('')->middleware('auth')->group(function () {
+Route::prefix('')->middleware('auth', 'preventHistory')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/workout', [WorkoutController::class, 'index'])->name('workout');
     Route::get('/about-us', [AboutUsController::class, 'index'])->name('about-us');
