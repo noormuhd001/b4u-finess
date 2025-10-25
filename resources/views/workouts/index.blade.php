@@ -9,7 +9,8 @@
             @foreach ($workoutsByPart as $bodyPart => $partWorkouts)
                 <li class="nav-item" role="presentation">
                     <button class="nav-link @if ($loop->first) active @endif" id="tab-{{ $loop->index }}"
-                        data-bs-toggle="tab" data-bs-target="#part-{{ $loop->index }}" type="button" style="color: #ff9800" role="tab">
+                        data-bs-toggle="tab" data-bs-target="#part-{{ $loop->index }}" type="button" style="color: #ff9800"
+                        role="tab">
                         {{ $bodyPart }}
                     </button>
                 </li>
@@ -27,8 +28,9 @@
                             <div class="col-md-3 mb-4">
                                 <div class="card h-100 shadow-sm" data-bs-toggle="modal"
                                     data-bs-target="#workoutModal{{ $workout->id }}" style="cursor:pointer;">
-                                    <img src="{{ $workout->image }}" class="card-img-top"
+                                    <img src="{{ asset($workout->image) }}" class="card-img-top"
                                         alt="{{ $workout->workout_name }}">
+
                                     <div class="card-body">
                                         <h5 class="card-title">{{ $workout->workout_name }}</h5>
                                         <p class="mb-1">
@@ -50,7 +52,7 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <img src="{{ $workout->image }}" class="img-fluid mb-3">
+                                            <img src="{{ asset($workout->image) }}" class="img-fluid mb-3">
                                             <p><span class="material-symbols-outlined text-primary">fitness_center</span>
                                                 Body Part: {{ $workout->body_part }}</p>
                                             <p><span
