@@ -259,6 +259,14 @@
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    @if (session('earned_badges'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var badgeModal = new bootstrap.Modal(document.getElementById('badgeModal'));
+                badgeModal.show();
+            });
+        </script>
+    @endif
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             let workoutIndex = 1;

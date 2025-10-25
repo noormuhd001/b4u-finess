@@ -126,7 +126,7 @@ class ProgressController extends Controller
                     if ($strengthBadge && !$user->badges()->where('badge_id', $strengthBadge->id)->exists()) {
                         $badgeIdsToAttach[] = $strengthBadge->id;
                     }
-                    break; // only award once per progress
+                    break;
                 }
             }
 
@@ -134,18 +134,17 @@ class ProgressController extends Controller
             if (!empty($badgeIdsToAttach)) {
                 $user->badges()->attach($badgeIdsToAttach);
 
-                // Get badge details (icon, name, description)
                 $earnedBadges = Badges::whereIn('id', $badgeIdsToAttach)
-                    ->select('name', 'description', 'icon') // make sure your table has `icon` column
+                    ->select('name', 'description', 'icon')
                     ->get();
 
-                return back()->with([
+                return redirect()->route('progress.index')->with([
                     'success' => 'Workout added successfully!',
-                    'earned_badges' => $earnedBadges
+                    'earned_badges' => $earnedBadges,
                 ]);
             }
 
-            return back()->with('success', 'Workout added successfully!');
+            return redirect()->route('progress.index')->with('success', 'Workout added successfully!');
         } catch (\Exception $e) {
             report($e);
             return back()->with('error', 'Something went wrong: ' . $e->getMessage());
