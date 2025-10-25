@@ -23,7 +23,17 @@ class UpdatePasswordRequest extends FormRequest
     {
         return [
             'token' => 'required|string',
-            'password' => 'required|string|min:6|confirmed', 
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'max:64',
+                'regex:/[A-Z]/',
+                'regex:/[a-z]/',
+                'regex:/[0-9]/',
+                'regex:/[@$!%*#?&]/',
+                'confirmed'
+            ],
         ];
     }
 
@@ -33,6 +43,12 @@ class UpdatePasswordRequest extends FormRequest
         return [
             'password.confirmed' => 'Password confirmation does not match.',
             'password.min' => 'Password must be at least 8 characters.',
+            'password.required' => 'Password is required.',
+            'password.string' => 'Password must be a valid string.',
+            'password.min' => 'Password must be at least 8 characters.',
+            'password.max' => 'Password cannot be longer than 64 characters.',
+            'password.regex' => 'Password must include at least one uppercase letter, one lowercase letter, one number, and one special character.',
+            'password.confirmed' => 'Password confirmation does not match.',
         ];
     }
 }

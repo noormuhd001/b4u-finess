@@ -37,6 +37,8 @@ body {
     justify-content: center;
     align-items: center;
     padding: 2rem 3rem;
+            overflow: scroll;
+
 }
 
 /* Right Section */
