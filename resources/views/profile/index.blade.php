@@ -36,7 +36,7 @@
             </div>
 
             <!-- View Mode -->
-            <div id="viewMode">
+            <div id="viewMode" class="{{ $errors->any() ? 'd-none' : '' }}">
                 <div class="profile-info">
                     <p><span class="material-symbols-outlined text-info">mail</span> Email: {{ $user->email }}</p>
                     <p><span class="material-symbols-outlined text-warning">person</span> Gender:
@@ -49,17 +49,25 @@
             </div>
 
             <!-- Edit Mode -->
-            <div id="editMode" class="d-none">
+            <div id="editMode" class="{{ $errors->any() ? '' : 'd-none' }}">
                 <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $user->id }}">
 
                     <!-- Profile Photo -->
                     <div class="mb-3 ">
-                        <label class="form-label"><span class="material-symbols-outlined">photo_camera</span> Profile
-                            Photo</label>
-                        <input type="file" name="profile_picture" class="form-control" accept="image/*"
+                        <label class="form-label">
+                            <span class="material-symbols-outlined">photo_camera</span> Profile Photo
+                        </label>
+                        <input type="file" name="profile_picture"
+                            class="form-control @error('profile_picture') is-invalid @enderror" accept="image/*"
                             onchange="previewImage(event)">
+
+                        @error('profile_picture')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
 
                     <!-- Name -->
