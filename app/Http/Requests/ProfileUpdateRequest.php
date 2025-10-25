@@ -33,6 +33,7 @@ class ProfileUpdateRequest extends FormRequest
             ],
             'height' => 'nullable|numeric|min:50|max:300',
             'weight' => 'nullable|numeric|min:20|max:500',
+            'profile_picture' =>'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 
@@ -54,6 +55,9 @@ class ProfileUpdateRequest extends FormRequest
             'height.numeric' => 'Height must be a number.',
             'weight.required' => 'Please enter your weight in kg.',
             'weight.numeric' => 'Weight must be a number.',
+            'profile_picture.image' => 'Profile picture must be an image.',
+            'profile_picture.mimes' => 'Profile picture must be a file of type: jpeg, png, jpg, gif.',
+            'profile_picture.max' => 'Profile picture size must not exceed 2MB.',
         ];
     }
 }
