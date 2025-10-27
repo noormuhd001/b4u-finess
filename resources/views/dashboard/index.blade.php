@@ -17,7 +17,7 @@
             margin-bottom: 1rem;
         }
 
-     
+
 
         .leaderboard td strong {
             font-size: 1.1rem;
@@ -27,6 +27,11 @@
             vertical-align: middle;
             margin-right: 6px;
             font-size: 22px;
+            color: #FF8C00;
+        }
+
+        nav .material-symbols-outlined {
+            color: white;
         }
     </style>
 @endpush
@@ -101,7 +106,7 @@
             {{-- Leaderboard --}}
             <div class="col-12">
                 <div class="card p-4">
-                    <h4 class="text-success mb-3">
+                    <h4 class="mb-3">
                         <span class="material-symbols-outlined">trophy</span>
                         Top Lifts Leaderboard
                     </h4>
@@ -140,85 +145,83 @@
             </div>
         </div>
 
-        {{-- Earned Badges --}}
-        @if ($earnedBadges->count() > 0)
-            <div class="col-12 mt-3">
-                <div class="card p-4">
-                    <h4 class="text-primary mb-3">
-                        <span class="material-symbols-outlined">military_tech</span>
-                        Your Badges
-                    </h4>
-                    <div class="d-flex flex-wrap gap-4">
-                        @foreach ($earnedBadges as $badge)
-                            <div class="text-center">
-                                <img src="{{ asset($badge->icon) }}" alt="{{ $badge->name }}" class="img-fluid mb-2"
-                                    style="max-width:80px;">
-                                <h6 class="fw-bold">{{ $badge->name }}</h6>
-                                <p class="text-muted small mb-0">{{ $badge->description }}</p>
-                            </div>
-                        @endforeach
-                    </div>
+        {{-- All Badges Display --}}
+        <div class="col-12 mt-3">
+            <div class="card p-4">
+                <h4 class="mb-3">
+                    <span class="material-symbols-outlined">military_tech</span>
+                    Badges
+                </h4>
+
+                <div class="d-flex flex-wrap gap-4 justify-content-start">
+                    @foreach ($allBadges as $badge)
+                        @php
+                            $isEarned = $earnedBadges->contains('id', $badge->id);
+                        @endphp
+
+                        <div class="text-center" style="width: 120px;">
+                            <img src="{{ asset($badge->icon) }}"
+                                class="img-fluid mb-2 {{ $isEarned ? 'badge-icon' : 'badge-icon badge-locked' }}"
+                                style="max-width:80px;">
+
+                            <h6 class="fw-bold {{ $isEarned ? 'text-dark' : 'text-muted' }}">
+                                {{ $badge->name }}
+                            </h6>
+                            <p class="text-muted small mb-0">{{ $badge->description }}</p>
+                        </div>
+                    @endforeach
                 </div>
             </div>
-        @else
-            <div class="col-12 mt-3">
-                <div class="card p-4 text-center text-muted">
-                    <span class="material-symbols-outlined">hourglass_empty</span>
-                    No badges earned yet — keep going!
-                </div>
-            </div>
-        @endif
+        </div>
 
-    </div>
-
-    {{-- Chart Script --}}
-    @push('scripts')
-        <script>
-            const ctx = document.getElementById('weightChart').getContext('2d');
-            const weightChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: @json($dates),
-                    datasets: [{
-                        label: 'Weight (kg)',
-                        data: @json($weights),
-                        borderColor: '#FF5733',
-                        backgroundColor: 'rgba(255, 87, 51, 0.2)',
-                        tension: 0.3,
-                        fill: true,
-                        pointRadius: 5,
-                        pointHoverRadius: 7
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const prev = context.dataIndex > 0 ? context.dataset.data[context.dataIndex -
-                                        1] : null;
-                                    const curr = context.parsed.y;
-                                    let diff = '';
-                                    if (prev !== null) {
-                                        const change = (curr - prev).toFixed(1);
-                                        diff = change > 0 ? ` (+${change} kg)` : ` (${change} kg)`;
+        {{-- Chart Script --}}
+        @push('scripts')
+            <script>
+                const ctx = document.getElementById('weightChart').getContext('2d');
+                const weightChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: @json($dates),
+                        datasets: [{
+                            label: 'Weight (kg)',
+                            data: @json($weights),
+                            borderColor: '#FF5733',
+                            backgroundColor: 'rgba(255, 87, 51, 0.2)',
+                            tension: 0.3,
+                            fill: true,
+                            pointRadius: 5,
+                            pointHoverRadius: 7
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const prev = context.dataIndex > 0 ? context.dataset.data[context.dataIndex -
+                                            1] : null;
+                                        const curr = context.parsed.y;
+                                        let diff = '';
+                                        if (prev !== null) {
+                                            const change = (curr - prev).toFixed(1);
+                                            diff = change > 0 ? ` (+${change} kg)` : ` (${change} kg)`;
+                                        }
+                                        return `Weight: ${curr} kg${diff}`;
                                     }
-                                    return `Weight: ${curr} kg${diff}`;
                                 }
+                            },
+                            legend: {
+                                display: true
                             }
                         },
-                        legend: {
-                            display: true
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: false
+                        scales: {
+                            y: {
+                                beginAtZero: false
+                            }
                         }
                     }
-                }
-            });
-        </script>
-    @endpush
-@endsection
+                });
+            </script>
+        @endpush
+    @endsection

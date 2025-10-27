@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dahboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Badges;
 use App\Models\BadgeUser;
 use App\Models\Progress;
 use App\Models\ProgressLog;
@@ -58,9 +59,10 @@ class DashboardController extends Controller
                 ->where('badge_users.user_id', $userId)
                 ->select('badges.*')
                 ->get();
+            $allBadges = Badges::all();
             // dd($earnedBadges);
 
-            return view('dashboard.index', compact('todayProgress', 'dates', 'weights', 'leaderboard', 'userData', 'earnedBadges'));
+            return view('dashboard.index', compact('todayProgress', 'dates', 'weights', 'leaderboard', 'userData', 'earnedBadges', 'allBadges'));
         } catch (Exception $e) {
             report($e);
             return back()->with('error', 'Something went wrong. Please try again.');
