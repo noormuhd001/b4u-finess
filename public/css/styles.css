@@ -32,46 +32,6 @@ img {
     --primary-color: #FF8C00;
 }
 
-/*
-.login-bg {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    background-image: url(../img/login-background.jpg);
-    background-size: cover;
-    background-position: center;
-    padding: 24px;
-    animation: loginBgAnimation 30s linear infinite;
-    background-repeat: no-repeat;
-    color: white;
-}
-
-.login-bg .container-fluid {
-    max-width: 1440px !important;
-}
-
-.login-card {
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid #FFFFFF;
-    box-shadow: 0px 12px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 24px;
-    padding: 3rem;
-    max-width: 454px;
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-}
-
-.login-card .logo-circle {
-    display: flex;
-    align-items: center;
-    padding: 24px;
-    width: 280px;
-    height: 280px;
-    background: #FFFFFF;
-    border-radius: 50%;
-    margin: 1rem auto 3rem;
-} */
-
 /* Navbar */
 .navbar-custom {
     background-image: url(../img/background-image.jpg);
@@ -214,6 +174,23 @@ footer {
     color: #fff;
     border: none;
 }
+
+.badge-locked {
+    position: relative;
+    filter: grayscale(100%);
+    opacity: 0.6;
+}
+
+.badge-locked::after {
+    content: "🔒";
+    position: absolute;
+    top: 35%;
+    left: 45%;
+    font-size: 22px;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+
 
 
 /* ==========================

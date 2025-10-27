@@ -66,13 +66,14 @@ class ProgressController extends Controller
                 return back()->with('error', 'You already have a progress entry for this date.');
             }
 
-            $totalKcal = 0;
-
+            // Create progress entry
             $progress = Progress::create([
                 'user_id' => $userId,
                 'current_weight' => $request->weight,
                 'workout_on' => $request->workout_on,
             ]);
+
+            $totalKcal = 0;
 
             foreach ($request->workouts_completed as $log) {
                 $workout = Workout::find($log['workout_id']);
@@ -96,48 +97,12 @@ class ProgressController extends Controller
                 ]);
             }
 
-            $progress->update([
-                'avg_kcal_burned' => $totalKcal,
-            ]);
+            $progress->update(['avg_kcal_burned' => $totalKcal]);
 
-            $user = User::findOrFail($userId);
-            $badgeIdsToAttach = [];
+            //Handle badges
+            $earnedBadges = $this->checkAndAssignBadges($userId, $request->workouts_completed);
 
-            // 1. First Workout Badge
-            $firstBadge = Badges::where('name', 'First Workout')->first();
-            if ($firstBadge && !$user->badges()->where('badge_id', $firstBadge->id)->exists()) {
-                $badgeIdsToAttach[] = $firstBadge->id;
-            }
-
-            // 2. Consistency Badge (7-day streak)
-            $streakCount = Progress::where('user_id', $userId)
-                ->where('workout_on', '>=', now()->subDays(7))
-                ->count();
-
-            $consistencyBadge = Badges::where('name', 'Consistency King')->first();
-            if ($consistencyBadge && $streakCount >= 7 && !$user->badges()->where('badge_id', $consistencyBadge->id)->exists()) {
-                $badgeIdsToAttach[] = $consistencyBadge->id;
-            }
-
-            // 3. Strength Beast Badge (>100kg in any single workout)
-            foreach ($request->workouts_completed as $log) {
-                if (($log['weight'] ?? 0) >= 100) {
-                    $strengthBadge = Badges::where('name', 'Strength Beast')->first();
-                    if ($strengthBadge && !$user->badges()->where('badge_id', $strengthBadge->id)->exists()) {
-                        $badgeIdsToAttach[] = $strengthBadge->id;
-                    }
-                    break;
-                }
-            }
-
-            // Attach all badges at once
-            if (!empty($badgeIdsToAttach)) {
-                $user->badges()->attach($badgeIdsToAttach);
-
-                $earnedBadges = Badges::whereIn('id', $badgeIdsToAttach)
-                    ->select('name', 'description', 'icon')
-                    ->get();
-
+            if ($earnedBadges->isNotEmpty()) {
                 return redirect()->route('progress.index')->with([
                     'success' => 'Workout added successfully!',
                     'earned_badges' => $earnedBadges,
@@ -149,6 +114,49 @@ class ProgressController extends Controller
             report($e);
             return back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
+    }
+
+    private function checkAndAssignBadges($userId, $workoutsCompleted)
+    {
+        $user = User::findOrFail($userId);
+        $badgeIdsToAttach = [];
+
+        // First Workout
+        $firstBadge = Badges::where('name', 'First Workout')->first();
+        if ($firstBadge && !$user->badges()->where('badge_id', $firstBadge->id)->exists()) {
+            $badgeIdsToAttach[] = $firstBadge->id;
+        }
+
+        // Consistency King (7-day streak)
+        $streakCount = Progress::where('user_id', $userId)
+            ->where('workout_on', '>=', now()->subDays(7))
+            ->count();
+
+        $consistencyBadge = Badges::where('name', 'Consistency King')->first();
+        if ($consistencyBadge && $streakCount >= 7 && !$user->badges()->where('badge_id', $consistencyBadge->id)->exists()) {
+            $badgeIdsToAttach[] = $consistencyBadge->id;
+        }
+
+        // Strength Beast (≥100kg lift)
+        foreach ($workoutsCompleted as $log) {
+            if (($log['weight'] ?? 0) >= 100) {
+                $strengthBadge = Badges::where('name', 'Strength Beast')->first();
+                if ($strengthBadge && !$user->badges()->where('badge_id', $strengthBadge->id)->exists()) {
+                    $badgeIdsToAttach[] = $strengthBadge->id;
+                }
+                break;
+            }
+        }
+
+        // Attach new badges
+        if (!empty($badgeIdsToAttach)) {
+            $user->badges()->attach($badgeIdsToAttach);
+            return Badges::whereIn('id', $badgeIdsToAttach)
+                ->select('name', 'description', 'icon')
+                ->get();
+        }
+
+        return collect(); // empty collection
     }
 
     public function track()

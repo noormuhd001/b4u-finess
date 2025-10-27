@@ -37,7 +37,6 @@ body {
     justify-content: center;
     align-items: center;
     padding: 2rem 3rem;
-            overflow: scroll;
 
 }
 
@@ -85,10 +84,48 @@ body {
     width: 100%;
     max-width: 360px;
 }
+
+/* Medium-Sized Monitors (e.g., 13–19 inch screens, 1024px–1366px width) */
+@media (max-width: 1366px) and (min-width: 1024px) {
+    .login-wrapper {
+        max-width: 900px;
+        height: 75vh;
+        border-radius: 18px;
+    }
+
+    .login-left {
+        padding: 2rem;
+        overflow: scroll;
+    }
+
+    .login-card {
+        /* margin-top: 30px; */
+        max-width: 320px;
+    }
+
+    .login-right {
+        background: linear-gradient(120deg, #8e24aa, #ff4081);
+    }
+
+    .btn-dark {
+        padding: 10px 18px;
+        font-size: 0.9rem;
+    }
+
+    .login-image {
+        object-fit: cover;
+    }
+
+    body {
+        background-size: cover;
+        background-position: center;
+    }
+}
+
 @media (max-width: 768px) {
     .login-wrapper {
         flex-direction: column;
-        height: auto;
+        height: 90vh;
         width: 95%;
         margin: 40px auto;
         border-radius: 15px;
@@ -97,13 +134,15 @@ body {
     .login-left {
         order: 2;
         padding: 2rem 1.5rem;
-        text-align: center;
+        /* text-align: center; */
+        overflow: scroll;
     }
 
     .login-right {
-        order: 1;
+        /* order: 1;
         height: 180px;
-        background: linear-gradient(135deg, #8e24aa, #ff4081);
+        background: linear-gradient(135deg, #8e24aa, #ff4081); */
+        display: none;
     }
 
     .login-image {
@@ -113,6 +152,10 @@ body {
     .login-card,
     .forgot-card {
         max-width: 100%;
+    }
+
+    #mobileview {
+        margin-top: 40px;
     }
 
     .forgot-wrapper {
@@ -125,5 +168,3 @@ body {
         width: 100%;
     }
 }
-
-
