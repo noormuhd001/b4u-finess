@@ -19,7 +19,7 @@
     <div class="login-wrapper">
         <!-- Left Section: Form -->
         <div class="login-left">
-            <div class="login-card">
+            <div class="login-card" id="mobileview">
                 <div class="text-center mb-4">
                     <img src="{{ asset('img/logo.png') }}" alt="Project Logo" class="img-fluid mb-3" style="width: 80px;">
                     <h3 class="fw-bold">Create Account</h3>
