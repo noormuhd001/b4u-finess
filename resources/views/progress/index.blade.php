@@ -114,6 +114,63 @@
         .dark-mode .material-symbols-outlined.text-secondary {
             color: #adb5bd !important;
         }
+
+        .badge-modal {
+            background: radial-gradient(circle at center, #fff 0%, #f8f9fa 100%);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            animation: fadeInScale 0.6s ease-out;
+        }
+
+        .badge-icon {
+            width: 150px;
+            filter: drop-shadow(0 0 10px #ffd700);
+            animation: popIn 0.8s ease forwards, glowPulse 2s infinite alternate;
+        }
+
+        .text-gradient {
+            background: linear-gradient(90deg, #ff8a00, #e52e71);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            70% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes glowPulse {
+            from {
+                filter: drop-shadow(0 0 8px #ffd700);
+            }
+
+            to {
+                filter: drop-shadow(0 0 18px #ffed4a);
+            }
+        }
     </style>
 @endpush
 
@@ -134,16 +191,21 @@
         @if (session('earned_badges'))
             <div class="modal fade" id="badgeModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content text-center p-4">
+                    <div class="modal-content text-center p-4 position-relative badge-modal">
+                        {{-- <h4 class="fw-bold mb-4 text-gradient">You Earned a Badge!</h4> --}}
+
                         @foreach (session('earned_badges') as $badge)
-                            <div class="mb-3">
-                                <img src="{{ asset($badge->icon) }}" alt="{{ $badge->name }}" class="img-fluid mb-2"
-                                    style="max-width: 80px;">
+                            <div class="badge-display mb-4">
+                                <img src="{{ asset($badge->icon) }}" alt="{{ $badge->name }}"
+                                    class="badge-icon img-fluid mb-2">
                                 <h5 class="fw-bold">{{ $badge->name }}</h5>
                                 <p class="text-muted">{{ $badge->description }}</p>
                             </div>
                         @endforeach
-                        <button type="button" class="btn btn-primary mt-2" data-bs-dismiss="modal">Awesome!</button>
+
+                        <button type="button" class="btn btn-primary mt-2" data-bs-dismiss="modal">
+                            Awesome!
+                        </button>
                     </div>
                 </div>
             </div>
@@ -258,6 +320,42 @@
 @endsection
 
 @push('scripts')
+    <!-- Confetti Script -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        const badgeModal = document.getElementById('badgeModal');
+        badgeModal.addEventListener('shown.bs.modal', () => {
+            // Launch confetti from both sides
+            const duration = 2000; // Confetti duration in ms
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 4,
+                    angle: 60,
+                    spread: 55,
+                    origin: {
+                        x: 0
+                    },
+                    colors: ['#ff8a00', '#ffd700', '#ff2e63', '#00c9a7']
+                });
+                confetti({
+                    particleCount: 4,
+                    angle: 120,
+                    spread: 55,
+                    origin: {
+                        x: 1
+                    },
+                    colors: ['#ff8a00', '#ffd700', '#ff2e63', '#00c9a7']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            })();
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @if (session('earned_badges'))
         <script>
