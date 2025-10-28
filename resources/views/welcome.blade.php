@@ -68,8 +68,10 @@
                 </form>
 
                 <div class="text-center mt-4 small">
-                    <a href="#" class="text-muted text-decoration-none">Terms of Use</a> |
-                    <a href="#" class="text-muted text-decoration-none">Privacy Policy</a>
+                    <a href="{{ route('termsAndConditions') }}" class="text-muted text-decoration-none">Terms of
+                        Use</a> |
+                    <a href="{{ route('privacyPolicy') }}" class="text-muted text-decoration-none">Privacy
+                        Policy</a>
                 </div>
             </div>
         </div>

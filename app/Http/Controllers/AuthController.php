@@ -149,6 +149,26 @@ class AuthController extends Controller
         }
     }
 
+    public function privacyPolicy()
+    {
+        try {
+            return view('auth.privacypolicy');
+        } catch (Exception $e) {
+            report($e);
+            return back()->with('error', 'Something went wrong. Please try again.');
+        }
+    }
+
+    public function termsAndConditions()
+    {
+        try {
+            return view('auth.termsandconditions');
+        } catch (Exception $e) {
+            report($e);
+            return back()->with('error', 'Something went wrong. Please try again.');
+        }
+    }
+
 
     public function logout(Request $request)
     {
