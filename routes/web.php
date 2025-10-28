@@ -20,6 +20,8 @@ Route::get('forgot-password', [AuthController::class, 'forgotPassword'])->name('
 Route::post('send-otp', [AuthController::class, 'sendOtp'])->name('sendOtp');
 Route::get('reset-password/{token}', [AuthController::class, 'resetPassword'])->name('resetPassword');
 Route::post('update-password', [AuthController::class, 'updatePassword'])->name('updatePassword');
+Route::get('privacy-policy', [AuthController::class, 'privacyPolicy'])->name('privacyPolicy');
+Route::get('terms-and-conditions', [AuthController::class, 'termsAndConditions'])->name('termsAndConditions');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::prefix('')->middleware('auth', 'preventHistory')->group(function () {
