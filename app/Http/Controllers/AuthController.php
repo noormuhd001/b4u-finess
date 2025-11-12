@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\SendOtpRequest;
 use App\Http\Requests\Auth\UpdatePasswordRequest;
 use App\Http\Requests\Auth\UserStoreRequest;
@@ -16,21 +17,27 @@ use Illuminate\Support\Str;
 class AuthController extends Controller
 {
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
         // Validate incoming request
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:6',
-        ]);
+        // $request->validate([
+        //     'email' => 'required|email',
+        //     'password' => 'required|min:6',
+        // ]);
 
         try {
             $credentials = $request->only('email', 'password');
 
             if (Auth::attempt($credentials)) {
                 $request->session()->regenerate();
+                $user = Auth::user();
 
-                return redirect()->intended('/dashboard')->with('success', 'Login successful!');
+                if ($user->role == 1) {
+                    return redirect()->route('admin.dashboard');
+                } else {
+                    return redirect()->route('dashboard');
+                }
+                // return redirect()->intended('/dashboard')->with('success', 'Login successful!');
             }
             return back()->withErrors([
                 'email' => 'The provided credentials do not match our records.',

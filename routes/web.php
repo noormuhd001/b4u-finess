@@ -24,6 +24,7 @@ Route::get('privacy-policy', [AuthController::class, 'privacyPolicy'])->name('pr
 Route::get('terms-and-conditions', [AuthController::class, 'termsAndConditions'])->name('termsAndConditions');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+include('admin.php');
 Route::prefix('')->middleware('auth', 'preventHistory')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/workout', [WorkoutController::class, 'index'])->name('workout');

@@ -28,7 +28,8 @@ class User extends Authenticatable
         'image',
         'dark_mode',
         'forgot_token',
-        'expires_at'
+        'expires_at',
+        'role'
     ];
 
     /**
