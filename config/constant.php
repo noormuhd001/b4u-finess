@@ -12,4 +12,10 @@ return [
         '3' => 'Maintenance',
         '4' => 'Endurance',
     ],
+
+    'role' => [
+        '0' => 'User',
+        '1' => 'Admin',
+        '2' => 'Trainer',
+    ],
 ];

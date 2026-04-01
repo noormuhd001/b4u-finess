@@ -14,22 +14,38 @@
         <!-- Links -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
-                        href="{{ route('dashboard') }}">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('workout') ? 'active' : '' }}"
-                        href="{{ route('workout') }}">Workouts</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('progress.index', 'progress.track', 'progress.trackDetailById') ? 'active' : '' }}"
-                        href="{{ route('progress.index') }}">Progress</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('about-us') ? 'active' : '' }}"
-                        href="{{ route('about-us') }}">About Us</a>
-                </li>
+                @if (Auth::user() && Auth::user()->role === 0)
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
+                            href="{{ route('dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('workout') ? 'active' : '' }}"
+                            href="{{ route('workout') }}">Workouts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('progress.index', 'progress.track', 'progress.trackDetailById') ? 'active' : '' }}"
+                            href="{{ route('progress.index') }}">Progress</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('about-us') ? 'active' : '' }}"
+                            href="{{ route('about-us') }}">About Us</a>
+                    </li>
+                @endif
+                @if (Auth::user() && Auth::user()->role === 1)
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+                            href="{{ route('admin.dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.progress.reviews') ? 'active' : '' }}"
+                            href="{{ route('admin.progress.reviews') }}">Progress Review</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.user-management.index') ? 'active' : '' }}"
+                            href="{{ route('admin.user-management.index') }}">User Management</a>
+                    </li>
+                @endif
             </ul>
 
             <!-- User Dropdown -->
@@ -44,7 +60,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="{{ route('profile.index') }}">Profile</a></li>
-                            <li><a class="dropdown-item" href="{{route('settings.index')}}">Settings</a></li>
+                            <li><a class="dropdown-item" href="{{ route('settings.index') }}">Settings</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

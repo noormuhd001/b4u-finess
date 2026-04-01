@@ -42,6 +42,8 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends = ['formatted_role_name'];
+
     /**
      * Get the attributes that should be cast.
      *
@@ -58,5 +60,11 @@ class User extends Authenticatable
     public function badges()
     {
         return $this->belongsToMany(Badges::class, 'badge_users', 'user_id', 'badge_id')->withTimestamps();
+    }
+
+    public function getFormattedRoleNameAttribute()
+    {
+        $roles = config('constant.role');
+        return $roles[$this->role] ?? 'Unknown';
     }
 }
