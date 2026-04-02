@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin.app')
 
 @push('styles')
     <style>
@@ -43,7 +43,7 @@
         }
 
         .rank-circle.highlight {
-            background: linear-gradient(135deg, #ff8a00, #e52e71);
+            background: linear-gradient(135deg, purple, blue);
             color: #fff;
         }
 
@@ -51,7 +51,7 @@
             vertical-align: middle;
             margin-right: 6px;
             font-size: 22px;
-            color: #FF8C00;
+            color: purple; 
         }
 
         nav .material-symbols-outlined {
@@ -95,5 +95,4 @@
                 @endforelse
             </div>
         </div>
-
     @endsection

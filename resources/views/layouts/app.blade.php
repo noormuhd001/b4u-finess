@@ -41,7 +41,7 @@
 
                 <!-- Left: App Info / Tagline -->
                 <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
-                    &copy; {{ date('Y') }} <strong>B4U Fitness</strong> <br>
+                    &copy; 2025 <strong>B4U Fitness</strong> <br>
                     <small class="text-muted">Track • Create • Conquer</small>
                 </div>
 

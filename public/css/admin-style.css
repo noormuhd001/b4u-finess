@@ -1,0 +1,123 @@
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+#wrapper {
+    display: flex;
+}
+
+/* ===== Sidebar ===== */
+#sidebar {
+    width: 250px;
+    min-height: 100vh;
+    background: #111;
+    color: #fff;
+    transition: 0.3s;
+}
+
+/* Collapsed */
+#wrapper.collapsed #sidebar {
+    width: 80px;
+}
+
+/* Header */
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid #333;
+}
+
+/* Menu */
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu li {
+    margin: 5px 10px;
+}
+
+/* Links */
+.sidebar-menu li a,
+.sidebar-menu li button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    width: 100%;
+    color: #ccc;
+    background: none;
+    border: none;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+/* Hover */
+.sidebar-menu li a:hover,
+.sidebar-menu li button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+/* Active */
+.sidebar-menu li.active a {
+    background: linear-gradient(90deg, purple, blue);
+    color: #fff;
+}
+
+/* Icons */
+.sidebar-menu i {
+    font-size: 1.2rem;
+    min-width: 25px;
+}
+
+/* Hide text when collapsed */
+#wrapper.collapsed .menu-text {
+    display: none;
+}
+
+/* Center icons when collapsed */
+#wrapper.collapsed .sidebar-menu li a,
+#wrapper.collapsed .sidebar-menu li button {
+    justify-content: center;
+}
+
+/* ===== Content ===== */
+#content {
+    flex: 1;
+    width: 100%;
+}
+
+/* ===== Topbar ===== */
+.topbar {
+    height: 60px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+}
+
+/* Toggle button */
+.toggle-btn {
+    border: none;
+    background: none;
+    font-size: 1.5rem;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+
+    #sidebar {
+        position: absolute;
+        left: -250px;
+        z-index: 1000;
+    }
+
+    #wrapper.collapsed #sidebar {
+        left: 0;
+        width: 250px;
+    }
+}
