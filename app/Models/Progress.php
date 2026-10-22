@@ -20,6 +20,11 @@ class Progress extends Model
         return $this->hasMany(ProgressLog::class, 'progress_id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function workout()
     {
         return $this->belongsTo(Workout::class, 'workout_id');

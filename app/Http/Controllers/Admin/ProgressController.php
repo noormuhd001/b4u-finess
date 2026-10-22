@@ -4,73 +4,44 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Progress;
-use Exception;
+use App\Models\ProgressLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProgressController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function progressReviews()
+    public function update(Request $request, Progress $progress)
     {
-        try {
-            $progress = Progress::leftJoin('users', 'users.id', '=', 'progress.user_id')
-                ->select('progress.*', 'users.name as user_name')
-                ->get();
+        $validated = $request->validate([
+            'current_weight' => ['required', 'numeric', 'min:0', 'max:1000'],
+            'avg_kcal_burned' => ['required', 'numeric', 'min:0', 'max:100000'],
+            'workout_on' => ['required', 'date'],
+        ]);
 
-            return view('admin.progress.index', compact('progress'));
-        } catch (Exception $e) {
-            report($e);
-            return back()->with('error', 'Something went wrong. Please try again.');
-        }
+        $progress->update($validated);
+
+        return redirect()->route('admin.user-management.show', $progress->user_id)
+            ->with('success', 'Progress record updated successfully.');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function updateLog(Request $request, ProgressLog $progressLog)
     {
-        //
-    }
+        $validated = $request->validate([
+            'set_number' => ['required', 'integer', 'min:1', 'max:100'],
+            'reps' => ['required', 'integer', 'min:0', 'max:1000'],
+            'weight' => ['required', 'numeric', 'min:0', 'max:1000'],
+            'kcal_burned' => ['required', 'numeric', 'min:0', 'max:100000'],
+        ]);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $progress = Progress::findOrFail($progressLog->progress_id);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        DB::transaction(function () use ($progressLog, $progress, $validated) {
+            $progressLog->update($validated);
+            $progress->avg_kcal_burned = $progress->logs()->sum('kcal_burned');
+            $progress->save();
+        });
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('admin.user-management.show', $progress->user_id)
+            ->with('success', 'Workout set updated successfully.');
     }
 }

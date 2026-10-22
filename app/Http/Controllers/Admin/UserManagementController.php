@@ -4,87 +4,91 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class UserManagementController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            // Fetch all users
-            $users = User::all(); // retrieves all rows
+        $search = $request->string('search')->trim()->toString();
+        $users = User::query()
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
 
-            // Return to view
-            return view('admin.user-management.index', compact('users'));
-        } catch (Exception $e) {
-            report($e);
-            return back()->with('error', 'Something went wrong!');
-        }
+        $counts = [
+            'all' => User::count(),
+            'active' => User::where('status', true)->count(),
+            'admins' => User::where('role', 1)->count(),
+        ];
+
+        return view('admin.user-management.index', compact('users', 'counts', 'search'));
     }
 
-    public function updateRole(Request $request)
+    public function show(User $user)
     {
-        try {
-            $user = User::findOrFail($request->input('user_id'));
-            $user->role = $request->input('role');
-            $user->save();  
+        $progress = $user->progress()
+            ->with('logs.workout')
+            ->latest('workout_on')
+            ->paginate(10);
 
-            return redirect()->route('admin.user-management.index')->with('success', 'User role updated successfully.');
-        } catch (Exception $e) {
-            report($e);
-            return back()->with('error', 'Failed to update user role.');
-        }
+        return view('admin.user-management.show', compact('user', 'progress'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8'],
+            'role' => ['required', Rule::in(array_keys(config('constant.role')))],
+        ]);
+
+        User::create($validated + ['status' => true]);
+
+        return redirect()->route('admin.user-management.index')->with('success', 'User created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'role' => ['required', Rule::in(array_keys(config('constant.role')))],
+        ]);
+
+        if ($user->is(Auth::user()) && (int) $validated['role'] !== 1) {
+            return back()->with('error', 'You cannot change your own administrator role.');
+        }
+
+        $user->update($validated);
+
+        return redirect()->route('admin.user-management.index')->with('success', 'User details updated successfully.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function updateStatus(Request $request, User $user)
     {
-        //
-    }
+        $validated = $request->validate([
+            'status' => ['required', 'boolean'],
+        ]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        if ($user->is(Auth::user()) && ! $validated['status']) {
+            return back()->with('error', 'You cannot deactivate your own administrator account.');
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $user->update(['status' => $validated['status']]);
+
+        return redirect()->route('admin.user-management.index')->with(
+            'success',
+            $user->status ? 'User account activated.' : 'User account deactivated.'
+        );
     }
 }

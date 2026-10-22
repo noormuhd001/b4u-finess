@@ -1,4 +1,7 @@
-@extends('layouts.app')
+@extends($isAdmin ? 'layouts.admin.app' : 'layouts.app')
+
+@section('title', 'My profile')
+@section('page-heading', 'My profile')
 
 @push('styles')
     <style>
@@ -6,23 +9,21 @@
             margin-top: 1rem;
         }
 
-        #editMode .material-symbols-outlined {
-            font-variation-settings:
-                'FILL' 0,
-                'wght' 400,
-                'GRAD' 0,
-                'opsz' 24;
+        #editMode .bi {
             color: #007bff;
         }
     </style>
 @endpush
 
 @section('content')
-    <div class="container my-5">
+    <div class="container">
+        <div class="user-page-heading">
+            <div><h1>My profile</h1><p>Keep your personal details and fitness goals up to date.</p></div>
+        </div>
         <div class="profile-card">
             <!-- Edit Button -->
-            <button class="btn btn-outline-primary edit-btn" id="editToggle" title="Edit Profile">
-                <span class="material-symbols-outlined">edit</span>
+            <button class="btn btn-outline-secondary edit-btn" id="editToggle" type="button" title="Edit Profile" aria-label="Edit profile">
+                <i class="bi bi-pencil" aria-hidden="true"></i>
             </button>
 
             <!-- Profile Header -->
@@ -38,26 +39,25 @@
             <!-- View Mode -->
             <div id="viewMode" class="{{ $errors->any() ? 'd-none' : '' }}">
                 <div class="profile-info">
-                    <p><span class="material-symbols-outlined text-info">mail</span> Email: {{ $user->email }}</p>
-                    <p><span class="material-symbols-outlined text-warning">person</span> Gender:
+                    <p><i class="bi bi-envelope text-info" aria-hidden="true"></i> Email: {{ $user->email }}</p>
+                    <p><i class="bi bi-person text-warning" aria-hidden="true"></i> Gender:
                         {{ $genders[$user->gender] ?? 'N/A' }}</p>
-                    <p><span class="material-symbols-outlined text-success">straighten</span> Height:
+                    <p><i class="bi bi-arrows-vertical text-success" aria-hidden="true"></i> Height:
                         {{ $user->height ?? 'N/A' }} cm</p>
-                    <p><span class="material-symbols-outlined text-danger">monitor_weight</span> Weight:
+                    <p><i class="bi bi-speedometer2 text-danger" aria-hidden="true"></i> Weight:
                         {{ $user->weight ?? 'N/A' }} kg</p>
                 </div>
             </div>
 
             <!-- Edit Mode -->
             <div id="editMode" class="{{ $errors->any() ? '' : 'd-none' }}">
-                <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ $profileUpdateRoute }}" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="id" value="{{ $user->id }}">
 
                     <!-- Profile Photo -->
                     <div class="mb-3 ">
                         <label class="form-label">
-                            <span class="material-symbols-outlined">photo_camera</span> Profile Photo
+                            <i class="bi bi-camera" aria-hidden="true"></i> Profile Photo
                         </label>
                         <input type="file" name="profile_picture"
                             class="form-control @error('profile_picture') is-invalid @enderror" accept="image/*"
@@ -72,7 +72,7 @@
 
                     <!-- Name -->
                     <div class="mb-3">
-                        <label class="form-label"><span class="material-symbols-outlined">person</span> Name</label>
+                        <label class="form-label"><i class="bi bi-person" aria-hidden="true"></i> Name</label>
                         <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
                             value="{{ old('name', $user->name) }}">
                         @error('name')
@@ -82,7 +82,7 @@
 
                     <!-- Email -->
                     <div class="mb-3">
-                        <label class="form-label"><span class="material-symbols-outlined">mail</span> Email</label>
+                        <label class="form-label"><i class="bi bi-envelope" aria-hidden="true"></i> Email</label>
                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
                             value="{{ old('email', $user->email) }}">
                         @error('email')
@@ -92,7 +92,7 @@
 
                     <!-- Gender -->
                     <div class="mb-3">
-                        <label class="form-label"><span class="material-symbols-outlined">man</span> Gender</label>
+                        <label class="form-label"><i class="bi bi-person" aria-hidden="true"></i> Gender</label>
                         <select name="gender" class="form-control @error('gender') is-invalid @enderror">
                             @foreach ($genders as $key => $value)
                                 <option value="{{ $key }}"
@@ -108,7 +108,7 @@
 
                     <!-- Height -->
                     <div class="mb-3">
-                        <label class="form-label"><span class="material-symbols-outlined">straighten</span> Height
+                        <label class="form-label"><i class="bi bi-arrows-vertical" aria-hidden="true"></i> Height
                             (cm)</label>
                         <input type="number" name="height" class="form-control @error('height') is-invalid @enderror"
                             value="{{ old('height', $user->height) }}">
@@ -119,7 +119,7 @@
 
                     <!-- Weight -->
                     <div class="mb-3">
-                        <label class="form-label"><span class="material-symbols-outlined">monitor_weight</span> Weight
+                        <label class="form-label"><i class="bi bi-speedometer2" aria-hidden="true"></i> Weight
                             (kg)</label>
                         <input type="number" name="weight" class="form-control @error('weight') is-invalid @enderror"
                             value="{{ old('weight', $user->weight) }}">
@@ -130,7 +130,7 @@
 
                     <!-- Goal -->
                     <div class="mb-3">
-                        <label class="form-label"><span class="material-symbols-outlined">track_changes</span> Goal</label>
+                        <label class="form-label"><i class="bi bi-bullseye" aria-hidden="true"></i> Goal</label>
                         <select name="goal" class="form-control @error('goal') is-invalid @enderror">
                             @foreach ($goals as $key => $value)
                                 <option value="{{ $key }}"
@@ -147,10 +147,10 @@
                     <div class="d-flex justify-content-end gap-2">
                         <!-- Buttons -->
                         <button type="submit" class="btn btn-save">
-                            <span class="material-symbols-outlined">check_circle</span> Save
+                            <i class="bi bi-check-circle" aria-hidden="true"></i> Save
                         </button>
                         <button type="button" class="btn btn-cancel" id="cancelEdit">
-                            <span class="material-symbols-outlined">cancel</span> Cancel
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> Cancel
                         </button>
                     </div>
                 </form>

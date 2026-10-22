@@ -4,25 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'B4U Fitness')</title>
+    <title>@yield('title', 'NR Fitness')</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('img/logo-rm.png') }}">
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 
 </head>
 
-<body class="vh-100 d-flex align-items-center justify-content-center login-container">
+<body class="auth-page d-flex align-items-center justify-content-center login-container">
 
     <div class="login-wrapper">
         <!-- Left Section: Login Form -->
         <div class="login-left">
             <div class="login-card">
-                <div class="text-center mb-4">
-                    <img src="{{ asset('img/logo.png') }}" alt="Logo" class="img-fluid mb-3" style="width: 80px;">
-                    <h3 class="fw-bold">FITNESS</h3>
-                    <p class="text-muted">Gym Management</p>
+                <a class="auth-brand text-decoration-none" href="{{ route('login') }}">
+                    <img src="{{ asset('img/logo-rm.png') }}" alt="">
+                    <span>NR FITNESS</span>
+                </a>
+                <div class="auth-heading">
+                    <h1>Welcome back</h1>
+                    <p>Your next personal best starts here. Sign in to continue your journey.</p>
                 </div>
 
                 <form method="post" action="{{ route('login.post') }}">
@@ -60,7 +64,7 @@
                         <a href="{{ route('forgotPassword') }}" class="small text-decoration-none">Forgot password?</a>
                     </div>
 
-                    <button type="submit" class="btn btn-dark w-100 rounded-3">Log in</button>
+                    <button type="submit" class="btn w-100">Sign in to your account</button>
 
                     <p class="mt-3 text-center small">Don’t have an account?
                         <a href="{{ route('signUp') }}" class="text-decoration-none">Register</a>
@@ -68,10 +72,9 @@
                 </form>
 
                 <div class="text-center mt-4 small">
-                    <a href="{{ route('termsAndConditions') }}" class="text-muted text-decoration-none">Terms of
-                        Use</a> |
-                    <a href="{{ route('privacyPolicy') }}" class="text-muted text-decoration-none">Privacy
-                        Policy</a>
+                    <a href="{{ route('termsAndConditions') }}" class="text-muted text-decoration-none">Terms</a>
+                    <span>·</span>
+                    <a href="{{ route('privacyPolicy') }}" class="text-muted text-decoration-none">Privacy</a>
                 </div>
             </div>
         </div>
@@ -79,6 +82,11 @@
         <!-- Right Section: Image Background -->
         <div class="login-right">
             <img src="{{ asset('img/login-background.webp') }}" alt="Fitness Image" class="login-image">
+            <div class="auth-visual-copy">
+                <span>Strength is a journey</span>
+                <h2>Show up today.<br>Surprise yourself tomorrow.</h2>
+                <p>Build consistency, track what matters, and celebrate every step forward.</p>
+            </div>
         </div>
     </div>
 

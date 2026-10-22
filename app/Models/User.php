@@ -29,7 +29,8 @@ class User extends Authenticatable
         'dark_mode',
         'forgot_token',
         'expires_at',
-        'role'
+        'role',
+        'status'
     ];
 
     /**
@@ -54,12 +55,18 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'status' => 'boolean',
         ];
     }
 
     public function badges()
     {
         return $this->belongsToMany(Badges::class, 'badge_users', 'user_id', 'badge_id')->withTimestamps();
+    }
+
+    public function progress()
+    {
+        return $this->hasMany(Progress::class);
     }
 
     public function getFormattedRoleNameAttribute()

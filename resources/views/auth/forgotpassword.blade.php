@@ -4,23 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'B4U Fitness')</title>
+    <title>@yield('title', 'NR Fitness')</title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('img/logo-rm.png') }}">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 
 </head>
 
-<body class="d-flex align-items-center justify-content-center vh-100 bg-gradient-primary login-bg">
+<body class="auth-page d-flex align-items-center justify-content-center">
     <div class="forgot-wrapper">
-        <div class="forgot-card bg-white p-4 rounded-4 shadow">
-            <div class="text-center mb-4">
-                <img src="{{ asset('img/logo.png') }}" alt="Project Logo" class="img-fluid" style="width: 100px;">
-                <h3 class="mt-3">Forgot Password ?</h3>
+        <div class="forgot-card">
+            <a class="auth-brand text-decoration-none" href="{{ route('login') }}">
+                <img src="{{ asset('img/logo-rm.png') }}" alt="">
+                <span>NR FITNESS</span>
+            </a>
+            <div class="auth-heading">
+                <h1>Forgot your password?</h1>
+                <p>Enter your account email and we’ll send you a secure reset link.</p>
             </div>
 
             <form method="post" action="{{ route('sendOtp') }}">
@@ -48,7 +54,7 @@
                     @enderror
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100 rounded-3">Submit</button>
+                <button type="submit" class="btn w-100">Send reset link</button>
 
                 <div class="text-center mt-3">
                     <p class="mb-0 small">Already have account?
@@ -56,6 +62,7 @@
                     </p>
                 </div>
             </form>
+            <a class="auth-back" href="{{ route('login') }}"><i class="bi bi-arrow-left"></i> Back to sign in</a>
         </div>
     </div>
 

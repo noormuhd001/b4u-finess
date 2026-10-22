@@ -1,98 +1,79 @@
 @extends('layouts.admin.app')
 
-@push('styles')
-    <style>
-        .dashboard-title {
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
-
-        .card {
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        .card h4 {
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-
-
-
-        .leader-item {
-            background: #fff;
-            border-radius: 12px;
-            margin-bottom: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s;
-        }
-
-        .leader-item:hover {
-            transform: scale(1.02);
-        }
-
-        .rank-circle {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #f0f0f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-
-        .rank-circle.highlight {
-            background: linear-gradient(135deg, purple, blue);
-            color: #fff;
-        }
-
-        .material-symbols-outlined {
-            vertical-align: middle;
-            margin-right: 6px;
-            font-size: 22px;
-            color: purple; 
-        }
-
-        nav .material-symbols-outlined {
-            color: white;
-        }
-    </style>
-@endpush
-
-@push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-@endpush
+@section('title', 'Admin overview')
+@section('page-heading', 'Overview')
 
 @section('content')
-    <div class="container my-4">
-        <div class="row g-4">
+    <div class="page-heading">
+        <div>
+            <h1>Good to see you, {{ $userData->name }} <span aria-hidden="true">✦</span></h1>
+            <p>Here’s what’s happening across your fitness community today.</p>
         </div>
-        <div class="leader-list mt-3">
-            <div class="card p-4">
-                <h4 class="mb-3">
-                    <span class="material-symbols-outlined">trophy</span>
-                    Top Lifts Leaderboard
-                </h4>
-                @forelse($leaderboard as $index => $record)
-                    <div class="leader-item d-flex justify-content-between align-items-center p-3">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="rank-circle {{ $index < 3 ? 'highlight' : '' }}">
-                                {{ $index + 1 }}
-                            </div>
-                            <div>
-                                <h6 class="mb-0">{{ $record->user_name }}</h6>
-                                <small class="text-muted">{{ $record->workout_name }}</small>
-                            </div>
-                        </div>
-                        <div class="text-end">
-                            <h6 class="fw-bold text-danger mb-0">{{ $record->weight }} kg</h6>
-                            <small>{{ $record->set_number }}×{{ $record->reps }}</small>
-                        </div>
-                    </div>
-                @empty
-                    <p class="text-muted text-center">No records yet</p>
-                @endforelse
+        <div class="page-heading-actions">
+            <a class="admin-btn admin-btn-light" href="{{ route('admin.user-management.index') }}">
+                <i class="bi bi-people"></i> Manage users
+            </a>
+            <a class="admin-btn" href="{{ route('admin.workouts.index') }}">
+                <i class="bi bi-plus-lg"></i> Manage workouts
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl">
+            <a class="text-decoration-none" href="{{ route('admin.user-management.index') }}">
+                <div class="stat-card">
+                    <div class="stat-top"><span class="stat-label">Total users</span><span class="stat-icon"><i class="bi bi-people"></i></span></div>
+                    <div class="stat-value">{{ number_format($stats['users']) }}</div>
+                    <div class="stat-note">{{ number_format($stats['active_users']) }} active accounts</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-xl">
+            <a class="text-decoration-none" href="{{ route('admin.workouts.index') }}">
+                <div class="stat-card">
+                    <div class="stat-top"><span class="stat-label">Workout library</span><span class="stat-icon"><i class="bi bi-activity"></i></span></div>
+                    <div class="stat-value">{{ number_format($stats['workouts']) }}</div>
+                    <div class="stat-note">Exercises available to users</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-xl">
+            <a class="text-decoration-none" href="{{ route('admin.badges.index') }}">
+                <div class="stat-card">
+                    <div class="stat-top"><span class="stat-label">Badge types</span><span class="stat-icon"><i class="bi bi-award"></i></span></div>
+                    <div class="stat-value">{{ number_format($stats['badges']) }}</div>
+                    <div class="stat-note">Rewards in your program</div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <section class="admin-card">
+        <div class="admin-card-header">
+            <div>
+                <h2>Recently added users</h2>
+                <p>New accounts across your fitness community</p>
             </div>
+            <a href="{{ route('admin.user-management.index') }}" class="admin-btn admin-btn-light">View all users <i class="bi bi-arrow-right"></i></a>
         </div>
-    @endsection
+        <div class="table-responsive">
+            <table class="table admin-table">
+                <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th></tr></thead>
+                <tbody>
+                    @forelse ($recentUsers as $user)
+                        <tr>
+                            <td><a class="entity-name text-decoration-none" href="{{ route('admin.user-management.show', $user) }}">{{ $user->name }}</a></td>
+                            <td>{{ $user->email }}</td>
+                            <td><span class="role-badge">{{ $user->formatted_role_name }}</span></td>
+                            <td><span class="state-badge {{ $user->status ? '' : 'inactive' }}">{{ $user->status ? 'Active' : 'Inactive' }}</span></td>
+                            <td>{{ $user->created_at?->format('M d, Y') ?? '—' }}</td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="5" class="table-empty"><i class="bi bi-person-x"></i>No users have registered yet.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </section>
+@endsection

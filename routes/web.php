@@ -3,12 +3,13 @@
 use App\Http\Controllers\About\AboutUsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dahboard\DashboardController;
-use App\Http\Controllers\Profile\ProfileController;
+use App\Http\Controllers\Profile\UserProfileController;
 use App\Http\Controllers\Progress\ProgressController;
 use App\Http\Controllers\Settings\SettingController;
 use App\Http\Controllers\Workout\WorkoutController;
 use Illuminate\Support\Facades\Route;
 
+include('api.php');
 Route::get('/', function () {
     return view('welcome');
 })->name('login');
@@ -25,7 +26,7 @@ Route::get('terms-and-conditions', [AuthController::class, 'termsAndConditions']
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 include('admin.php');
-Route::prefix('')->middleware('auth', 'preventHistory')->group(function () {
+Route::prefix('')->middleware('auth', 'activeUser', 'preventHistory')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/workout', [WorkoutController::class, 'index'])->name('workout');
     Route::get('/about-us', [AboutUsController::class, 'index'])->name('about-us');
@@ -45,8 +46,7 @@ Route::prefix('')->middleware('auth', 'preventHistory')->group(function () {
     });
 
     Route::prefix('profile')->name('profile.')->group(function () {
-        Route::get('/', [ProfileController::class, 'index'])->name('index');
-        Route::get('/edit/{id}', [ProfileController::class, 'edit'])->name('edit');
-        Route::post('/update', [ProfileController::class, 'update'])->name('update');
+        Route::get('/', [UserProfileController::class, 'index'])->name('index');
+        Route::post('/update', [UserProfileController::class, 'update'])->name('update');
     });
 });

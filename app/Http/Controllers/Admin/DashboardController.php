@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\ProgressLog;
+use App\Models\Badges;
+use App\Models\User;
+use App\Models\Workout;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -20,20 +22,16 @@ class DashboardController extends Controller
 
             $userData = Auth::user();
 
-            $leaderboard = ProgressLog::leftJoin('workouts as w', 'progress_logs.workout_id', '=', 'w.id')
-                ->leftJoin('users as u', 'progress_logs.user_id', '=', 'u.id')
-                ->select(
-                    'u.name as user_name',
-                    'w.workout_name',
-                    'progress_logs.weight',
-                    'progress_logs.set_number',
-                    'progress_logs.reps'
-                )
-                ->orderByDesc('progress_logs.weight')
-                ->limit(5)
-                ->get();
+            $stats = [
+                'users' => User::count(),
+                'active_users' => User::where('status', true)->count(),
+                'workouts' => Workout::count(),
+                'badges' => Badges::count(),
+            ];
 
-            return view('admin.dashboard', compact('leaderboard', 'userData'));
+            $recentUsers = User::latest()->limit(8)->get();
+
+            return view('admin.dashboard', compact('userData', 'stats', 'recentUsers'));
         } catch (Exception $e) {
             report($e);
             return back()->with('error', 'Something went wrong. Please try again.');

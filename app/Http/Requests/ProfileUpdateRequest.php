@@ -15,13 +15,12 @@ class ProfileUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|integer|exists:users,id',
             'name' => 'required|string|max:255',
             'email' => [
                 'required',
                 'email',
                 'max:255',
-                Rule::unique('users', 'email')->ignore($this->id),
+                Rule::unique('users', 'email')->ignore($this->user()->getAuthIdentifier()),
             ],
             'gender' => [
                 'nullable',
@@ -40,9 +39,6 @@ class ProfileUpdateRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'id.required' => 'User ID is missing.',
-            'id.integer' => 'Invalid user ID.',
-            'id.exists' => 'User does not exist.',
             'name.required' => 'Please enter your name.',
             'email.required' => 'Please enter your email.',
             'email.email' => 'Please enter a valid email address.',
