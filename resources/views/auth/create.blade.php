@@ -38,8 +38,8 @@
                     <div class="mb-3">
                         <label for="username" class="form-label">Full Name</label>
                         <input type="text" name="username"
-                            class="form-control rounded-3 @error('username') is-invalid @enderror"
-                            id="username" placeholder="Enter your name" value="{{ old('username') }}" required>
+                            class="form-control rounded-3 @error('username') is-invalid @enderror" id="username"
+                            placeholder="Enter your name" value="{{ old('username') }}" required>
                         @error('username')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -49,8 +49,8 @@
                     <div class="mb-3">
                         <label for="email" class="form-label">Email address</label>
                         <input type="email" name="email"
-                            class="form-control rounded-3 @error('email') is-invalid @enderror"
-                            id="email" placeholder="Enter your email" value="{{ old('email') }}" required>
+                            class="form-control rounded-3 @error('email') is-invalid @enderror" id="email"
+                            placeholder="Enter your email" value="{{ old('email') }}" required>
                         @error('email')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -93,8 +93,8 @@
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
                         <input type="password" name="password"
-                            class="form-control rounded-3 @error('password') is-invalid @enderror"
-                            id="password" placeholder="Enter your password" required>
+                            class="form-control rounded-3 @error('password') is-invalid @enderror" id="password"
+                            placeholder="Enter your password" required>
                         @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -124,9 +124,15 @@
                 </form>
 
                 <div class="text-center mt-4 small">
+<<<<<<< HEAD
                     <a href="{{ route('termsAndConditions') }}" class="text-muted text-decoration-none">Terms</a>
                     <span>·</span>
                     <a href="{{ route('privacyPolicy') }}" class="text-muted text-decoration-none">Privacy</a>
+=======
+                    <a href="{{ route('termsAndConditions') }}" class="text-muted text-decoration-none">Terms of
+                        Use</a> |
+                    <a href="{{ route('privacyPolicy') }}" class="text-muted text-decoration-none">Privacy Policy</a>
+>>>>>>> 653653a2001093153ae4065d6e2a2ce90e48fd86
                 </div>
             </div>
         </div>
@@ -144,6 +150,24 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.querySelector("form");
+            const submitButton = form.querySelector("button[type='submit']");
+
+            form.addEventListener("submit", function() {
+                // Disable the button immediately
+                submitButton.disabled = true;
+                submitButton.innerText = "Submitting...";
+
+                // Optional: Add spinner (Bootstrap-style)
+                submitButton.innerHTML = `
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Submitting...
+            `;
+            });
+        });
+    </script>
 </body>
 
 </html>
