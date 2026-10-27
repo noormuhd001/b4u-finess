@@ -1,414 +1,207 @@
 @extends('layouts.app')
+
+@section('title', 'Log your progress')
+
 @push('styles')
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
-        rel="stylesheet" />
-    <style>
-        .btn {
-            padding: 12px 25px;
-            background: #FF8C00;
-            color: #fff;
-            text-decoration: none;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-
-        .btn:hover {
-            background: #e07b00;
-        }
-
-        .workout-item {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 10px;
-        }
-
-        .workout-item .form-label {
-            font-weight: 500;
-        }
-
-        .removeWorkoutBtn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: red
-        }
-
-        .material-symbols-outlined {
-            vertical-align: middle;
-            margin-right: 6px;
-            font-size: 22px;
-        }
-
-        .dark-mode .card,
-        .dark-mode .workout-item,
-        .dark-mode .modal-content {
-            background-color: #1e1e1e;
-            color: #e0e0e0;
-            border: 1px solid #333;
-        }
-
-        .dark-mode .form-label,
-        .dark-mode label {
-            color: #e0e0e0;
-        }
-
-        .dark-mode .form-control,
-        .dark-mode .form-select {
-            background-color: #2c2c2c;
-            color: #e0e0e0;
-            border: 1px solid #555;
-        }
-
-        .dark-mode .form-control:focus,
-        .dark-mode .form-select:focus {
-            background-color: #2c2c2c;
-            color: #fff;
-            border-color: #FF8C00;
-            box-shadow: none;
-        }
-
-        .dark-mode .btn-orange,
-        .dark-mode .btn {
-            background-color: #FF8C00;
-            color: #121212;
-        }
-
-        .dark-mode .btn-orange:hover,
-        .dark-mode .btn:hover {
-            background-color: #e07b00;
-            color: #fff;
-        }
-
-        .dark-mode .btn-outline-secondary {
-            color: #e0e0e0;
-            border-color: #555;
-        }
-
-        .dark-mode .btn-outline-secondary:hover {
-            background-color: #333;
-            color: #fff;
-        }
-
-        .dark-mode .list-group-item {
-            background-color: #1e1e1e;
-            color: #e0e0e0;
-            border-color: #333;
-        }
-
-        .dark-mode .material-symbols-outlined.text-primary {
-            color: #4dabf7 !important;
-        }
-
-        .dark-mode .material-symbols-outlined.text-danger {
-            color: #ff6b6b !important;
-        }
-
-        .dark-mode .material-symbols-outlined.text-info {
-            color: #17a2b8 !important;
-        }
-
-        .dark-mode .material-symbols-outlined.text-secondary {
-            color: #adb5bd !important;
-        }
-
-        .badge-modal {
-            background: radial-gradient(circle at center, #fff 0%, #f8f9fa 100%);
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            animation: fadeInScale 0.6s ease-out;
-        }
-
-        .badge-icon {
-            width: 150px;
-            filter: drop-shadow(0 0 10px #ffd700);
-            animation: popIn 0.8s ease forwards, glowPulse 2s infinite alternate;
-        }
-
-        .text-gradient {
-            background: linear-gradient(90deg, #ff8a00, #e52e71);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes popIn {
-            0% {
-                transform: scale(0);
-                opacity: 0;
-            }
-
-            70% {
-                transform: scale(1.2);
-                opacity: 1;
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        @keyframes glowPulse {
-            from {
-                filter: drop-shadow(0 0 8px #ffd700);
-            }
-
-            to {
-                filter: drop-shadow(0 0 18px #ffed4a);
-            }
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet">
 @endpush
 
 @section('content')
-    <div class="container my-4">
-        <h2 class="mb-4">
-            <span class="material-symbols-outlined text-primary">monitor_heart</span>
-            Today’s Progress
-        </h2>
+    @php
+        $today = \Carbon\Carbon::today()->toDateString();
+        $todaysProgress = $progress && $progress->workout_on->toDateString() === $today ? $progress : null;
+    @endphp
+
+    <div class="container">
+        <div class="user-page-heading">
+            <div><h1>Progress check-in</h1><p>Log a workout, keep your history, and make every session count.</p></div>
+            <a href="{{ route('progress.track') }}" class="btn btn-outline-secondary"><i class="bi bi-clock-history"></i> Workout history</a>
+        </div>
 
         @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
+            <div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>{{ session('success') }}</div>
         @endif
         @if (session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
+            <div class="alert alert-danger"><i class="bi bi-exclamation-circle me-2"></i>{{ session('error') }}</div>
+        @endif
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <strong>Please check the form details:</strong>
+                <ul class="mb-0 mt-2">@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
+            </div>
         @endif
 
         @if (session('earned_badges'))
-            <div class="modal fade" id="badgeModal" tabindex="-1" aria-hidden="true">
+            <div class="modal fade" id="badgeModal" tabindex="-1" aria-labelledby="badgeModalTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content text-center p-4 position-relative badge-modal">
-                        {{-- <h4 class="fw-bold mb-4 text-gradient">You Earned a Badge!</h4> --}}
-
+                    <div class="modal-content text-center p-4">
+                        <span class="today-stat-icon mx-auto mb-3"><i class="bi bi-award"></i></span>
+                        <h2 class="h4 mb-3" id="badgeModalTitle">Achievement unlocked!</h2>
                         @foreach (session('earned_badges') as $badge)
-                            <div class="badge-display mb-4">
-                                <img src="{{ asset($badge->icon) }}" alt="{{ $badge->name }}"
-                                    class="badge-icon img-fluid mb-2">
-                                <h5 class="fw-bold">{{ $badge->name }}</h5>
-                                <p class="text-muted">{{ $badge->description }}</p>
+                            <div class="mb-3">
+                                @if ($badge->icon)<img src="{{ asset($badge->icon) }}" alt="" class="badge-icon img-fluid mb-2">@endif
+                                <h3 class="h6 mb-1">{{ $badge->name }}</h3>
+                                <p class="text-muted small">{{ $badge->description }}</p>
                             </div>
                         @endforeach
-
-                        <button type="button" class="btn btn-primary mt-2" data-bs-dismiss="modal">
-                            Awesome!
-                        </button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Keep it up</button>
                     </div>
                 </div>
             </div>
         @endif
-
-        @php
-            $today = \Carbon\Carbon::today()->toDateString();
-            $todaysProgress = $progress && $progress->workout_on->toDateString() === $today ? $progress : null;
-        @endphp
 
         @if ($todaysProgress)
-            <div class="card p-4 mb-3">
-                <h5>Today's Workout ({{ $today }})</h5>
-                <p><span class="material-symbols-outlined text-info">monitor_weight</span><strong>Weight:</strong>
-                    {{ $todaysProgress->current_weight }} kg</p>
-                <p><span class="material-symbols-outlined text-danger">local_fire_department</span><strong>Total Kcal
-                        Burned:</strong> {{ $totalKcal ?? $todaysProgress->avg_kcal_burned }}</p>
-
-                <h6 class="mt-3">Workout Details:</h6>
-                @if ($todaysLogs && $todaysLogs->count())
-                    <ul class="list-group">
-                        @foreach ($todaysLogs as $log)
-                            <li class="list-group-item">
-                                <strong>{{ $log->workout->workout_name ?? 'Workout' }}</strong> — Sets:
-                                {{ $log->set_number }}, Reps: {{ $log->reps }}, Weight: {{ $log->weight }} kg, Kcal
-                                Burned: {{ $log->kcal_burned }}
-                            </li>
-                        @endforeach
-                    </ul>
-                @else
-                    <p>No workouts logged yet for today.</p>
-                @endif
-            </div>
+            <section class="card mb-4">
+                <div class="card-body p-4">
+                    <div class="dashboard-panel-title">
+                        <div><h2>Today’s workout is in</h2><p>{{ $todaysProgress->workout_on->format('l, F j, Y') }}</p></div>
+                        <span class="today-stat-icon"><i class="bi bi-check2-circle"></i></span>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-sm-6"><div class="settings-card h-100"><div><small class="text-muted">Current weight</small><h2 class="mb-0 mt-1">{{ $todaysProgress->current_weight }} kg</h2></div><span class="today-stat-icon"><i class="bi bi-speedometer2"></i></span></div></div>
+                        <div class="col-sm-6"><div class="settings-card h-100"><div><small class="text-muted">Calories logged</small><h2 class="mb-0 mt-1">{{ number_format((float) ($totalKcal ?? $todaysProgress->avg_kcal_burned)) }} kcal</h2></div><span class="today-stat-icon"><i class="bi bi-fire"></i></span></div></div>
+                    </div>
+                    <h3 class="h6 mb-3">Exercises completed</h3>
+                    @if ($todaysLogs && $todaysLogs->count())
+                        <ul class="list-group">
+                            @foreach ($todaysLogs as $log)
+                                <li class="list-group-item d-flex flex-wrap align-items-center justify-content-between gap-2">
+                                    <strong>{{ $log->workout->workout_name ?? 'Workout' }}</strong>
+                                    <span class="text-muted">{{ $log->set_number }} sets × {{ $log->reps }} reps · {{ $log->weight }} kg · {{ $log->kcal_burned }} kcal</span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="text-muted">No individual exercises were added.</p>
+                    @endif
+                </div>
+            </section>
         @else
-            <p><span class="material-symbols-outlined text-secondary">info</span>No progress recorded for today. You can log
-                your workout below:</p>
-
             <form action="{{ route('progress.store') }}" method="POST">
                 @csrf
-
-                <div class="mb-3">
-                    <label class="form-label">Current Weight (kg)</label>
-                    <input type="number" step="0.1" name="weight" class="form-control" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Workout Date</label>
-                    <input type="date" name="workout_on" class="form-control" value="{{ $today }}"
-                        max="{{ $today }}" required>
-                </div>
-
-                <h5>Workouts</h5>
-                <div id="workouts-wrapper">
-                    <div class="workout-item position-relative">
-                        <div class="row g-3">
-                            <div class="col-md-2">
-                                <label class="form-label">Workout Part</label>
-                                <select name="workouts_completed[0][part]" class="form-select workout-part" required>
-                                    <option value="">-- Select Part --</option>
-                                    @foreach ($parts as $part)
-                                        <option value="{{ $part }}">{{ ucfirst($part) }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="col-md-2">
-                                <label class="form-label">Workout</label>
-                                <select name="workouts_completed[0][workout_id]" class="form-select workout-select"
-                                    required>
-                                    <option value="">-- Select Workout --</option>
-                                    @foreach ($workouts as $workout)
-                                        <option value="{{ $workout->id }}" data-part="{{ $workout->body_part }}">
-                                            {{ $workout->workout_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="col-md-2">
-                                <label class="form-label">Sets</label>
-                                <input type="number" name="workouts_completed[0][sets]" class="form-control" min="1"
-                                    required>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label">Reps</label>
-                                <input type="number" name="workouts_completed[0][reps]" class="form-control" min="1"
-                                    required>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label">Weight (kg)</label>
-                                <input type="number" step="0.5" name="workouts_completed[0][weight]"
-                                    class="form-control">
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-danger removeWorkoutBtn mt-2"
-                            style="display:none; position:absolute; top:10px; right:10px;">Remove</button>
+                <section class="card progress-form-card mb-4">
+                    <div class="dashboard-panel-title">
+                        <div><h2>Session details</h2><p>Start with a date and your current weight.</p></div>
+                        <span class="today-stat-icon"><i class="bi bi-journal-check"></i></span>
                     </div>
-                </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="current-weight">Current weight (kg)</label>
+                            <input id="current-weight" type="number" step="0.1" min="20" max="500" name="weight" class="form-control" value="{{ old('weight', auth()->user()->weight) }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="workout-date">Workout date</label>
+                            <input id="workout-date" type="date" name="workout_on" class="form-control" value="{{ old('workout_on', $today) }}" max="{{ $today }}" required>
+                        </div>
+                    </div>
+                </section>
 
-                <button type="button" class="btn btn-outline-secondary btn-sm mb-3" id="addWorkoutBtn">+ Add
-                    Workout</button>
-                <br>
-                <button type="submit" class="btn btn-orange">Save Progress</button>
+                <section class="card progress-form-card mb-4">
+                    <div class="dashboard-panel-title">
+                        <div><h2>Exercises</h2><p>Add each exercise with its sets, reps, and working weight.</p></div>
+                    </div>
+                    <div id="workouts-wrapper" class="d-grid gap-3">
+                        <div class="workout-item">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Muscle group</label>
+                                    <select name="workouts_completed[0][part]" class="form-select workout-part" required>
+                                        <option value="">Select a group</option>
+                                        @foreach ($parts as $part)<option value="{{ $part }}">{{ ucfirst($part) }}</option>@endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Exercise</label>
+                                    <select name="workouts_completed[0][workout_id]" class="form-select workout-select" required>
+                                        <option value="">Select an exercise</option>
+                                        @foreach ($workouts as $workout)
+                                            <option value="{{ $workout->id }}" data-part="{{ $workout->body_part }}">{{ $workout->workout_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-4 col-md-1">
+                                    <label class="form-label">Sets</label>
+                                    <input type="number" name="workouts_completed[0][sets]" class="form-control" min="1" max="100" required>
+                                </div>
+                                <div class="col-4 col-md-1">
+                                    <label class="form-label">Reps</label>
+                                    <input type="number" name="workouts_completed[0][reps]" class="form-control" min="1" max="1000" required>
+                                </div>
+                                <div class="col-4 col-md-2">
+                                    <label class="form-label">Weight (kg)</label>
+                                    <input type="number" step="0.5" min="0" name="workouts_completed[0][weight]" class="form-control" value="0">
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger btn-sm removeWorkoutBtn mt-3" style="display:none">
+                                <i class="bi bi-trash3"></i> Remove exercise
+                            </button>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <button type="button" class="btn btn-outline-secondary" id="addWorkoutBtn"><i class="bi bi-plus-lg"></i> Add another exercise</button>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i> Save progress</button>
+                    </div>
+                </section>
             </form>
         @endif
-
-        {{-- Track Workout Button --}}
-        <a href="{{ route('progress.track') }}" class="btn mt-2" style="background-color: #0056b3">
-            <span class="material-symbols-outlined">monitoring</span>
-            Track Workout
-        </a>
     </div>
 @endsection
 
 @push('scripts')
-    <!-- Confetti Script -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
     <script>
-        const badgeModal = document.getElementById('badgeModal');
-        badgeModal.addEventListener('shown.bs.modal', () => {
-            // Launch confetti from both sides
-            const duration = 2000; // Confetti duration in ms
-            const end = Date.now() + duration;
-
-            (function frame() {
-                confetti({
-                    particleCount: 4,
-                    angle: 60,
-                    spread: 55,
-                    origin: {
-                        x: 0
-                    },
-                    colors: ['#ff8a00', '#ffd700', '#ff2e63', '#00c9a7']
+        document.addEventListener('DOMContentLoaded', function () {
+            const badgeModalElement = document.getElementById('badgeModal');
+            if (badgeModalElement) {
+                badgeModalElement.addEventListener('shown.bs.modal', function () {
+                    if (typeof confetti === 'function') {
+                        confetti({ particleCount: 90, spread: 65, origin: { y: 0.65 }, colors: ['#c9f36a', '#1c392b', '#ec8a4b'] });
+                    }
                 });
-                confetti({
-                    particleCount: 4,
-                    angle: 120,
-                    spread: 55,
-                    origin: {
-                        x: 1
-                    },
-                    colors: ['#ff8a00', '#ffd700', '#ff2e63', '#00c9a7']
-                });
+                bootstrap.Modal.getOrCreateInstance(badgeModalElement).show();
+            }
 
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
-                }
-            })();
-        });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    @if (session('earned_badges'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                var badgeModal = new bootstrap.Modal(document.getElementById('badgeModal'));
-                badgeModal.show();
-            });
-        </script>
-    @endif
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            let workoutIndex = 1;
-            const addWorkoutBtn = document.getElementById('addWorkoutBtn');
             const wrapper = document.getElementById('workouts-wrapper');
+            const addWorkoutBtn = document.getElementById('addWorkoutBtn');
+            if (!wrapper || !addWorkoutBtn) return;
 
-            function filterWorkouts(selectItem) {
-                const part = selectItem.value;
-                const workoutSelect = selectItem.closest('.workout-item').querySelector('.workout-select');
+            let workoutIndex = 1;
 
-                workoutSelect.querySelectorAll('option').forEach(option => {
-                    if (option.value === "") return;
-                    option.style.display = (option.dataset.part === part) ? 'block' : 'none';
+            function filterWorkouts(partSelect) {
+                const workoutSelect = partSelect.closest('.workout-item').querySelector('.workout-select');
+                workoutSelect.value = '';
+                workoutSelect.querySelectorAll('option').forEach(function (option) {
+                    if (option.value) {
+                        option.hidden = option.dataset.part !== partSelect.value;
+                    }
                 });
-
-                // Reset selection
-                workoutSelect.value = "";
             }
 
-            wrapper.addEventListener('change', function(e) {
-                if (e.target.classList.contains('workout-part')) {
-                    filterWorkouts(e.target);
-                }
+            wrapper.addEventListener('change', function (event) {
+                if (event.target.classList.contains('workout-part')) filterWorkouts(event.target);
             });
 
-            if (addWorkoutBtn) {
-                addWorkoutBtn.addEventListener('click', function() {
-                    let newItem = document.querySelector('.workout-item').cloneNode(true);
-
-                    newItem.querySelectorAll('input, select').forEach(el => {
-                        el.name = el.name.replace(/\d+/, workoutIndex);
-                        el.value = '';
-                    });
-
-                    let removeBtn = newItem.querySelector('.removeWorkoutBtn');
-                    removeBtn.style.display = 'block';
-                    removeBtn.addEventListener('click', function() {
-                        newItem.remove();
-                    });
-
-                    wrapper.appendChild(newItem);
-                    workoutIndex++;
+            addWorkoutBtn.addEventListener('click', function () {
+                const firstItem = wrapper.querySelector('.workout-item');
+                const newItem = firstItem.cloneNode(true);
+                newItem.querySelectorAll('input, select').forEach(function (field) {
+                    field.name = field.name.replace(/\[\d+\]/, '[' + workoutIndex + ']');
+                    if (field.tagName === 'SELECT') {
+                        field.selectedIndex = 0;
+                        field.querySelectorAll('option').forEach(option => option.hidden = false);
+                    } else if (field.name.endsWith('[weight]')) {
+                        field.value = '0';
+                    } else {
+                        field.value = '';
+                    }
                 });
-            }
+                const removeButton = newItem.querySelector('.removeWorkoutBtn');
+                removeButton.style.display = 'inline-flex';
+                removeButton.addEventListener('click', function () { newItem.remove(); });
+                wrapper.appendChild(newItem);
+                workoutIndex++;
+            });
         });
     </script>
 @endpush

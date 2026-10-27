@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UserStoreRequest extends FormRequest
 {
@@ -35,6 +36,11 @@ class UserStoreRequest extends FormRequest
                 'regex:/[@$!%*#?&]/',
             ],
             'confirm_password' => ['required', 'same:password'],
+            'membership_plan_id' => [
+                'required',
+                'integer',
+                Rule::exists('membership_plans', 'id')->where('is_active', true),
+            ],
         ];
     }
 

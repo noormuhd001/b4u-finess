@@ -55,6 +55,9 @@ class DashboardController extends Controller
 
             $weights = $progresses->pluck('current_weight');
             $userData = User::findorFail($userId);
+            $userData->load('membershipPlan');
+            $userData->setRelation('lastAttendance', $userData->attendanceRecords()->latest('checked_in_at')->first());
+            $checkedInToday = $userData->attendanceRecords()->whereDate('check_in_date', $today)->exists();
             $earnedBadges = BadgeUser::leftJoin('badges', 'badges.id', '=', 'badge_users.badge_id')
                 ->where('badge_users.user_id', $userId)
                 ->select('badges.*')
@@ -62,7 +65,7 @@ class DashboardController extends Controller
             $allBadges = Badges::all();
             // dd($earnedBadges);
 
-            return view('dashboard.index', compact('todayProgress', 'dates', 'weights', 'leaderboard', 'userData', 'earnedBadges', 'allBadges'));
+            return view('dashboard.index', compact('todayProgress', 'dates', 'weights', 'leaderboard', 'userData', 'earnedBadges', 'allBadges', 'checkedInToday'));
         } catch (Exception $e) {
             report($e);
             return back()->with('error', 'Something went wrong. Please try again.');

@@ -1,52 +1,53 @@
 @extends('layouts.app')
 
-@push('styles')
-    <style>
-        .material-symbols-outlined {
-            vertical-align: middle;
-            font-size: 20px;
-            margin-right: 4px;
-        }
-    </style>
-@endpush
+@section('title', 'Workout details')
 
 @section('content')
     <div class="container">
-        <h2>
-            Workout Details for {{ $progress->workout_on->format('d M Y') }}
-        </h2>
+        <div class="user-page-heading">
+            <div><h1>Session details</h1><p>{{ $progress->workout_on->format('l, F j, Y') }}</p></div>
+            <a href="{{ route('progress.track') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back to history</a>
+        </div>
 
-        <p>
-            <strong>
-                Weight:
-            </strong>
-            {{ $progress->current_weight }} kg
-        </p>
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6">
+                <section class="card h-100"><div class="card-body d-flex align-items-center gap-3">
+                    <span class="today-stat-icon"><i class="bi bi-speedometer2"></i></span>
+                    <div><small class="text-muted">Body weight</small><h2 class="h4 mb-0">{{ $progress->current_weight }} kg</h2></div>
+                </div></section>
+            </div>
+            <div class="col-sm-6">
+                <section class="card h-100"><div class="card-body d-flex align-items-center gap-3">
+                    <span class="today-stat-icon"><i class="bi bi-fire"></i></span>
+                    <div><small class="text-muted">Calories logged</small><h2 class="h4 mb-0">{{ number_format((float) $progress->avg_kcal_burned) }} kcal</h2></div>
+                </div></section>
+            </div>
+        </div>
 
-        <p>
-            <strong>
-                Total Kcal Burned:
-            </strong>
-            {{ $progress->avg_kcal_burned }}
-        </p>
-
-        <h4>
-            Workouts Completed
-        </h4>
-        <ul class="list-group mb-3">
-            @foreach ($logs as $log)
-                <li class="list-group-item">
-                    {{ $log->workout->workout_name ?? 'Workout' }}
-                    <br>
-                    Sets: {{ $log->set_number }}, Reps: {{ $log->reps }},
-                    Weight: {{ $log->weight }} kg,
-                    Kcal Burned: {{ $log->kcal_burned }}
-                </li>
-            @endforeach
-        </ul>
-
-        <a href="{{ route('progress.track') }}" class="btn btn-secondary">
-            <span class="material-symbols-outlined">arrow_back_ios</span>Back
-        </a>
+        <section class="card">
+            <div class="card-body p-4">
+                <div class="dashboard-panel-title"><div><h2>Exercises completed</h2><p>{{ $logs->count() }} recorded {{ \Illuminate\Support\Str::plural('exercise', $logs->count()) }}</p></div></div>
+                @if ($logs->isEmpty())
+                    <p class="text-muted py-3">No individual exercises were recorded in this session.</p>
+                @else
+                    <div class="table-responsive">
+                        <table class="progress-table">
+                            <thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Weight</th><th>Calories</th></tr></thead>
+                            <tbody>
+                                @foreach ($logs as $log)
+                                    <tr>
+                                        <td><strong>{{ $log->workout->workout_name ?? 'Workout' }}</strong></td>
+                                        <td>{{ $log->set_number }}</td>
+                                        <td>{{ $log->reps }}</td>
+                                        <td>{{ $log->weight }} kg</td>
+                                        <td>{{ $log->kcal_burned }} kcal</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+            </div>
+        </section>
     </div>
 @endsection

@@ -20,4 +20,9 @@ class ProgressLog extends Model
     {
         return $this->belongsTo(Workout::class);
     }
+
+    public function progress()
+    {
+        return $this->belongsTo(Progress::class);
+    }
 }

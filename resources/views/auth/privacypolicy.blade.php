@@ -4,68 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy - B4U Fitness</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            margin: 0;
-            padding: 40px;
-            background-color: #fafafa;
-            color: #333;
-            line-height: 1.7;
-        }
-
-        h1 {
-            color: #FF8C00;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        h3 {
-            color: #444;
-            margin-top: 1.5rem;
-        }
-
-        p,
-        li {
-            font-size: 16px;
-        }
-
-        ul {
-            margin-left: 1.5rem;
-        }
-
-        a {
-            color: #FF8C00;
-            text-decoration: none;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: auto;
-            background: #fff;
-            padding: 30px 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            font-size: 14px;
-            color: #666;
-        }
-    </style>
+    <title>Privacy Policy - NR Fitness</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
 
-<body>
-    <div class="container">
+<body class="auth-page legal-page">
+    <main class="legal-card">
+        <a class="legal-brand" href="{{ route('login') }}"><img src="{{ asset('img/logo-rm.png') }}" alt="">NR FITNESS</a>
         <h1>Privacy Policy</h1>
         <p><strong>Last updated:</strong> October 28, 2025</p>
 
-        <p>At <strong>B4U Fitness</strong>, your privacy is important to us. This Privacy Policy describes how we
+        <p>At <strong>NR Fitness</strong>, your privacy is important to us. This Privacy Policy describes how we
             collect, use, and protect your personal information when you use our services.</p>
 
         <h3>1. Information We Collect</h3>
@@ -92,10 +43,10 @@
 
         <p>For any privacy concerns, contact us at <a
                 href="mailto:noor.bytekat@gmail.com">noor.bytekat@gmail.com</a></p>
-    </div>
+    </main>
 
     <footer>
-        © 2025 B4U Fitness | <a href="{{ route('termsAndConditions') }}">Terms & Conditions</a>
+        © 2025 NR Fitness | <a href="{{ route('termsAndConditions') }}">Terms & Conditions</a>
     </footer>
 </body>
 

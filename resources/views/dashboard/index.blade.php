@@ -1,234 +1,221 @@
 @extends('layouts.app')
 
-@push('styles')
-    <style>
-        .dashboard-title {
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
-
-        .card {
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        .card h4 {
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-
-
-
-        .leader-item {
-            background: #fff;
-            border-radius: 12px;
-            margin-bottom: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s;
-        }
-
-        .leader-item:hover {
-            transform: scale(1.02);
-        }
-
-        .rank-circle {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #f0f0f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-
-        .rank-circle.highlight {
-            background: linear-gradient(135deg, #ff8a00, #e52e71);
-            color: #fff;
-        }
-
-        .material-symbols-outlined {
-            vertical-align: middle;
-            margin-right: 6px;
-            font-size: 22px;
-            color: #FF8C00;
-        }
-
-        nav .material-symbols-outlined {
-            color: white;
-        }
-    </style>
-@endpush
+@section('title', 'Your fitness overview')
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 @endpush
 
 @section('content')
-    <div class="container my-4">
-        {{-- <h2 class="dashboard-title">
-            <span class="material-symbols-outlined text-primary">speed</span> Dashboard
-        </h2> --}}
+    <div class="container">
+        <section class="dashboard-hero mb-4">
+            <span class="hero-kicker">Your fitness journey</span>
+            <h1>Good to see you, {{ $userData->name }}.</h1>
+            <p>Progress is built one session at a time. Check in, stay consistent, and celebrate how far you’ve come.</p>
+            @if ($userData->membershipPlan)
+                <div class="dashboard-membership">
+                    <i class="bi bi-card-checklist"></i>
+                    <span><small>Your membership</small><strong>{{ $userData->membershipPlan->name }} · ₹{{ number_format((float) $userData->membershipPlan->price, 2) }}</strong></span>
+                    <span class="dashboard-payment-status">{{ ucfirst($userData->cash_payment_status ?? 'pending') }} payment</span>
+                </div>
+            @endif
+            <div class="d-flex flex-wrap gap-2 {{ $userData->membershipPlan ? '' : 'mt-4' }}">
+                <a href="{{ route('progress.index') }}" class="btn"><i class="bi bi-plus-lg"></i> Log a workout</a>
+                <a href="{{ route('workout') }}" class="btn btn-outline-light">Explore workouts</a>
+            </div>
+        </section>
+
+        <section class="attendance-dashboard-card mb-4">
+            <span class="attendance-dashboard-icon"><i class="bi bi-calendar-check"></i></span>
+            <div class="attendance-dashboard-copy">
+                <strong>{{ $checkedInToday ? 'You’re checked in for today' : 'At the gym today?' }}</strong>
+                <span>
+                    @if ($checkedInToday)
+                        Nice work showing up. Your last visit was {{ $userData->lastAttendance?->checked_in_at->format('M d, g:i A') ?? 'today' }}.
+                    @elseif ($userData->hasActiveMembership())
+                        Your last visit: {{ $userData->lastAttendance?->checked_in_at->format('M d, Y') ?? 'No visits yet' }}.
+                    @else
+                        Check your membership and visit history.
+                    @endif
+                </span>
+            </div>
+            @if ($checkedInToday)
+                <a href="{{ route('attendance.index') }}" class="btn btn-outline-secondary">View attendance</a>
+            @elseif ($userData->hasActiveMembership())
+                <form method="POST" action="{{ route('attendance.check-in') }}">
+                    @csrf
+                    <button class="btn btn-primary" type="submit"><i class="bi bi-box-arrow-in-right"></i> Check in now</button>
+                </form>
+            @else
+                <a href="{{ route('attendance.index') }}" class="btn btn-outline-secondary">View membership status</a>
+            @endif
+        </section>
 
         <div class="row g-4">
-            {{-- Today’s Progress --}}
-            <div class="col-lg-6">
-                <div class="card p-4">
-                    <h4>
-                        <span class="material-symbols-outlined text-danger">local_fire_department</span>
-                        Today's Workout
-                    </h4>
-
-                    @if ($todayProgress)
-                        <p>
-                            <span class="material-symbols-outlined text-info">person</span>
-                            <strong>Weight:</strong> {{ $todayProgress->current_weight }} kg
-                        </p>
-
-                        <p>
-                            <span class="material-symbols-outlined text-warning">bolt</span>
-                            <strong>Total Kcal Burned:</strong> {{ $todayProgress->avg_kcal_burned }}
-                        </p>
-
-                        <p>
-                            <span class="material-symbols-outlined text-success">checklist</span>
-                            <strong>Workouts:</strong>
-                            @php
-                                $workoutNames = $todayProgress->logs
-                                    ->map(fn($log) => $log->workout->workout_name ?? 'Workout')
-                                    ->toArray();
-                            @endphp
-                            {{ implode(', ', $workoutNames) }}
-                        </p>
-
-                        <p>
-                            <span class="material-symbols-outlined text-warning">flag</span>
-                            <strong>Goal:</strong> {{ config('constant.goal.' . $userData->goal) }}
-                        </p>
-                    @else
-                        <h5 class="text-muted">
-                            <span class="material-symbols-outlined">event_busy</span>
-                            No workout logged today
-                        </h5>
-                    @endif
-                </div>
-            </div>
-
-            {{-- Weight Progress Chart --}}
-            <div class="col-lg-6">
-                <div class="card p-4">
-                    <h4>
-                        <span class="material-symbols-outlined text-success">monitoring</span>
-                        Weight Progress
-                    </h4>
-                    <canvas id="weightChart" height="150"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="leader-list mt-3">
-            <div class="card p-4">
-                <h4 class="mb-3">
-                    <span class="material-symbols-outlined">trophy</span>
-                    Top Lifts Leaderboard
-                </h4>
-                @forelse($leaderboard as $index => $record)
-                    <div class="leader-item d-flex justify-content-between align-items-center p-3">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="rank-circle {{ $index < 3 ? 'highlight' : '' }}">
-                                {{ $index + 1 }}
-                            </div>
+            <div class="col-lg-5">
+                <section class="card h-100">
+                    <div class="card-body p-4">
+                        <div class="dashboard-panel-title">
                             <div>
-                                <h6 class="mb-0">{{ $record->user_name }}</h6>
-                                <small class="text-muted">{{ $record->workout_name }}</small>
+                                <h2>Today’s session</h2>
+                                <p>{{ now()->format('l, F j') }}</p>
                             </div>
+                            <span class="today-stat-icon"><i class="bi bi-lightning-charge"></i></span>
                         </div>
-                        <div class="text-end">
-                            <h6 class="fw-bold text-danger mb-0">{{ $record->weight }} kg</h6>
-                            <small>{{ $record->set_number }}×{{ $record->reps }}</small>
-                        </div>
+
+                        @if ($todayProgress)
+                            <div class="today-stat">
+                                <span class="today-stat-icon"><i class="bi bi-speedometer2"></i></span>
+                                <div><strong>{{ $todayProgress->current_weight }} kg</strong><br><span class="text-muted">Current weight</span></div>
+                            </div>
+                            <div class="today-stat">
+                                <span class="today-stat-icon"><i class="bi bi-fire"></i></span>
+                                <div><strong>{{ number_format((float) $todayProgress->avg_kcal_burned) }} kcal</strong><br><span class="text-muted">Calories logged</span></div>
+                            </div>
+                            <div class="today-stat mb-0">
+                                <span class="today-stat-icon"><i class="bi bi-activity"></i></span>
+                                <div>
+                                    <strong>{{ $todayProgress->logs->count() }} {{ \Illuminate\Support\Str::plural('exercise', $todayProgress->logs->count()) }}</strong><br>
+                                    <span class="text-muted">
+                                        @php
+                                            $workoutNames = $todayProgress->logs
+                                                ->map(fn ($log) => $log->workout->workout_name ?? 'Workout')
+                                                ->toArray();
+                                        @endphp
+                                        {{ implode(', ', $workoutNames) ?: 'No exercises logged' }}
+                                    </span>
+                                </div>
+                            </div>
+                        @else
+                            <div class="py-4 text-center">
+                                <span class="today-stat-icon mx-auto mb-3"><i class="bi bi-calendar2-check"></i></span>
+                                <h3 class="h6">Your day is wide open</h3>
+                                <p class="text-muted small mb-3">No workout logged today. Make the first move.</p>
+                                <a href="{{ route('progress.index') }}" class="btn btn-primary">Start a check-in</a>
+                            </div>
+                        @endif
+
+                        @if ($userData->goal)
+                            <div class="mt-4 pt-3 border-top">
+                                <span class="text-muted small">Your current goal</span>
+                                <div class="fw-bold mt-1"><i class="bi bi-bullseye me-1"></i>{{ config('constant.goal.' . $userData->goal, 'Build a consistent routine') }}</div>
+                            </div>
+                        @endif
                     </div>
-                @empty
-                    <p class="text-muted text-center">No records yet</p>
-                @endforelse
+                </section>
             </div>
-        </div>
-        {{-- All Badges Display --}}
-        <div class="col-12 mt-3">
-            <div class="card p-4">
-                <h4 class="mb-3">
-                    <span class="material-symbols-outlined">military_tech</span>
-                    Badges
-                </h4>
 
-                <div class="d-flex flex-wrap gap-4 justify-content-start">
-                    @foreach ($allBadges as $badge)
-                        @php
-                            $isEarned = $earnedBadges->contains('id', $badge->id);
-                        @endphp
-
-                        <div class="text-center" style="width: 120px;">
-                            <img src="{{ asset($badge->icon) }}"
-                                class="img-fluid mb-2 {{ $isEarned ? 'badge-icon' : 'badge-icon badge-locked' }}"
-                                style="max-width:80px;">
-
-                            <h6 class="fw-bold {{ $isEarned ? 'text-dark' : 'text-muted' }}">
-                                {{ $badge->name }}
-                            </h6>
-                            <p class="text-muted small mb-0">{{ $badge->description }}</p>
+            <div class="col-lg-7">
+                <section class="card h-100">
+                    <div class="card-body p-4">
+                        <div class="dashboard-panel-title">
+                            <div><h2>Weight trend</h2><p>A clear view of your check-ins over time</p></div>
+                            <span class="soft-badge text-muted"><i class="bi bi-graph-up me-1"></i>{{ count($weights) }} check-ins</span>
                         </div>
-                    @endforeach
-                </div>
+                        @if (count($weights))
+                            <div style="height: 260px"><canvas id="weightChart" aria-label="Weight progress chart"></canvas></div>
+                        @else
+                            <div class="py-5 text-center">
+                                <span class="today-stat-icon mx-auto mb-3"><i class="bi bi-graph-up"></i></span>
+                                <h3 class="h6">Your progress takes shape here</h3>
+                                <p class="text-muted small">Log your first check-in to start seeing your trend.</p>
+                                <a href="{{ route('progress.index') }}" class="btn btn-primary">Log your first check-in</a>
+                            </div>
+                        @endif
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-lg-6">
+                <section class="card h-100">
+                    <div class="card-body p-4">
+                        <div class="dashboard-panel-title">
+                            <div><h2>Community top lifts</h2><p>Big efforts from the NR community</p></div>
+                            <span class="today-stat-icon"><i class="bi bi-trophy"></i></span>
+                        </div>
+                        @forelse ($leaderboard as $index => $record)
+                            <div class="leader-item">
+                                <div class="d-flex align-items-center gap-3 min-w-0">
+                                    <span class="rank-circle {{ $index < 3 ? 'highlight' : '' }}">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                                    <div class="text-truncate">
+                                        <strong class="d-block text-truncate">{{ $record->user_name ?? 'Member' }}</strong>
+                                        <small class="text-muted">{{ $record->workout_name ?? 'Workout' }} · {{ $record->set_number }} × {{ $record->reps }}</small>
+                                    </div>
+                                </div>
+                                <strong class="text-nowrap">{{ $record->weight }} kg</strong>
+                            </div>
+                        @empty
+                            <p class="text-center text-muted py-4 mb-0">The leaderboard will appear as members log lifts.</p>
+                        @endforelse
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-lg-6">
+                <section class="card h-100">
+                    <div class="card-body p-4">
+                        <div class="dashboard-panel-title">
+                            <div><h2>Your achievements</h2><p>Every milestone is worth celebrating</p></div>
+                            <span class="today-stat-icon"><i class="bi bi-award"></i></span>
+                        </div>
+                        @if ($allBadges->isNotEmpty())
+                            <div class="badge-grid">
+                                @foreach ($allBadges as $badge)
+                                    @php($isEarned = $earnedBadges->contains('id', $badge->id))
+                                    <article class="badge-tile {{ $isEarned ? '' : 'badge-locked' }}">
+                                        @if ($badge->icon)
+                                            <img src="{{ asset($badge->icon) }}" alt="">
+                                        @else
+                                            <span class="today-stat-icon mx-auto mb-3"><i class="bi bi-award"></i></span>
+                                        @endif
+                                        <h3>{{ $badge->name }}</h3>
+                                        <p>{{ $isEarned ? 'Earned' : ($badge->description ?: 'Keep training to unlock this badge.') }}</p>
+                                    </article>
+                                @endforeach
+                            </div>
+                        @else
+                            <p class="text-center text-muted py-4 mb-0">New achievements will show up here.</p>
+                        @endif
+                    </div>
+                </section>
             </div>
         </div>
+    </div>
 
-        {{-- Chart Script --}}
+    @if (count($weights))
         @push('scripts')
             <script>
-                const ctx = document.getElementById('weightChart').getContext('2d');
-                const weightChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: @json($dates),
-                        datasets: [{
-                            label: 'Weight (kg)',
-                            data: @json($weights),
-                            borderColor: '#FF5733',
-                            backgroundColor: 'rgba(255, 87, 51, 0.2)',
-                            tension: 0.3,
-                            fill: true,
-                            pointRadius: 5,
-                            pointHoverRadius: 7
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        const prev = context.dataIndex > 0 ? context.dataset.data[context.dataIndex -
-                                            1] : null;
-                                        const curr = context.parsed.y;
-                                        let diff = '';
-                                        if (prev !== null) {
-                                            const change = (curr - prev).toFixed(1);
-                                            diff = change > 0 ? ` (+${change} kg)` : ` (${change} kg)`;
-                                        }
-                                        return `Weight: ${curr} kg${diff}`;
-                                    }
-                                }
-                            },
-                            legend: {
-                                display: true
-                            }
+                const weightCanvas = document.getElementById('weightChart');
+                if (weightCanvas) {
+                    new Chart(weightCanvas, {
+                        type: 'line',
+                        data: {
+                            labels: @json($dates),
+                            datasets: [{
+                                label: 'Weight (kg)',
+                                data: @json($weights),
+                                borderColor: '#345a40',
+                                backgroundColor: 'rgba(201, 243, 106, .24)',
+                                fill: true,
+                                tension: .36,
+                                borderWidth: 2.5,
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                pointBackgroundColor: '#c9f36a',
+                                pointBorderColor: '#345a40',
+                            }]
                         },
-                        scales: {
-                            y: {
-                                beginAtZero: false
+                        options: {
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                y: { beginAtZero: false, grid: { color: '#edf1ec' }, ticks: { color: '#77847c' } },
+                                x: { grid: { display: false }, ticks: { color: '#77847c' } }
                             }
                         }
-                    }
-                });
+                    });
+                }
             </script>
         @endpush
-    @endsection
+    @endif
+@endsection

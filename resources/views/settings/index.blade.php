@@ -1,57 +1,70 @@
 @extends('layouts.app')
 
-@section('content')
-    <div class="container my-4">
-        <h3>Settings</h3>
+@section('title', 'Settings')
 
-        <div class="form-check form-switch mt-3">
-            <input class="form-check-input" type="checkbox" id="darkModeToggle"
-                {{ auth()->user()->dark_mode ? 'checked' : '' }}>
-            <label class="form-check-label" for="darkModeToggle">Enable Dark Mode</label>
+@section('content')
+    <div class="container">
+        <div class="user-page-heading">
+            <div><h1>Settings</h1><p>Make your NR Fitness experience feel right for you.</p></div>
         </div>
 
-        {{-- Error alert placeholder --}}
-        <div id="errorAlert" class="alert alert-danger mt-3 d-none"></div>
+        <section class="card">
+            <div class="card-body p-4">
+                <div class="settings-card">
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="today-stat-icon"><i class="bi bi-moon-stars"></i></span>
+                        <div>
+                            <h2>Dark appearance</h2>
+                            <p class="mb-0">Use a darker color scheme across your member experience.</p>
+                        </div>
+                    </div>
+                    <div class="form-check form-switch m-0">
+                        <input class="form-check-input" type="checkbox" role="switch" id="darkModeToggle"
+                            {{ auth()->user()->dark_mode ? 'checked' : '' }} aria-label="Enable dark appearance">
+                    </div>
+                </div>
+
+                <div id="errorAlert" class="alert alert-danger mt-3 d-none" role="alert"></div>
+                <div id="successAlert" class="alert alert-success mt-3 d-none" role="status">Your appearance preference was saved.</div>
+            </div>
+        </section>
     </div>
 @endsection
 
 @push('scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function() {
-            const toggle = $('#darkModeToggle');
-            const errorAlert = $('#errorAlert');
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggle = document.getElementById('darkModeToggle');
+            const errorAlert = document.getElementById('errorAlert');
+            const successAlert = document.getElementById('successAlert');
+            const token = document.querySelector('meta[name="csrf-token"]').content;
 
-            // Initial state
-            if (toggle.is(':checked')) {
-                $('body').addClass('dark-mode');
-            }
+            toggle.addEventListener('change', async function () {
+                const enabled = this.checked ? 1 : 0;
+                const previous = !this.checked;
+                document.body.classList.toggle('dark-mode', Boolean(enabled));
+                errorAlert.classList.add('d-none');
+                successAlert.classList.add('d-none');
 
-            toggle.change(function() {
-                let enabled = $(this).is(':checked') ? 1 : 0;
+                try {
+                    const response = await fetch(@json(route('settings.darkmode')), {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': token,
+                        },
+                        body: JSON.stringify({ dark_mode: enabled }),
+                    });
 
-                if (enabled) {
-                    $('body').addClass('dark-mode');
-                } else {
-                    $('body').removeClass('dark-mode');
+                    if (!response.ok) throw new Error('Preference update failed');
+                    successAlert.classList.remove('d-none');
+                } catch {
+                    this.checked = previous;
+                    document.body.classList.toggle('dark-mode', previous);
+                    errorAlert.textContent = 'Your preference could not be saved. Please try again.';
+                    errorAlert.classList.remove('d-none');
                 }
-
-                // AJAX call to persist user preference
-                $.ajax({
-                    url: "{{ route('settings.darkmode') }}",
-                    method: 'POST',
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        dark_mode: enabled
-                    },
-                    success: function(res) {
-                        // hide error if previously shown
-                        errorAlert.addClass('d-none').text('');
-                    },
-                    error: function() {
-                        errorAlert.removeClass('d-none').text('⚠️ Failed to update dark mode. Please try again.');
-                    }
-                });
             });
         });
     </script>
