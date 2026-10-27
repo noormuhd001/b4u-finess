@@ -19,6 +19,16 @@
                 <i class="bi bi-people"></i><span class="menu-text">Users</span>
             </a>
         </li>
+        <li class="{{ request()->routeIs('admin.attendance*') ? 'active' : '' }}">
+            <a href="{{ route('admin.attendance.index') }}">
+                <i class="bi bi-calendar-check"></i><span class="menu-text">Attendance</span>
+            </a>
+        </li>
+        <li class="{{ request()->routeIs('admin.membership-plans*') ? 'active' : '' }}">
+            <a href="{{ route('admin.membership-plans.index') }}">
+                <i class="bi bi-card-checklist"></i><span class="menu-text">Membership plans</span>
+            </a>
+        </li>
         <li class="{{ request()->routeIs('admin.workouts*') ? 'active' : '' }}">
             <a href="{{ route('admin.workouts.index') }}">
                 <i class="bi bi-activity"></i><span class="menu-text">Workouts</span>

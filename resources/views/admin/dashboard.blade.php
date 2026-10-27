@@ -47,6 +47,24 @@
                 </div>
             </a>
         </div>
+        <div class="col-6 col-xl">
+            <a class="text-decoration-none" href="{{ route('admin.attendance.index', ['period' => 'daily']) }}">
+                <div class="stat-card">
+                    <div class="stat-top"><span class="stat-label">Today’s check-ins</span><span class="stat-icon"><i class="bi bi-calendar-check"></i></span></div>
+                    <div class="stat-value">{{ number_format($stats['today_check_ins']) }}</div>
+                    <div class="stat-note">Gym visits today</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-xl">
+            <a class="text-decoration-none" href="{{ route('admin.attendance.index') }}">
+                <div class="stat-card">
+                    <div class="stat-top"><span class="stat-label">Members to follow up</span><span class="stat-icon"><i class="bi bi-person-exclamation"></i></span></div>
+                    <div class="stat-value">{{ number_format($stats['inactive_members']) }}</div>
+                    <div class="stat-note">No visits in the past 30 days</div>
+                </div>
+            </a>
+        </div>
     </div>
 
     <section class="admin-card">

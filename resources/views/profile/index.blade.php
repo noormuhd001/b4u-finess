@@ -3,18 +3,6 @@
 @section('title', 'My profile')
 @section('page-heading', 'My profile')
 
-@push('styles')
-    <style>
-        .d-flex.justify-content-end.gap-2 {
-            margin-top: 1rem;
-        }
-
-        #editMode .bi {
-            color: #007bff;
-        }
-    </style>
-@endpush
-
 @section('content')
     <div class="container">
         <div class="user-page-heading">
@@ -29,7 +17,7 @@
             <!-- Profile Header -->
             <div class="profile-header">
                 <img id="profilePreview"
-                    src="{{ $user->image ? asset('storage/' . $user->image) : asset('img/profile.jpeg') }}"
+                    src="{{ $user->image ? asset('storage/' . $user->image) : asset('img/profile.png') }}"
                     alt="Profile Picture">
 
                 <h2>{{ $user->name }}</h2>
@@ -40,6 +28,18 @@
             <div id="viewMode" class="{{ $errors->any() ? 'd-none' : '' }}">
                 <div class="profile-info">
                     <p><i class="bi bi-envelope text-info" aria-hidden="true"></i> Email: {{ $user->email }}</p>
+                    <p><i class="bi bi-card-checklist text-success" aria-hidden="true"></i> Membership plan:
+                        {{ $user->membershipPlan?->name ?? 'No plan assigned' }}
+                        @if ($user->membershipPlan)
+                            · ₹{{ number_format((float) $user->membershipPlan->price, 2) }} / {{ $user->membershipPlan->duration_months }} {{ \Illuminate\Support\Str::plural('month', $user->membershipPlan->duration_months) }}
+                        @endif
+                    </p>
+                    <p><i class="bi bi-calendar-event text-success" aria-hidden="true"></i> Membership valid until:
+                        {{ $user->membership_expires_at?->format('M d, Y') ?? 'Not active' }}
+                    </p>
+                    <p><i class="bi bi-cash-coin text-warning" aria-hidden="true"></i> Cash payment:
+                        {{ ucfirst($user->cash_payment_status ?? 'pending') }}
+                    </p>
                     <p><i class="bi bi-person text-warning" aria-hidden="true"></i> Gender:
                         {{ $genders[$user->gender] ?? 'N/A' }}</p>
                     <p><i class="bi bi-arrows-vertical text-success" aria-hidden="true"></i> Height:
@@ -144,7 +144,7 @@
                         @enderror
                     </div>
 
-                    <div class="d-flex justify-content-end gap-2">
+                    <div class="profile-form-actions d-flex justify-content-end gap-2">
                         <!-- Buttons -->
                         <button type="submit" class="btn btn-save">
                             <i class="bi bi-check-circle" aria-hidden="true"></i> Save
@@ -180,7 +180,7 @@
                 if (event.target.files[0]) {
                     output.src = URL.createObjectURL(event.target.files[0]);
                 } else {
-                    output.src = "{{ asset('img/profile.jpeg') }}";
+                    output.src = "{{ asset('img/profile.png') }}";
                 }
             }
         </script>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Badges;
+use App\Models\AttendanceRecord;
 use App\Models\User;
 use App\Models\Workout;
 use Carbon\Carbon;
@@ -27,6 +28,17 @@ class DashboardController extends Controller
                 'active_users' => User::where('status', true)->count(),
                 'workouts' => Workout::count(),
                 'badges' => Badges::count(),
+                'today_check_ins' => AttendanceRecord::whereDate('check_in_date', today())->count(),
+                'inactive_members' => User::query()
+                    ->where('role', 0)
+                    ->where('status', true)
+                    ->where('cash_payment_status', 'received')
+                    ->whereNotNull('membership_expires_at')
+                    ->where('membership_expires_at', '>', now())
+                    ->whereDoesntHave('attendanceRecords', function ($query) {
+                        $query->where('checked_in_at', '>=', now()->subDays(30));
+                    })
+                    ->count(),
             ];
 
             $recentUsers = User::latest()->limit(8)->get();

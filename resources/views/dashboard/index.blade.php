@@ -12,10 +12,43 @@
             <span class="hero-kicker">Your fitness journey</span>
             <h1>Good to see you, {{ $userData->name }}.</h1>
             <p>Progress is built one session at a time. Check in, stay consistent, and celebrate how far you’ve come.</p>
-            <div class="d-flex flex-wrap gap-2 mt-4">
+            @if ($userData->membershipPlan)
+                <div class="dashboard-membership">
+                    <i class="bi bi-card-checklist"></i>
+                    <span><small>Your membership</small><strong>{{ $userData->membershipPlan->name }} · ₹{{ number_format((float) $userData->membershipPlan->price, 2) }}</strong></span>
+                    <span class="dashboard-payment-status">{{ ucfirst($userData->cash_payment_status ?? 'pending') }} payment</span>
+                </div>
+            @endif
+            <div class="d-flex flex-wrap gap-2 {{ $userData->membershipPlan ? '' : 'mt-4' }}">
                 <a href="{{ route('progress.index') }}" class="btn"><i class="bi bi-plus-lg"></i> Log a workout</a>
                 <a href="{{ route('workout') }}" class="btn btn-outline-light">Explore workouts</a>
             </div>
+        </section>
+
+        <section class="attendance-dashboard-card mb-4">
+            <span class="attendance-dashboard-icon"><i class="bi bi-calendar-check"></i></span>
+            <div class="attendance-dashboard-copy">
+                <strong>{{ $checkedInToday ? 'You’re checked in for today' : 'At the gym today?' }}</strong>
+                <span>
+                    @if ($checkedInToday)
+                        Nice work showing up. Your last visit was {{ $userData->lastAttendance?->checked_in_at->format('M d, g:i A') ?? 'today' }}.
+                    @elseif ($userData->hasActiveMembership())
+                        Your last visit: {{ $userData->lastAttendance?->checked_in_at->format('M d, Y') ?? 'No visits yet' }}.
+                    @else
+                        Check your membership and visit history.
+                    @endif
+                </span>
+            </div>
+            @if ($checkedInToday)
+                <a href="{{ route('attendance.index') }}" class="btn btn-outline-secondary">View attendance</a>
+            @elseif ($userData->hasActiveMembership())
+                <form method="POST" action="{{ route('attendance.check-in') }}">
+                    @csrf
+                    <button class="btn btn-primary" type="submit"><i class="bi bi-box-arrow-in-right"></i> Check in now</button>
+                </form>
+            @else
+                <a href="{{ route('attendance.index') }}" class="btn btn-outline-secondary">View membership status</a>
+            @endif
         </section>
 
         <div class="row g-4">

@@ -8,7 +8,9 @@
     --fitness-green-soft: #eaf1e9;
     --fitness-lime: #c9f36a;
     --fitness-orange: #ec8a4b;
-    --fitness-shadow: 0 16px 44px rgba(27, 52, 37, .07);
+    --fitness-shadow: 0 12px 34px rgba(26, 49, 36, .06);
+    --fitness-radius-card: 18px;
+    --fitness-radius-control: 11px;
 }
 
 * {
@@ -48,7 +50,7 @@ body.user-app {
     position: sticky;
     top: 0;
     z-index: 1030;
-    min-height: 90px;
+    min-height: 76px;
     padding: 9px 0;
     border-bottom: 1px solid rgba(255, 255, 255, .1);
     border-radius: 0;
@@ -66,8 +68,8 @@ body.user-app {
 }
 
 .navbar-custom .navbar-brand img {
-    width: 64px !important;
-    height: 64px;
+    width: 50px !important;
+    height: 50px;
     padding: 5px;
     border-radius: 13px;
     background: var(--fitness-lime);
@@ -165,7 +167,7 @@ body.user-app {
 
 .user-main {
     width: 100%;
-    padding: 38px 0 54px;
+    padding: 34px 0 52px;
 }
 
 .user-main > .container,
@@ -197,7 +199,7 @@ body.user-app {
 .user-app .profile-card {
     overflow: hidden;
     border: 1px solid var(--fitness-line);
-    border-radius: 18px;
+    border-radius: var(--fitness-radius-card);
     background: var(--fitness-white);
     box-shadow: var(--fitness-shadow);
 }
@@ -218,7 +220,7 @@ body.user-app {
     justify-content: center;
     gap: 7px;
     padding: 9px 16px;
-    border-radius: 10px;
+    border-radius: var(--fitness-radius-control);
     font-size: 12px;
     font-weight: 700;
     transition: background .2s ease, border-color .2s ease, transform .2s ease;
@@ -282,7 +284,7 @@ body.user-app {
 .user-app .form-select {
     min-height: 43px;
     border: 1px solid #dfe7df;
-    border-radius: 10px;
+    border-radius: var(--fitness-radius-control);
     background-color: #fff;
     color: var(--fitness-ink);
     font-size: 12px;
@@ -318,6 +320,101 @@ body.user-app {
     font-weight: 700;
 }
 
+.user-app .state-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 9px;
+    border-radius: 20px;
+    background: #eaf3e9;
+    color: #3e6049;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.user-app .state-badge.inactive {
+    background: #fceee9;
+    color: #a85238;
+}
+
+.attendance-dashboard-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 20px;
+    border: 1px solid var(--fitness-line);
+    border-radius: var(--fitness-radius-card);
+    background: #fff;
+    box-shadow: var(--fitness-shadow);
+}
+
+.attendance-dashboard-icon {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    place-items: center;
+    border-radius: 13px;
+    background: var(--fitness-green-soft);
+    color: var(--fitness-green);
+    font-size: 19px;
+}
+
+.attendance-dashboard-copy {
+    display: grid;
+    flex: 1;
+    gap: 2px;
+}
+
+.attendance-dashboard-copy strong {
+    font-size: 13px;
+}
+
+.attendance-dashboard-copy > span {
+    color: var(--fitness-muted);
+    font-size: 11px;
+}
+
+.attendance-checkin-card {
+    background:
+        radial-gradient(circle at 100% 0, rgba(201, 243, 106, .14), transparent 35%),
+        #fff;
+}
+
+.attendance-icon {
+    display: grid;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    border-radius: 15px;
+    background: var(--fitness-green-soft);
+    color: var(--fitness-green);
+    font-size: 22px;
+}
+
+.attendance-detail-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--fitness-line);
+    font-size: 12px;
+}
+
+.attendance-detail-row:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.attendance-detail-row > span {
+    color: var(--fitness-muted);
+}
+
+.attendance-detail-row > strong {
+    text-align: right;
+}
+
 .user-app .alert {
     border: 0;
     border-radius: 12px;
@@ -340,7 +437,7 @@ body.user-app {
 .user-app .modal-content {
     overflow: hidden;
     border: 1px solid var(--fitness-line);
-    border-radius: 18px;
+    border-radius: var(--fitness-radius-card);
     box-shadow: 0 24px 70px rgba(17, 40, 25, .2);
 }
 
@@ -401,6 +498,51 @@ body.user-app {
     font-weight: 800;
     letter-spacing: .16em;
     text-transform: uppercase;
+}
+
+.dashboard-membership {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0 16px;
+    padding: 11px 14px;
+    border: 1px solid rgba(201, 243, 106, .25);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .08);
+}
+
+.dashboard-membership > i {
+    color: var(--fitness-lime);
+    font-size: 19px;
+}
+
+.dashboard-membership > span:nth-child(2) {
+    display: grid;
+    gap: 2px;
+}
+
+.dashboard-membership small {
+    color: #c7d6cb;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+}
+
+.dashboard-membership strong {
+    color: #fff;
+    font-size: 12px;
+}
+
+.dashboard-payment-status {
+    padding: 5px 8px;
+    border-radius: 20px;
+    background: rgba(201, 243, 106, .16);
+    color: var(--fitness-lime);
+    font-size: 9px;
+    font-weight: 750;
+    white-space: nowrap;
 }
 
 .dashboard-hero .btn {
@@ -707,6 +849,10 @@ body.user-app {
     font-size: 16px;
 }
 
+.profile-form-actions {
+    margin-top: 1rem;
+}
+
 .edit-btn {
     position: absolute;
     top: 17px;
@@ -873,6 +1019,15 @@ body.dark-mode.user-app {
         padding: 25px 0 38px;
     }
 
+    .navbar-custom {
+        min-height: 68px;
+    }
+
+    .navbar-custom .navbar-brand img {
+        width: 44px !important;
+        height: 44px;
+    }
+
     .user-page-heading {
         align-items: flex-start;
         flex-direction: column;
@@ -889,4 +1044,48 @@ body.dark-mode.user-app {
     .dashboard-hero::after {
         right: -190px;
     }
+
+    .attendance-dashboard-card {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .attendance-dashboard-copy {
+        flex-basis: calc(100% - 60px);
+    }
+
+    .attendance-dashboard-card > .btn,
+    .attendance-dashboard-card > form {
+        width: 100%;
+        margin-left: 56px;
+    }
+
+    .attendance-dashboard-card > form .btn {
+        width: 100%;
+    }
+}
+
+.user-app :focus-visible {
+    outline: 3px solid rgba(28, 57, 43, .32);
+    outline-offset: 2px;
+}
+
+.user-app .btn:focus-visible,
+.user-app .form-control:focus-visible,
+.user-app .form-select:focus-visible {
+    outline: none;
+}
+
+.user-app .progress-table tbody tr:hover,
+.user-app .custom-table tbody tr:hover {
+    background: #f8faf7;
+}
+
+.user-app .card .dashboard-panel-title {
+    gap: 14px;
+}
+
+.user-app .alert {
+    padding: 13px 16px;
+    line-height: 1.5;
 }

@@ -11,6 +11,7 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
@@ -55,6 +56,39 @@
                         @enderror
                     </div>
 
+                    <div class="mb-3">
+                        <div class="plan-picker-title">
+                            <span class="form-label d-block">Choose your membership</span>
+                            <small>{{ $membershipPlans->count() }} plans available</small>
+                        </div>
+                        <div class="plan-options @error('membership_plan_id') is-invalid @enderror" role="radiogroup" aria-label="Choose your membership">
+                            @foreach ($membershipPlans as $plan)
+                                <label class="plan-option">
+                                    <input type="radio" name="membership_plan_id" value="{{ $plan->id }}"
+                                        @checked(old('membership_plan_id') == $plan->id) required>
+                                    <span class="plan-option-card">
+                                        <span class="plan-radio"><i class="bi bi-check"></i></span>
+                                        <span class="plan-option-details">
+                                            <span class="plan-option-name">{{ $plan->name }}</span>
+                                            <span class="plan-option-description">{{ $plan->description ?: 'A plan for your fitness journey' }}</span>
+                                        </span>
+                                        <span class="plan-option-price">
+                                            ₹{{ number_format((float) $plan->price, 0) }}
+                                            <small>/ {{ $plan->duration_months }} {{ \Illuminate\Support\Str::plural('month', $plan->duration_months) }}</small>
+                                        </span>
+                                    </span>
+                                </label>
+                            @endforeach
+                        </div>
+                        @if ($membershipPlans->isEmpty())
+                            <p class="text-muted small mb-0">Membership plans are temporarily unavailable. Please try again later.</p>
+                        @endif
+                        @error('membership_plan_id')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                        <p class="plan-payment-note"><i class="bi bi-cash-coin me-1"></i>Pay in cash directly to the manager. Your payment will show as pending until received.</p>
+                    </div>
+
                     <!-- Password -->
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
@@ -77,7 +111,7 @@
                         @enderror
                     </div>
 
-                    <button type="submit" class="btn w-100">Create account</button>
+                    <button type="submit" class="btn w-100" @disabled($membershipPlans->isEmpty())>Create account</button>
 
                     <p class="mt-3 text-center small">
                         Already have an account?

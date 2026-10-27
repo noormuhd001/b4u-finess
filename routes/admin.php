@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\BadgeManagementController;
+use App\Http\Controllers\Admin\AttendanceManagementController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\MembershipPlanController;
 use App\Http\Controllers\Admin\ProgressController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\UserManagementController;
@@ -11,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'activeUser', 'Admin', 'preventHistory'])->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/attendance', [AttendanceManagementController::class, 'index'])->name('attendance.index');
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
         Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
         // Route::get('/workout', [WorkoutController::class, 'index'])->name('workout');
@@ -33,6 +36,15 @@ Route::middleware(['auth', 'activeUser', 'Admin', 'preventHistory'])->group(func
             Route::post('/index', [UserManagementController::class, 'store'])->name('store');
             Route::put('/{user}', [UserManagementController::class, 'update'])->name('update');
             Route::patch('/{user}/status', [UserManagementController::class, 'updateStatus'])->name('status');
+            Route::patch('/{user}/payment', [UserManagementController::class, 'updatePaymentStatus'])->name('payment');
+            Route::patch('/{user}/renew', [UserManagementController::class, 'renewMembership'])->name('renew');
+        });
+
+        Route::prefix('membership-plans')->name('membership-plans.')->controller(MembershipPlanController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::put('/{membershipPlan}', 'update')->name('update');
+            Route::patch('/{membershipPlan}/status', 'updateStatus')->name('status');
         });
 
         Route::prefix('workouts')->name('workouts.')->controller(WorkoutManagementController::class)->group(function () {

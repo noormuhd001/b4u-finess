@@ -10,6 +10,11 @@
             <p>Account details and progress history for this user.</p>
         </div>
         <div class="page-heading-actions">
+            @if ((int) $user->role === 0 && $user->membershipPlan)
+                <button class="admin-btn" type="button" data-bs-toggle="modal" data-bs-target="#recordRenewalModal">
+                    <i class="bi bi-arrow-repeat"></i> Record renewal
+                </button>
+            @endif
             <a class="admin-btn admin-btn-light" href="{{ route('admin.user-management.index') }}"><i class="bi bi-arrow-left"></i> Back to users</a>
         </div>
     </div>
@@ -22,10 +27,58 @@
             <div class="d-flex flex-wrap gap-2">
                 <span class="role-badge">{{ $user->formatted_role_name }}</span>
                 <span class="state-badge {{ $user->status ? '' : 'inactive' }}">{{ $user->status ? 'Active account' : 'Inactive account' }}</span>
+                <span class="soft-badge">Plan: {{ $user->membershipPlan?->name ?? 'Not assigned' }}</span>
+                <span class="state-badge {{ $user->cash_payment_status === 'received' ? '' : 'inactive' }}">Cash payment {{ $user->cash_payment_status ?? 'pending' }}</span>
+                @if ($user->membership_expires_at)
+                    <span class="state-badge {{ $user->membership_expires_at->isFuture() ? '' : 'inactive' }}">
+                        {{ $user->membership_expires_at->isFuture() ? 'Valid until' : 'Expired' }} {{ $user->membership_expires_at->format('M d, Y') }}
+                    </span>
+                @endif
+                <span class="soft-badge">{{ number_format($attendanceCount) }} gym {{ \Illuminate\Support\Str::plural('visit', $attendanceCount) }}</span>
+                <span class="soft-badge">Last visit {{ $lastAttendance?->checked_in_at->format('M d, Y') ?? 'never' }}</span>
                 <span class="soft-badge">Joined {{ $user->created_at?->format('M d, Y') ?? '—' }}</span>
             </div>
         </div>
     </section>
+
+    @if ((int) $user->role === 0 && $user->membershipPlan)
+        <div class="modal fade" id="recordRenewalModal" tabindex="-1" aria-labelledby="recordRenewalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <form class="modal-content" method="POST" action="{{ route('admin.user-management.renew', $user) }}">
+                    @csrf
+                    @method('PATCH')
+                    <div class="modal-header">
+                        <div>
+                            <h2 class="modal-title" id="recordRenewalTitle">Record membership renewal</h2>
+                            <p class="text-secondary small mb-0 mt-1">{{ $user->name }} · {{ $user->membershipPlan->name }}</p>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="d-flex align-items-start gap-3">
+                            <span class="today-stat-icon flex-shrink-0"><i class="bi bi-cash-coin"></i></span>
+                            <div>
+                                <p class="mb-2">Confirm that you received the cash payment from this member.</p>
+                                <p class="text-secondary small mb-0">
+                                    This marks the payment as received and extends the
+                                    {{ $user->membershipPlan->duration_months }}-month membership.
+                                    @if ($user->membership_expires_at?->isFuture())
+                                        The new period will start after the current expiry date ({{ $user->membership_expires_at->format('M d, Y') }}).
+                                    @else
+                                        The new period will start today.
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="admin-btn admin-btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button class="admin-btn" type="submit"><i class="bi bi-check2-circle"></i> Confirm payment &amp; renew</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
 
     <section class="admin-card">
         <div class="admin-card-header">

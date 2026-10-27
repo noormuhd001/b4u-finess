@@ -51,6 +51,37 @@ body.auth-page {
     max-width: 390px;
 }
 
+.verify-card {
+    width: min(440px, 100%);
+    padding: clamp(26px, 6vw, 48px);
+    border: 1px solid rgba(255, 255, 255, .8);
+    border-radius: 25px;
+    background: #fff;
+    box-shadow: 0 30px 90px rgba(24, 48, 33, .16);
+}
+
+.verify-card .auth-brand {
+    margin-bottom: 30px;
+}
+
+.verify-icon {
+    display: grid;
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 18px;
+    place-items: center;
+    border-radius: 18px;
+    background: var(--auth-lime);
+    color: var(--auth-green);
+    font-size: 25px;
+}
+
+.verify-card .form-control {
+    font-size: 22px;
+    font-weight: 750;
+    letter-spacing: .4em;
+}
+
 .auth-brand {
     display: flex;
     align-items: center;
@@ -134,6 +165,34 @@ body.auth-page {
 }
 
 .auth-page a:hover {
+    color: #172d20;
+}
+
+.auth-page .verify-card .resend-code-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.auth-page .verify-card .resend-code-button {
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #345941;
+    font: 700 12px 'DM Sans', 'Segoe UI', sans-serif;
+    text-decoration: underline;
+    transition: color .2s ease;
+}
+
+.auth-page .verify-card .resend-code-button:hover {
+    transform: none;
+    background: transparent;
     color: #172d20;
 }
 
@@ -247,6 +306,126 @@ body.auth-page {
     font-size: 11px;
 }
 
+.plan-picker-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.plan-picker-title .form-label {
+    margin: 0;
+}
+
+.plan-picker-title small {
+    color: var(--auth-muted);
+    font-size: 10px;
+}
+
+.plan-options {
+    display: grid;
+    gap: 9px;
+}
+
+.plan-option {
+    position: relative;
+    display: block;
+    margin: 0;
+    cursor: pointer;
+}
+
+.plan-option input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.plan-option-card {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 12px;
+    border: 1px solid var(--auth-line);
+    border-radius: 13px;
+    background: #fbfcfa;
+    transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.plan-option:hover .plan-option-card {
+    border-color: #a7c68c;
+}
+
+.plan-option input:checked + .plan-option-card {
+    border-color: #78985e;
+    background: #f5faed;
+    box-shadow: 0 0 0 3px rgba(201, 243, 106, .22);
+}
+
+.plan-option input:focus-visible + .plan-option-card {
+    outline: 3px solid rgba(28, 57, 43, .25);
+    outline-offset: 2px;
+}
+
+.plan-radio {
+    display: grid;
+    width: 19px;
+    height: 19px;
+    flex: 0 0 19px;
+    place-items: center;
+    border: 1.5px solid #cbd4cb;
+    border-radius: 50%;
+    color: transparent;
+    font-size: 11px;
+}
+
+.plan-option input:checked + .plan-option-card .plan-radio {
+    border-color: var(--auth-green);
+    background: var(--auth-green);
+    color: #fff;
+}
+
+.plan-option-details {
+    min-width: 0;
+    flex: 1;
+}
+
+.plan-option-name {
+    display: block;
+    color: var(--auth-ink);
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.plan-option-description {
+    display: block;
+    overflow: hidden;
+    color: var(--auth-muted);
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.plan-option-price {
+    color: var(--auth-green);
+    font: 800 13px 'Manrope', sans-serif;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.plan-option-price small {
+    display: block;
+    color: var(--auth-muted);
+    font: 500 9px 'DM Sans', sans-serif;
+}
+
+.plan-payment-note {
+    margin: 8px 0 0;
+    color: var(--auth-muted);
+    font-size: 10px;
+    line-height: 1.5;
+}
+
 .legal-page {
     display: block;
     padding: 34px 18px;
@@ -308,6 +487,16 @@ body.auth-page {
     text-align: center;
 }
 
+.auth-page :focus-visible {
+    outline: 3px solid rgba(28, 57, 43, .32);
+    outline-offset: 3px;
+}
+
+.auth-page .btn:focus-visible,
+.auth-page .form-control:focus-visible {
+    outline: none;
+}
+
 @media (max-width: 767.98px) {
     body.auth-page {
         padding: 16px;
@@ -350,6 +539,10 @@ body.auth-page {
 
     .auth-brand {
         margin-bottom: 25px;
+    }
+
+    .verify-card {
+        padding: 26px 22px;
     }
 }
 

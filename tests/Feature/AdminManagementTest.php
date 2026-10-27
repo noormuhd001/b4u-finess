@@ -2,12 +2,17 @@
 
 namespace Tests\Feature;
 
+use App\Mail\Auth\RegistrationOtpMail;
+use App\Models\AttendanceRecord;
+use App\Models\MembershipPlan;
 use App\Models\User;
 use App\Models\Workout;
+use Database\Seeders\MembershipPlanSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class AdminManagementTest extends TestCase
@@ -29,17 +34,19 @@ class AdminManagementTest extends TestCase
             ->assertSee('ADMIN CONSOLE')
             ->assertSee(route('admin.profile.update'));
 
+        $user = User::factory()->create(['role' => 0]);
         $this->actingAs($admin)
             ->get(route('admin.user-management.index'))
             ->assertOk()
             ->assertSee('User management')
+            ->assertSee($user->email)
+            ->assertDontSee($admin->email)
             ->assertDontSee('Members');
 
         $this->actingAs($admin)->get(route('admin.workouts.index'))->assertOk()->assertSee('Workout library');
         $this->actingAs($admin)->get(route('admin.badges.index'))->assertOk()->assertSee('Badges & rewards');
         $this->get('/admin/progress/reviews')->assertNotFound();
 
-        $user = User::factory()->create(['role' => 0]);
         $this->actingAs($admin)
             ->get(route('admin.user-management.show', $user))
             ->assertOk()
@@ -72,6 +79,257 @@ class AdminManagementTest extends TestCase
 
         $this->assertTrue(Hash::check('secure-password', $member->password));
         $this->assertTrue($member->status);
+    }
+
+    public function test_registration_requires_a_plan_and_account_activates_only_after_email_otp_verification(): void
+    {
+        Mail::fake();
+        $plan = MembershipPlan::create([
+            'name' => 'Basic',
+            'price' => 500,
+            'duration_months' => 1,
+            'is_active' => true,
+        ]);
+
+        $this->get(route('signUp'))->assertOk()->assertSee('Choose your membership');
+
+        $this->post(route('register'), [
+            'username' => 'New Member',
+            'email' => 'registered@example.com',
+            'password' => 'StrongPass1!',
+            'confirm_password' => 'StrongPass1!',
+        ])->assertSessionHasErrors('membership_plan_id');
+
+        $this->post(route('register'), [
+            'username' => 'New Member',
+            'email' => 'registered@example.com',
+            'password' => 'StrongPass1!',
+            'confirm_password' => 'StrongPass1!',
+            'membership_plan_id' => $plan->id,
+        ])->assertRedirect(route('registration.verify', ['email' => 'registered@example.com']))
+            ->assertSessionHas('otp_sent', true);
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'registered@example.com',
+            'membership_plan_id' => $plan->id,
+            'cash_payment_status' => 'pending',
+            'status' => false,
+        ]);
+
+        $otp = null;
+        Mail::assertSent(RegistrationOtpMail::class, function (RegistrationOtpMail $mail) use (&$otp) {
+            $otp = $mail->otp;
+
+            return $mail->hasTo('registered@example.com');
+        });
+
+        $this->post(route('registration.verify.submit'), [
+            'email' => 'registered@example.com',
+            'otp' => '000000',
+        ])->assertSessionHasErrors('otp');
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'registered@example.com',
+            'status' => false,
+        ]);
+
+        $this->post(route('registration.verify.submit'), [
+            'email' => 'registered@example.com',
+            'otp' => $otp,
+        ])->assertRedirect(route('login'));
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'registered@example.com',
+            'status' => true,
+        ]);
+    }
+
+    public function test_member_can_see_membership_plan_on_profile(): void
+    {
+        $plan = MembershipPlan::create([
+            'name' => 'Basic',
+            'price' => 500,
+            'duration_months' => 1,
+            'is_active' => true,
+        ]);
+        $member = User::factory()->create([
+            'membership_plan_id' => $plan->id,
+            'cash_payment_status' => 'pending',
+        ]);
+
+        $this->actingAs($member)
+            ->get(route('profile.index'))
+            ->assertOk()
+            ->assertSee('Membership plan')
+            ->assertSee('Basic')
+            ->assertSee('Pending');
+    }
+
+    public function test_admin_can_manage_membership_plans_and_cash_payment_status(): void
+    {
+        $admin = User::factory()->create(['role' => 1]);
+        $plan = MembershipPlan::create([
+            'name' => 'Basic',
+            'price' => 500,
+            'duration_months' => 1,
+            'is_active' => true,
+        ]);
+        $member = User::factory()->create([
+            'role' => 0,
+            'membership_plan_id' => $plan->id,
+            'cash_payment_status' => 'pending',
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.membership-plans.index'))
+            ->assertOk()
+            ->assertSee('Membership plans')
+            ->assertSee('Basic');
+
+        $this->actingAs($admin)->post(route('admin.membership-plans.store'), [
+            'name' => 'Premium',
+            'price' => 2000,
+            'duration_months' => 1,
+            'is_active' => 1,
+        ])->assertRedirect(route('admin.membership-plans.index'));
+
+        $this->actingAs($admin)->patch(route('admin.user-management.payment', $member), [
+            'cash_payment_status' => 'received',
+        ])->assertRedirect(route('admin.user-management.index'));
+
+        $this->assertDatabaseHas('users', [
+            'id' => $member->id,
+            'cash_payment_status' => 'received',
+        ]);
+        $this->assertNotNull($member->fresh()->membership_started_at);
+        $this->assertTrue($member->fresh()->membership_expires_at->isFuture());
+        $this->assertDatabaseHas('membership_plans', [
+            'name' => 'Premium',
+            'price' => 2000,
+        ]);
+    }
+
+    public function test_membership_plan_seeder_creates_the_three_default_monthly_plans(): void
+    {
+        $this->seed(MembershipPlanSeeder::class);
+
+        $this->assertDatabaseCount('membership_plans', 3);
+        $this->assertDatabaseHas('membership_plans', [
+            'name' => 'Basic',
+            'price' => 500,
+            'duration_months' => 1,
+        ]);
+        $this->assertDatabaseHas('membership_plans', [
+            'name' => 'Regular with PT',
+            'price' => 1000,
+            'duration_months' => 1,
+        ]);
+        $this->assertDatabaseHas('membership_plans', [
+            'name' => 'Premium',
+            'price' => 2000,
+            'duration_months' => 1,
+        ]);
+    }
+
+    public function test_active_paid_member_can_check_in_only_once_per_day(): void
+    {
+        $plan = MembershipPlan::create([
+            'name' => 'Monthly',
+            'price' => 500,
+            'duration_months' => 1,
+            'is_active' => true,
+        ]);
+        $member = User::factory()->create([
+            'role' => 0,
+            'status' => true,
+            'membership_plan_id' => $plan->id,
+            'cash_payment_status' => 'received',
+        ]);
+        $member->membership_started_at = now()->subDays(2);
+        $member->membership_expires_at = now()->addDays(28);
+        $member->save();
+
+        $this->actingAs($member)
+            ->get(route('attendance.index'))
+            ->assertOk()
+            ->assertSee('Check in now');
+
+        $this->post(route('attendance.check-in'))->assertRedirect(route('attendance.index'));
+        $this->assertDatabaseCount('attendance_records', 1);
+        $this->assertDatabaseHas('attendance_records', [
+            'user_id' => $member->id,
+            'check_in_date' => today()->toDateString(),
+        ]);
+
+        $this->post(route('attendance.check-in'))
+            ->assertRedirect(route('attendance.index'))
+            ->assertSessionHas('error', 'You have already checked in today.');
+        $this->assertDatabaseCount('attendance_records', 1);
+    }
+
+    public function test_expired_or_unpaid_member_cannot_check_in(): void
+    {
+        $plan = MembershipPlan::create([
+            'name' => 'Monthly',
+            'price' => 500,
+            'duration_months' => 1,
+            'is_active' => true,
+        ]);
+        $member = User::factory()->create([
+            'role' => 0,
+            'status' => true,
+            'membership_plan_id' => $plan->id,
+            'cash_payment_status' => 'received',
+        ]);
+        $member->membership_started_at = now()->subMonths(2);
+        $member->membership_expires_at = now()->subMonth();
+        $member->save();
+
+        $this->actingAs($member)
+            ->get(route('attendance.index'))
+            ->assertOk()
+            ->assertSee('Membership expired')
+            ->assertDontSee('Check in now');
+
+        $this->post(route('attendance.check-in'))
+            ->assertRedirect(route('attendance.index'))
+            ->assertSessionHas('error');
+        $this->assertDatabaseCount('attendance_records', 0);
+
+        $member->update(['cash_payment_status' => 'pending']);
+        $this->assertFalse($member->fresh()->hasActiveMembership());
+    }
+
+    public function test_admin_can_view_attendance_reports_and_inactive_members(): void
+    {
+        $admin = User::factory()->create(['role' => 1]);
+        $plan = MembershipPlan::create([
+            'name' => 'Monthly',
+            'price' => 500,
+            'duration_months' => 1,
+            'is_active' => true,
+        ]);
+        $member = User::factory()->create([
+            'role' => 0,
+            'status' => true,
+            'membership_plan_id' => $plan->id,
+            'cash_payment_status' => 'received',
+        ]);
+        $member->membership_started_at = now()->subDays(40);
+        $member->membership_expires_at = now()->addDays(20);
+        $member->save();
+        AttendanceRecord::create([
+            'user_id' => $member->id,
+            'check_in_date' => today()->subDays(35),
+            'checked_in_at' => now()->subDays(35),
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.attendance.index', ['period' => 'monthly']))
+            ->assertOk()
+            ->assertSee('Check-in history')
+            ->assertSee('Members to follow up')
+            ->assertSee($member->name);
     }
 
     public function test_admin_can_filter_workouts_by_body_part(): void

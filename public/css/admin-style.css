@@ -8,6 +8,8 @@
     --admin-lime: #c9f36a;
     --admin-orange: #ef8a43;
     --admin-shadow: 0 12px 34px rgba(26, 49, 36, .06);
+    --admin-radius-card: 18px;
+    --admin-radius-control: 11px;
 }
 
 * {
@@ -20,6 +22,7 @@ body {
     color: var(--admin-ink);
     font-family: 'DM Sans', sans-serif;
     font-size: 14px;
+    line-height: 1.6;
 }
 
 a {
@@ -410,6 +413,10 @@ a {
     font-size: 16px;
 }
 
+.profile-form-actions {
+    margin-top: 1rem;
+}
+
 .profile-card .edit-btn {
     position: absolute;
     top: 16px;
@@ -442,7 +449,7 @@ a {
     gap: 8px;
     padding: 0 16px;
     border: 1px solid transparent;
-    border-radius: 11px;
+    border-radius: var(--admin-radius-control);
     background: var(--admin-green);
     color: #fff;
     font-size: 12px;
@@ -471,7 +478,7 @@ a {
 .admin-card,
 .stat-card {
     border: 1px solid var(--admin-line);
-    border-radius: 17px;
+    border-radius: var(--admin-radius-card);
     background: var(--admin-white);
     box-shadow: var(--admin-shadow);
 }
@@ -674,7 +681,7 @@ a {
 .admin-form-control {
     min-height: 43px;
     border-color: #e4eae3;
-    border-radius: 10px;
+    border-radius: var(--admin-radius-control);
     font-size: 12px;
 }
 
@@ -692,6 +699,24 @@ a {
 .admin-form-control:focus {
     border-color: #a8c88b;
     box-shadow: 0 0 0 3px rgba(201, 243, 106, .2);
+}
+
+.attendance-period-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 240px;
+}
+
+.attendance-period-filter label {
+    color: var(--admin-muted);
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.attendance-period-filter .form-select {
+    min-width: 140px;
 }
 
 .admin-alert {
@@ -1127,5 +1152,83 @@ body {
         flex-basis: 52px;
         border-radius: 15px;
         font-size: 21px;
+    }
+}
+
+body :focus-visible {
+    outline: 3px solid rgba(28, 57, 43, .3);
+    outline-offset: 2px;
+}
+
+.admin-btn:focus-visible,
+.icon-action:focus-visible,
+.admin-form-control:focus-visible,
+.toggle-btn:focus-visible,
+.admin-page-link:focus-visible {
+    outline: none;
+}
+
+.admin-table tbody tr:hover {
+    background: #f8faf7;
+}
+
+.modal-content {
+    border-radius: var(--admin-radius-card);
+}
+
+.admin-main {
+    max-width: 1480px;
+    padding: 34px 32px 50px;
+}
+
+.page-heading h1,
+.user-page-heading h1 {
+    font-size: clamp(24px, 3vw, 34px);
+}
+
+.page-heading p,
+.user-page-heading p {
+    font-size: 13px;
+}
+
+@media (max-width: 575.98px) {
+    .topbar-title {
+        max-width: 45vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .page-heading-actions {
+        flex-wrap: wrap;
+    }
+
+    .page-heading-actions .admin-btn {
+        flex: 1 1 145px;
+    }
+
+    .admin-card {
+        border-radius: 15px;
+    }
+
+    .attendance-period-filter {
+        width: 100%;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .attendance-period-filter .form-select {
+        width: 100%;
+    }
+
+    .admin-main {
+        padding: 22px 14px 34px;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .admin-main {
+        padding: 24px 16px 36px;
     }
 }
