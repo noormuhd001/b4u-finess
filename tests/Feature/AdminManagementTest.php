@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Mail\Auth\RegistrationOtpMail;
 use App\Models\AttendanceRecord;
+use App\Models\Badges;
 use App\Models\MembershipPlan;
 use App\Models\User;
 use App\Models\Workout;
@@ -44,13 +45,55 @@ class AdminManagementTest extends TestCase
             ->assertDontSee('Members');
 
         $this->actingAs($admin)->get(route('admin.workouts.index'))->assertOk()->assertSee('Workout library');
-        $this->actingAs($admin)->get(route('admin.badges.index'))->assertOk()->assertSee('Badges & rewards');
+        $this->actingAs($admin)->get(route('admin.badges.index'))
+            ->assertOk()
+            ->assertSee('Badge catalog')
+            ->assertDontSee('Create badge')
+            ->assertDontSee('Awarded to');
         $this->get('/admin/progress/reviews')->assertNotFound();
 
         $this->actingAs($admin)
             ->get(route('admin.user-management.show', $user))
             ->assertOk()
             ->assertSee('Progress history');
+    }
+
+    public function test_admin_can_only_edit_badge_name_and_logo_without_changing_awards(): void
+    {
+        $admin = User::factory()->create(['role' => 1]);
+        $member = User::factory()->create(['role' => 0]);
+        $badge = Badges::create([
+            'name' => 'First Workout',
+            'icon' => 'img/first-workout.png',
+            'description' => 'Complete your first workout.',
+        ]);
+        $badge->users()->attach($member);
+
+        $this->actingAs($admin)
+            ->get(route('admin.badges.index'))
+            ->assertOk()
+            ->assertDontSee($member->email);
+
+        $this->actingAs($admin)->post('/admin/badges')->assertNotFound();
+
+        $this->actingAs($admin)
+            ->put(route('admin.badges.update', $badge), [
+                'name' => 'Workout Starter',
+                'description' => 'Changed through an unsupported field.',
+                'users' => [],
+            ])
+            ->assertRedirect(route('admin.badges.index'));
+
+        $this->assertDatabaseHas('badges', [
+            'id' => $badge->id,
+            'name' => 'Workout Starter',
+            'icon' => 'img/first-workout.png',
+            'description' => 'Complete your first workout.',
+        ]);
+        $this->assertDatabaseHas('badge_users', [
+            'badge_id' => $badge->id,
+            'user_id' => $member->id,
+        ]);
     }
 
     public function test_admin_profile_requires_admin_authentication(): void

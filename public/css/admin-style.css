@@ -685,14 +685,38 @@ a {
     font-size: 12px;
 }
 
+.workout-filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 16px;
+    padding: 18px 22px;
+    margin: 0 24px 20px;
+    border: 1px solid var(--admin-line);
+    border-radius: 14px;
+    background: #f8faf7;
+}
+
+.workout-filter-field {
+    width: min(100%, 340px);
+}
+
+.workout-filter-field .admin-form-label {
+    margin-bottom: 8px;
+}
+
+.workout-filter-field .admin-form-control {
+    width: 100%;
+}
+
 .workout-filter-actions {
-    min-height: 43px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 
 .workout-filter-actions .admin-btn {
+    min-width: 104px;
     min-height: 43px;
 }
 
@@ -1209,6 +1233,26 @@ body :focus-visible {
 
     .admin-card {
         border-radius: 15px;
+    }
+
+    .workout-filter-form {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px;
+        margin: 0 14px 18px;
+    }
+
+    .workout-filter-field {
+        width: 100%;
+    }
+
+    .workout-filter-actions {
+        width: 100%;
+    }
+
+    .workout-filter-actions .admin-btn {
+        flex: 1;
     }
 
     .attendance-period-filter {

@@ -124,15 +124,9 @@
                 </form>
 
                 <div class="text-center mt-4 small">
-<<<<<<< HEAD
                     <a href="{{ route('termsAndConditions') }}" class="text-muted text-decoration-none">Terms</a>
                     <span>·</span>
                     <a href="{{ route('privacyPolicy') }}" class="text-muted text-decoration-none">Privacy</a>
-=======
-                    <a href="{{ route('termsAndConditions') }}" class="text-muted text-decoration-none">Terms of
-                        Use</a> |
-                    <a href="{{ route('privacyPolicy') }}" class="text-muted text-decoration-none">Privacy Policy</a>
->>>>>>> 653653a2001093153ae4065d6e2a2ce90e48fd86
                 </div>
             </div>
         </div>
