@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Train with purpose at NR Fitness. Choose your membership, build your routine, and track your progress.">
     <title>NR Fitness | Build your strongest self</title>
-    <link rel="icon" type="image/png" href="{{ asset('img/logo-rm.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('img/favicon-rounded.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
@@ -63,7 +63,7 @@
                 <p>Get a feel for the space and see where your next training session can take you.</p>
             </div>
             <div class="promo-video-frame">
-                <video class="promo-video" autoplay muted loop controls preload="auto" playsinline aria-label="NR Fitness promotional video" poster="{{ asset('img/login-background.webp') }}">
+                <video class="promo-video" autoplay muted loop preload="auto" playsinline aria-label="NR Fitness promotional video" poster="{{ asset('img/login-background.webp') }}">
                     <source src="{{ asset('vedeo/nr-promo.mp4') }}" type="video/mp4">
                     Your browser does not support the video element.
                 </video>

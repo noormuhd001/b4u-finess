@@ -7,7 +7,7 @@
     <title>@yield('title', 'NR Fitness')</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('img/logo-rm.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('img/favicon-rounded.png') }}">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
