@@ -55,7 +55,6 @@ Route::middleware(['auth', 'activeUser', 'Admin', 'preventHistory'])->group(func
 
         Route::prefix('badges')->name('badges.')->controller(BadgeManagementController::class)->group(function () {
             Route::get('/', 'index')->name('index');
-            Route::post('/', 'store')->name('store');
             Route::put('/{badge}', 'update')->name('update');
         });
     });

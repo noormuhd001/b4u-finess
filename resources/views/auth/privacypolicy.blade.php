@@ -42,7 +42,7 @@
             page.</p>
 
         <p>For any privacy concerns, contact us at <a
-                href="mailto:noor.bytekat@gmail.com">noor.bytekat@gmail.com</a></p>
+                href="mailto:noornjr123@gmail.com">noornjr123@gmail.com</a></p>
     </main>
 
     <footer>

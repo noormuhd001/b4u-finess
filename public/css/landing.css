@@ -26,7 +26,7 @@ body.landing-page {
 .landing-header {
     position: relative;
     z-index: 5;
-    width: min(1440px, 100%);
+    width: 100%;
     min-height: 84px;
     display: flex;
     align-items: center;
@@ -89,6 +89,12 @@ body.landing-page {
     color: #152014;
 }
 
+.landing-nav .landing-signin:hover,
+.landing-nav .landing-signin:focus-visible {
+    background: #d8ff88;
+    color: #172116;
+}
+
 .landing-menu-toggle {
     display: none;
     width: 42px;
@@ -102,8 +108,9 @@ body.landing-page {
 
 .landing-hero {
     position: relative;
-    width: min(1440px, 100%);
-    min-height: min(690px, 78vw);
+    width: 100%;
+    min-height: calc(100vh - 84px);
+    min-height: calc(100svh - 84px);
     display: flex;
     align-items: center;
     overflow: hidden;
@@ -248,28 +255,6 @@ body.landing-page {
     color: var(--landing-accent);
 }
 
-.hero-scroll {
-    position: absolute;
-    bottom: 25px;
-    left: 50%;
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    color: #afb7b0;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: .15em;
-    text-decoration: none;
-    transform: translateX(-50%);
-}
-
-.hero-scroll span {
-    width: 14px;
-    height: 23px;
-    border: 1px solid var(--landing-accent);
-    border-radius: 10px;
-}
-
 .landing-stats {
     width: min(1230px, calc(100% - 48px));
     display: grid;
@@ -322,6 +307,48 @@ body.landing-page {
     width: min(1230px, calc(100% - 48px));
     margin: 0 auto;
     padding: 105px 0;
+}
+
+.promo-video-frame {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(201, 243, 106, .28);
+    border-radius: 12px;
+    background: #080a08;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, .38);
+}
+
+.promo-video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: min(68vw, 680px);
+    background: #000;
+    object-fit: cover;
+}
+
+.promo-video-label {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 13px;
+    border: 1px solid rgba(255, 255, 255, .22);
+    border-radius: 999px;
+    background: rgba(12, 16, 13, .72);
+    color: var(--landing-white);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .13em;
+    backdrop-filter: blur(8px);
+    pointer-events: none;
+}
+
+.promo-video-label i {
+    color: var(--landing-accent);
+    font-size: 14px;
 }
 
 .section-heading {
@@ -601,7 +628,8 @@ body.landing-page {
     }
 
     .landing-hero {
-        min-height: 620px;
+        min-height: calc(100vh - 72px);
+        min-height: calc(100svh - 72px);
     }
 
     .hero-content {
@@ -640,7 +668,8 @@ body.landing-page {
     }
 
     .landing-hero {
-        min-height: 650px;
+        min-height: calc(100vh - 72px);
+        min-height: calc(100svh - 72px);
         align-items: end;
     }
 
@@ -671,11 +700,6 @@ body.landing-page {
         right: 13px;
         bottom: 46%;
         font-size: 8px;
-    }
-
-    .hero-scroll {
-        left: 23px;
-        transform: none;
     }
 
     .landing-stats,
@@ -736,6 +760,17 @@ body.landing-page {
 
     .membership-card {
         min-height: 230px;
+    }
+
+    .promo-video {
+        max-height: none;
+    }
+
+    .promo-video-label {
+        top: 12px;
+        left: 12px;
+        padding: 8px 10px;
+        font-size: 8px;
     }
 
     .landing-cta {

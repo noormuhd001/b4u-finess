@@ -14,8 +14,8 @@
             <div><h2>All workouts</h2><p>Update workout details and images. Existing workout history is preserved.</p></div>
             <span class="soft-badge">{{ $workouts->total() }} workouts</span>
         </div>
-        <form class="workout-filter-form d-flex flex-wrap align-items-end gap-2 mb-3" method="GET" action="{{ route('admin.workouts.index') }}">
-            <div>
+        <form class="workout-filter-form" method="GET" action="{{ route('admin.workouts.index') }}">
+            <div class="workout-filter-field">
                 <label class="admin-form-label" for="filter-body-part">Filter by body part</label>
                 <select class="form-select admin-form-control" id="filter-body-part" name="body_part">
                     <option value="">All body parts</option>

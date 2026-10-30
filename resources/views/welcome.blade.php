@@ -23,6 +23,7 @@
         </button>
         <nav class="landing-nav" id="landing-nav" aria-label="Main navigation">
             <a class="active" href="{{ route('home') }}">Home</a>
+            <a href="#promo">Gym tour</a>
             <a href="#training">Training</a>
             <a href="#membership">Membership</a>
             <a href="{{ route('about-us') }}">About</a>
@@ -47,7 +48,6 @@
                 </div>
             </div>
             <div class="hero-side-note"><span>01</span> TRAIN WITH INTENTION</div>
-            <a class="hero-scroll" href="#training"><span></span> SCROLL TO EXPLORE</a>
         </section>
 
         <section class="landing-stats" aria-label="What members can do">
@@ -55,6 +55,20 @@
             <div><span class="stats-icon"><i class="bi bi-graph-up-arrow"></i></span><p><strong>Progress</strong><small>Keep your goals in view</small></p></div>
             <div><span class="stats-icon"><i class="bi bi-calendar-check"></i></span><p><strong>Show up</strong><small>Track your gym visits</small></p></div>
             <div><span class="stats-icon"><i class="bi bi-person-check"></i></span><p><strong>Stay consistent</strong><small>Build a routine that lasts</small></p></div>
+        </section>
+
+        <section class="promo-section landing-section" id="promo">
+            <div class="section-heading">
+                <div><span class="section-kicker">TAKE A CLOSER LOOK</span><h2>Step inside <span>NR Fitness.</span></h2></div>
+                <p>Get a feel for the space and see where your next training session can take you.</p>
+            </div>
+            <div class="promo-video-frame">
+                <video class="promo-video" autoplay muted loop controls preload="auto" playsinline aria-label="NR Fitness promotional video" poster="{{ asset('img/login-background.webp') }}">
+                    <source src="{{ asset('vedeo/nr-promo.mp4') }}" type="video/mp4">
+                    Your browser does not support the video element.
+                </video>
+                <span class="promo-video-label"><i class="bi bi-play-circle-fill"></i> INSIDE NR FITNESS</span>
+            </div>
         </section>
 
         <section class="training-section landing-section" id="training">

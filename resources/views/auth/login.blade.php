@@ -16,6 +16,7 @@
     <div class="login-wrapper">
         <div class="login-left">
             <div class="login-card">
+                <a class="auth-home-link" href="{{ route('home') }}"><i class="bi bi-arrow-left"></i> Back to home</a>
                 <a class="auth-brand text-decoration-none" href="{{ route('home') }}">
                     <img src="{{ asset('img/logo-rm.png') }}" alt="">
                     <span>NR FITNESS</span>

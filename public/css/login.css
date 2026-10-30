@@ -51,6 +51,23 @@ body.auth-page {
     max-width: 390px;
 }
 
+.auth-home-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 22px;
+    color: var(--auth-muted);
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color .2s ease, transform .2s ease;
+}
+
+.auth-home-link:hover {
+    color: var(--auth-green);
+    transform: translateX(-2px);
+}
+
 .verify-card {
     width: min(440px, 100%);
     padding: clamp(26px, 6vw, 48px);
