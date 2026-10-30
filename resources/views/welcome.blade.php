@@ -41,6 +41,7 @@
                 <div class="hero-actions">
                     <a class="landing-button landing-button-primary" href="{{ route('signUp') }}">Get started <i class="bi bi-arrow-up-right"></i></a>
                     <a class="landing-button landing-button-outline" href="#training">Explore training</a>
+                    <a class="landing-button landing-button-outline" href="#promo">Gym tour</a>
                 </div>
                 <div class="hero-proof">
                     <span><i class="bi bi-check2-circle"></i> Progress tracking</span>
