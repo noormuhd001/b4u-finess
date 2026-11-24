@@ -13,6 +13,8 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class ProgressController extends Controller
 {
@@ -58,49 +60,52 @@ class ProgressController extends Controller
     {
         try {
             $userId = Auth::id();
+            $validated = $request->validated();
             $existing = Progress::where('user_id', $userId)
-                ->where('workout_on', $request->workout_on)
+                ->whereDate('workout_on', $validated['workout_on'])
                 ->first();
 
             if ($existing) {
                 return back()->with('error', 'You already have a progress entry for this date.');
             }
 
-            // Create progress entry
-            $progress = Progress::create([
-                'user_id' => $userId,
-                'current_weight' => $request->weight,
-                'workout_on' => $request->workout_on,
-            ]);
-
-            $totalKcal = 0;
-
-            foreach ($request->workouts_completed as $log) {
-                $workout = Workout::find($log['workout_id']);
-                if (!$workout) continue;
-
-                $sets = $log['sets'] ?? 0;
-                $reps = $log['reps'] ?? 0;
-                $weight = $log['weight'] ?? 0;
-
-                $kcal = ($weight * $reps * $sets * 0.1);
-                $totalKcal += $kcal;
-
-                ProgressLog::create([
-                    'progress_id' => $progress->id,
+            $earnedBadges = DB::transaction(function () use ($validated, $userId) {
+                $progress = Progress::create([
                     'user_id' => $userId,
-                    'workout_id' => $log['workout_id'],
-                    'set_number' => $sets,
-                    'reps' => $reps,
-                    'weight' => $weight,
-                    'kcal_burned' => $kcal,
+                    'current_weight' => $validated['weight'],
+                    'workout_on' => $validated['workout_on'],
                 ]);
-            }
 
-            $progress->update(['avg_kcal_burned' => $totalKcal]);
+                $totalKcal = 0;
 
-            //Handle badges
-            $earnedBadges = $this->checkAndAssignBadges($userId, $request->workouts_completed);
+                foreach ($validated['workouts_completed'] as $log) {
+                    $workout = Workout::findOrFail($log['workout_id']);
+                    $sets = $log['sets'];
+                    $reps = $log['reps'];
+                    $weight = $log['weight'] ?? 0;
+
+                    $kcal = $weight * $reps * $sets * 0.1;
+                    $totalKcal += $kcal;
+
+                    ProgressLog::create([
+                        'progress_id' => $progress->id,
+                        'user_id' => $userId,
+                        'workout_id' => $workout->id,
+                        'set_number' => $sets,
+                        'reps' => $reps,
+                        'weight' => $weight,
+                        'kcal_burned' => $kcal,
+                    ]);
+                }
+
+                $progress->update(['avg_kcal_burned' => $totalKcal]);
+
+                return $this->checkAndAssignBadges(
+                    $userId,
+                    $validated['workouts_completed'],
+                    $validated['workout_on']
+                );
+            });
 
             if ($earnedBadges->isNotEmpty()) {
                 return redirect()->route('progress.index')->with([
@@ -116,7 +121,7 @@ class ProgressController extends Controller
         }
     }
 
-    private function checkAndAssignBadges($userId, $workoutsCompleted)
+    private function checkAndAssignBadges($userId, $workoutsCompleted, string $workoutOn)
     {
         $user = User::findOrFail($userId);
         $badgeIdsToAttach = [];
@@ -127,13 +132,16 @@ class ProgressController extends Controller
             $badgeIdsToAttach[] = $firstBadge->id;
         }
 
-        // Consistency King (7-day streak)
-        $streakCount = Progress::where('user_id', $userId)
-            ->where('workout_on', '>=', now()->subDays(7))
-            ->count();
+        $streakEnd = Carbon::parse($workoutOn)->startOfDay();
+        $streakStart = $streakEnd->copy()->subDays(6);
+        $streakDays = Progress::where('user_id', $userId)
+            ->whereBetween('workout_on', [$streakStart, $streakEnd->copy()->endOfDay()])
+            ->pluck('workout_on')
+            ->map(fn ($workoutDate) => Carbon::parse($workoutDate)->toDateString())
+            ->unique();
 
         $consistencyBadge = Badges::where('name', 'Consistency King')->first();
-        if ($consistencyBadge && $streakCount >= 7 && !$user->badges()->where('badge_id', $consistencyBadge->id)->exists()) {
+        if ($consistencyBadge && $streakDays->count() === 7 && !$user->badges()->where('badge_id', $consistencyBadge->id)->exists()) {
             $badgeIdsToAttach[] = $consistencyBadge->id;
         }
 
@@ -175,6 +183,8 @@ class ProgressController extends Controller
 
     public function trackDetailById(Progress $progress)
     {
+        $progress = Auth::user()->progress()->findOrFail($progress->id);
+
         try {
             $logs = $progress->logs()->with('workout')->get();
             return view('progress.trackDetail', compact('progress', 'logs'));
