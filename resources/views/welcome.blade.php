@@ -35,27 +35,38 @@
         <section class="landing-hero">
             <div class="hero-backdrop" role="img" aria-label="Athlete training in a gym"></div>
             <div class="hero-content">
-                <span class="hero-eyebrow"><span></span> YOUR WORK. YOUR NEXT LEVEL.</span>
-                <h1>FORGE YOUR<br><span>STRENGTH.</span><br>OWN YOUR<br>JOURNEY.</h1>
-                <p>Train with purpose, build lasting habits, and make progress you can see—one session at a time.</p>
+                <span class="hero-eyebrow"><span></span> NR FITNESS / TRAINING CLUB</span>
+                <h1>Find<br>your<br><span>strength</span><br>here.</h1>
                 <div class="hero-actions">
                     <a class="landing-button landing-button-primary" href="{{ route('signUp') }}">Get started <i class="bi bi-arrow-up-right"></i></a>
                     <a class="landing-button landing-button-outline" href="#training">Explore training</a>
                     <a class="landing-button landing-button-outline" href="#promo">Gym tour</a>
                 </div>
-                <div class="hero-proof">
-                    <span><i class="bi bi-check2-circle"></i> Progress tracking</span>
-                    <span><i class="bi bi-check2-circle"></i> Member check-ins</span>
-                </div>
             </div>
-            <div class="hero-side-note"><span>01</span> TRAIN WITH INTENTION</div>
         </section>
 
-        <section class="landing-stats" aria-label="What members can do">
-            <div><span class="stats-icon"><i class="bi bi-activity"></i></span><p><strong>Train</strong><small>Explore guided workouts</small></p></div>
-            <div><span class="stats-icon"><i class="bi bi-graph-up-arrow"></i></span><p><strong>Progress</strong><small>Keep your goals in view</small></p></div>
-            <div><span class="stats-icon"><i class="bi bi-calendar-check"></i></span><p><strong>Show up</strong><small>Track your gym visits</small></p></div>
-            <div><span class="stats-icon"><i class="bi bi-person-check"></i></span><p><strong>Stay consistent</strong><small>Build a routine that lasts</small></p></div>
+        <section class="landing-benefits" aria-labelledby="benefits-title">
+            <div class="benefits-heading">
+                <span class="section-kicker">A BETTER WAY TO TRAIN</span>
+                <h2 id="benefits-title">Everything you need to keep moving.</h2>
+            </div>
+            <div class="benefits-grid">
+                <article class="benefit-card">
+                    <div class="benefit-card-top"><span>01</span><i class="bi bi-activity"></i></div>
+                    <h3>Explore your workouts</h3>
+                    <p>Find exercises by muscle group and choose what works for your routine.</p>
+                </article>
+                <article class="benefit-card">
+                    <div class="benefit-card-top"><span>02</span><i class="bi bi-journal-check"></i></div>
+                    <h3>Keep a session journal</h3>
+                    <p>Record sets, reps, and weights so each workout has a clear place in your history.</p>
+                </article>
+                <article class="benefit-card">
+                    <div class="benefit-card-top"><span>03</span><i class="bi bi-calendar2-check"></i></div>
+                    <h3>Stay on top of membership</h3>
+                    <p>See your membership details and keep your gym visits in one place.</p>
+                </article>
+            </div>
         </section>
 
         <section class="promo-section landing-section" id="promo">
@@ -110,8 +121,14 @@
                         <article class="membership-card">
                             <span class="plan-index">0{{ $loop->iteration }}</span>
                             <h3>{{ $plan->name }}</h3>
+                            <span class="plan-type">Membership</span>
                             <p>{{ $plan->description ?: 'A membership to support your training routine.' }}</p>
                             <div class="plan-price"><strong>₹{{ number_format((float) $plan->price, 0) }}</strong><span>/ {{ $plan->duration_months }} {{ \Illuminate\Support\Str::plural('month', $plan->duration_months) }}</span></div>
+                            <ul class="plan-features">
+                                <li>Access to the workout library</li>
+                                <li>Log your training sessions</li>
+                                <li>Keep your gym visits organized</li>
+                            </ul>
                             <a href="{{ route('signUp') }}">Choose this plan <i class="bi bi-arrow-right"></i></a>
                         </article>
                     @endforeach
