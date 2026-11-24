@@ -22,9 +22,10 @@ class ProgressStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'workouts_completed.*.workout_id' => 'required|exists:workouts,id',
-            'workouts_completed.*.sets' => 'required|numeric|min:1',
-            'workouts_completed.*.reps' => 'required|numeric|min:1',
+            'workouts_completed' => 'required|array|min:1',
+            'workouts_completed.*.workout_id' => 'required|integer|exists:workouts,id',
+            'workouts_completed.*.sets' => 'required|integer|min:1|max:100',
+            'workouts_completed.*.reps' => 'required|integer|min:1|max:1000',
             'workouts_completed.*.weight' => 'nullable|numeric|min:0',
             'weight'               => 'required|numeric|min:1|max:500',
             'workout_on'                       => 'required|date|before_or_equal:today',

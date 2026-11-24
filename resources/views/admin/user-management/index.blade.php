@@ -54,15 +54,19 @@
                                 @endif
                             </td>
                             <td>
-                                <div class="d-flex align-items-center gap-2 flex-wrap">
-                                    <span class="state-badge {{ $user->cash_payment_status === 'received' ? '' : 'inactive' }}">{{ ucfirst($user->cash_payment_status ?? 'pending') }}</span>
-                                    <form method="POST" action="{{ route('admin.user-management.payment', $user) }}">
-                                        @csrf
-                                        @method('PATCH')
-                                        <input type="hidden" name="cash_payment_status" value="{{ $user->cash_payment_status === 'received' ? 'pending' : 'received' }}">
-                                        <button class="admin-btn admin-btn-light btn-sm" type="submit">Mark {{ $user->cash_payment_status === 'received' ? 'pending' : 'received' }}</button>
-                                    </form>
-                                </div>
+                                @if ((int) $user->role === 0)
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                        <span class="state-badge {{ $user->cash_payment_status === 'received' ? '' : 'inactive' }}">{{ ucfirst($user->cash_payment_status ?? 'pending') }}</span>
+                                        <form method="POST" action="{{ route('admin.user-management.payment', $user) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="cash_payment_status" value="{{ $user->cash_payment_status === 'received' ? 'pending' : 'received' }}">
+                                            <button class="admin-btn admin-btn-light btn-sm" type="submit">Mark {{ $user->cash_payment_status === 'received' ? 'pending' : 'received' }}</button>
+                                        </form>
+                                    </div>
+                                @else
+                                    <span class="entity-meta">Not applicable</span>
+                                @endif
                             </td>
                             <td><span class="role-badge">{{ $user->formatted_role_name }}</span></td>
                             <td><span class="state-badge {{ $user->status ? '' : 'inactive' }}"><i class="bi {{ $user->status ? 'bi-check-circle' : 'bi-pause-circle' }}"></i>{{ $user->status ? 'Active' : 'Inactive' }}</span></td>
@@ -72,12 +76,19 @@
                                     <a class="icon-action" href="{{ route('admin.user-management.show', $user) }}" title="View user and progress" aria-label="View {{ $user->name }}"><i class="bi bi-eye"></i></a>
                                     <button class="icon-action" type="button" title="Edit user" aria-label="Edit {{ $user->name }}" data-bs-toggle="modal" data-bs-target="#editUser{{ $user->id }}"><i class="bi bi-pencil"></i></button>
                                     @if ($user->id !== Auth::id())
-                                        <form method="POST" action="{{ route('admin.user-management.status', $user) }}" onsubmit="return confirm('Are you sure you want to {{ $user->status ? 'deactivate' : 'activate' }} this account?');">
+                                        <form method="POST" action="{{ route('admin.user-management.status', $user) }}" data-confirm-title="Update account status" data-confirm-message="Are you sure you want to {{ $user->status ? 'deactivate' : 'activate' }} this account?" data-confirm-label="Continue">
                                             @csrf
                                             @method('PATCH')
                                             <input type="hidden" name="status" value="{{ $user->status ? 0 : 1 }}">
                                             <button class="icon-action" type="submit" title="{{ $user->status ? 'Deactivate' : 'Activate' }} account" aria-label="{{ $user->status ? 'Deactivate' : 'Activate' }} {{ $user->name }}">
                                                 <i class="bi {{ $user->status ? 'bi-person-slash' : 'bi-person-check' }}"></i>
+                                            </button>
+                                        </form>
+                                        <form method="POST" action="{{ route('admin.user-management.destroy', $user) }}" data-confirm-title="Delete user" data-confirm-message="Permanently delete {{ $user->name }} and their progress, badge awards, and attendance history?" data-confirm-label="Delete user" data-confirm-variant="danger">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="icon-action text-danger" type="submit" title="Delete user" aria-label="Delete {{ $user->name }}">
+                                                <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
                                     @endif

@@ -60,6 +60,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => 'integer',
             'status' => 'boolean',
             'registration_otp_expires_at' => 'datetime',
             'membership_started_at' => 'datetime',

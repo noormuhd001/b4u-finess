@@ -50,8 +50,8 @@ body.user-app {
     position: sticky;
     top: 0;
     z-index: 1030;
-    min-height: 76px;
-    padding: 9px 0;
+    min-height: 84px;
+    padding: 11px 0;
     border-bottom: 1px solid rgba(255, 255, 255, .1);
     border-radius: 0;
     background: var(--fitness-green);
@@ -68,8 +68,8 @@ body.user-app {
 }
 
 .navbar-custom .navbar-brand img {
-    width: 50px !important;
-    height: 50px;
+    width: 54px !important;
+    height: 54px;
     padding: 5px;
     border-radius: 13px;
     background: var(--fitness-lime);
@@ -78,7 +78,7 @@ body.user-app {
 
 .navbar-brand span {
     color: #fff;
-    font: 800 14px 'Manrope', sans-serif;
+    font: 800 16px 'Manrope', sans-serif;
     letter-spacing: .08em;
 }
 
@@ -89,10 +89,10 @@ body.user-app {
 
 .navbar-custom .nav-link {
     position: relative;
-    padding: 11px 14px !important;
+    padding: 12px 15px !important;
     border-radius: 10px;
     color: #c8d5cb;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 650;
     transition: color .2s ease, background .2s ease;
 }
@@ -752,9 +752,7 @@ body.user-app {
 }
 
 .removeWorkoutBtn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+    position: static;
 }
 
 .progress-table,
@@ -1020,12 +1018,12 @@ body.dark-mode.user-app {
     }
 
     .navbar-custom {
-        min-height: 68px;
+        min-height: 72px;
     }
 
     .navbar-custom .navbar-brand img {
-        width: 44px !important;
-        height: 44px;
+        width: 46px !important;
+        height: 46px;
     }
 
     .user-page-heading {

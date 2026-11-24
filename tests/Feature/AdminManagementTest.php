@@ -11,6 +11,7 @@ use App\Models\Workout;
 use Database\Seeders\MembershipPlanSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -41,8 +42,9 @@ class AdminManagementTest extends TestCase
             ->assertOk()
             ->assertSee('User management')
             ->assertSee($user->email)
-            ->assertDontSee($admin->email)
-            ->assertDontSee('Members');
+            ->assertSee('formConfirmationModal')
+            ->assertSee('data-confirm-message')
+            ->assertDontSee($admin->email);
 
         $this->actingAs($admin)->get(route('admin.workouts.index'))->assertOk()->assertSee('Workout library');
         $this->actingAs($admin)->get(route('admin.badges.index'))
@@ -50,7 +52,7 @@ class AdminManagementTest extends TestCase
             ->assertSee('Badge catalog')
             ->assertDontSee('Create badge')
             ->assertDontSee('Awarded to');
-        $this->get('/admin/progress/reviews')->assertNotFound();
+        $this->get('/admin/progress/reviews')->assertMethodNotAllowed();
 
         $this->actingAs($admin)
             ->get(route('admin.user-management.show', $user))
@@ -74,7 +76,7 @@ class AdminManagementTest extends TestCase
             ->assertOk()
             ->assertDontSee($member->email);
 
-        $this->actingAs($admin)->post('/admin/badges')->assertNotFound();
+        $this->actingAs($admin)->post('/admin/badges')->assertMethodNotAllowed();
 
         $this->actingAs($admin)
             ->put(route('admin.badges.update', $badge), [
@@ -122,6 +124,88 @@ class AdminManagementTest extends TestCase
 
         $this->assertTrue(Hash::check('secure-password', $member->password));
         $this->assertTrue($member->status);
+    }
+
+    public function test_admin_user_rows_do_not_offer_member_payment_actions(): void
+    {
+        $admin = User::factory()->create(['role' => 1]);
+        $otherAdmin = User::factory()->create([
+            'role' => 1,
+            'cash_payment_status' => 'received',
+        ]);
+        $member = User::factory()->create(['role' => 0]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.user-management.index'))
+            ->assertOk()
+            ->assertSee($otherAdmin->email)
+            ->assertSee($member->email)
+            ->assertSee('Not applicable')
+            ->assertDontSee(route('admin.user-management.payment', $otherAdmin))
+            ->assertSee(route('admin.user-management.payment', $member));
+    }
+
+    public function test_admin_can_delete_a_user_and_their_associated_data(): void
+    {
+        Storage::fake('public');
+
+        $admin = User::factory()->create(['role' => 1]);
+        $member = User::factory()->create([
+            'role' => 0,
+            'image' => 'profile_images/member.png',
+        ]);
+        Storage::disk('public')->put($member->image, 'profile image');
+
+        $progressId = DB::table('progress')->insertGetId([
+            'user_id' => $member->id,
+            'avg_kcal_burned' => 100,
+            'current_weight' => '70',
+            'workout_on' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        DB::table('progress_logs')->insert([
+            'user_id' => $member->id,
+            'progress_id' => $progressId,
+            'workout_id' => 1,
+            'set_number' => '1',
+            'reps' => '10',
+            'weight' => 20,
+            'kcal_burned' => '50',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        $badge = Badges::create(['name' => 'Consistency']);
+        $member->badges()->attach($badge);
+        AttendanceRecord::create([
+            'user_id' => $member->id,
+            'check_in_date' => today(),
+            'checked_in_at' => now(),
+        ]);
+
+        $this->actingAs($admin)
+            ->delete(route('admin.user-management.destroy', $member))
+            ->assertRedirect(route('admin.user-management.index'))
+            ->assertSessionHas('success', 'User account and associated data deleted successfully.');
+
+        $this->assertDatabaseMissing('users', ['id' => $member->id]);
+        $this->assertDatabaseMissing('progress', ['id' => $progressId]);
+        $this->assertDatabaseMissing('progress_logs', ['user_id' => $member->id]);
+        $this->assertDatabaseMissing('badge_users', ['user_id' => $member->id]);
+        $this->assertDatabaseMissing('attendance_records', ['user_id' => $member->id]);
+        Storage::disk('public')->assertMissing($member->image);
+    }
+
+    public function test_admin_cannot_delete_their_own_account(): void
+    {
+        $admin = User::factory()->create(['role' => 1]);
+
+        $this->actingAs($admin)
+            ->delete(route('admin.user-management.destroy', $admin))
+            ->assertRedirect(route('admin.user-management.index'))
+            ->assertSessionHas('error', 'You cannot delete your own administrator account.');
+
+        $this->assertDatabaseHas('users', ['id' => $admin->id]);
     }
 
     public function test_registration_requires_a_plan_and_account_activates_only_after_email_otp_verification(): void
@@ -299,10 +383,9 @@ class AdminManagementTest extends TestCase
 
         $this->post(route('attendance.check-in'))->assertRedirect(route('attendance.index'));
         $this->assertDatabaseCount('attendance_records', 1);
-        $this->assertDatabaseHas('attendance_records', [
-            'user_id' => $member->id,
-            'check_in_date' => today()->toDateString(),
-        ]);
+        $record = AttendanceRecord::query()->firstOrFail();
+        $this->assertSame($member->id, $record->user_id);
+        $this->assertSame(today()->toDateString(), $record->check_in_date->toDateString());
 
         $this->post(route('attendance.check-in'))
             ->assertRedirect(route('attendance.index'))
