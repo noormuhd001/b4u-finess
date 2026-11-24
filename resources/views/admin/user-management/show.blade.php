@@ -10,6 +10,13 @@
             <p>Account details and progress history for this user.</p>
         </div>
         <div class="page-heading-actions">
+            @if ($user->id !== Auth::id())
+                <form method="POST" action="{{ route('admin.user-management.destroy', $user) }}" data-confirm-title="Delete user" data-confirm-message="Permanently delete {{ $user->name }} and their progress, badge awards, and attendance history?" data-confirm-label="Delete user" data-confirm-variant="danger">
+                    @csrf
+                    @method('DELETE')
+                    <button class="btn btn-danger" type="submit"><i class="bi bi-trash"></i> Delete user</button>
+                </form>
+            @endif
             @if ((int) $user->role === 0 && $user->membershipPlan)
                 <button class="admin-btn" type="button" data-bs-toggle="modal" data-bs-target="#recordRenewalModal">
                     <i class="bi bi-arrow-repeat"></i> Record renewal

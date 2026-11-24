@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\MembershipPlan;
+use App\Models\ProgressLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class UserManagementController extends Controller
@@ -160,6 +163,36 @@ class UserManagementController extends Controller
             'success',
             $user->status ? 'User account activated.' : 'User account deactivated.'
         );
+    }
+
+    public function destroy(User $user)
+    {
+        if ($user->is(Auth::user())) {
+            return redirect()->route('admin.user-management.index')
+                ->with('error', 'You cannot delete your own administrator account.');
+        }
+
+        $image = $user->image;
+
+        DB::transaction(function () use ($user) {
+            $progressIds = $user->progress()->pluck('id');
+
+            ProgressLog::query()
+                ->where('user_id', $user->id)
+                ->orWhereIn('progress_id', $progressIds)
+                ->delete();
+
+            $user->progress()->delete();
+            $user->badges()->detach();
+            $user->delete();
+        });
+
+        if ($image) {
+            Storage::disk('public')->delete($image);
+        }
+
+        return redirect()->route('admin.user-management.index')
+            ->with('success', 'User account and associated data deleted successfully.');
     }
 
     private function syncMembershipDates(User $user, bool $wasPaid, bool $planChanged): void

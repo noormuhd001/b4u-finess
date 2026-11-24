@@ -38,6 +38,7 @@ Route::middleware(['auth', 'activeUser', 'Admin', 'preventHistory'])->group(func
             Route::patch('/{user}/status', [UserManagementController::class, 'updateStatus'])->name('status');
             Route::patch('/{user}/payment', [UserManagementController::class, 'updatePaymentStatus'])->name('payment');
             Route::patch('/{user}/renew', [UserManagementController::class, 'renewMembership'])->name('renew');
+            Route::delete('/{user}', [UserManagementController::class, 'destroy'])->name('destroy');
         });
 
         Route::prefix('membership-plans')->name('membership-plans.')->controller(MembershipPlanController::class)->group(function () {
