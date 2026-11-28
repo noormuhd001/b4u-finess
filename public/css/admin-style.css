@@ -1,15 +1,15 @@
 :root {
-    --admin-ink: #18211d;
-    --admin-muted: #77827c;
-    --admin-line: #e9eee9;
-    --admin-paper: #f5f7f3;
+    --admin-ink: #111214;
+    --admin-muted: #686a6d;
+    --admin-line: #e4e4e5;
+    --admin-paper: #f5f5f5;
     --admin-white: #fff;
-    --admin-green: #1c392b;
-    --admin-lime: #c9f36a;
-    --admin-orange: #ef8a43;
-    --admin-shadow: 0 12px 34px rgba(26, 49, 36, .06);
-    --admin-radius-card: 18px;
-    --admin-radius-control: 11px;
+    --admin-green: #101114;
+    --admin-lime: #ed2442;
+    --admin-orange: #ed2442;
+    --admin-shadow: 0 12px 34px rgba(17, 18, 20, .07);
+    --admin-radius-card: 10px;
+    --admin-radius-control: 6px;
 }
 
 * {
@@ -20,7 +20,7 @@ body {
     margin: 0;
     background: var(--admin-paper);
     color: var(--admin-ink);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Rajdhani', sans-serif;
     font-size: 14px;
     line-height: 1.6;
 }
@@ -68,12 +68,13 @@ a {
     place-items: center;
     overflow: hidden;
     border-radius: 14px;
-    background: var(--admin-lime);
+    background: transparent;
 }
 
 .brand-mark img {
     width: 48px;
     height: 48px;
+    border-radius: 12px;
     object-fit: contain;
 }
 
@@ -85,7 +86,7 @@ a {
 }
 
 .brand-copy strong {
-    font: 800 15px 'Manrope', sans-serif;
+    font: 800 15px 'Oxanium', sans-serif;
     letter-spacing: .06em;
 }
 
@@ -249,7 +250,7 @@ a {
 }
 
 .topbar-title {
-    font: 700 14px 'Manrope', sans-serif;
+    font: 700 14px 'Oxanium', sans-serif;
 }
 
 .topbar-right {
@@ -280,7 +281,7 @@ a {
     width: 34px;
     height: 34px;
     flex-basis: 34px;
-    background: #e9f0e7;
+    background: #fcebed;
     color: var(--admin-green);
 }
 
@@ -343,7 +344,7 @@ a {
 
 .user-page-heading h1 {
     margin: 0;
-    font: 800 clamp(24px, 3vw, 32px)/1.15 'Manrope', sans-serif;
+    font: 800 clamp(24px, 3vw, 32px)/1.15 'Oxanium', sans-serif;
     letter-spacing: -.04em;
 }
 
@@ -364,6 +365,10 @@ a {
     box-shadow: var(--admin-shadow);
 }
 
+.password-change-card {
+    margin-top: 24px;
+}
+
 .profile-header {
     margin-bottom: 24px;
     text-align: center;
@@ -380,7 +385,7 @@ a {
 
 .profile-header h2 {
     margin-bottom: 4px;
-    font: 800 23px 'Manrope', sans-serif;
+    font: 800 23px 'Oxanium', sans-serif;
 }
 
 .profile-header p {
@@ -425,7 +430,7 @@ a {
 
 .page-heading h1 {
     margin: 0;
-    font: 800 clamp(24px, 3vw, 32px)/1.15 'Manrope', sans-serif;
+    font: 800 clamp(24px, 3vw, 32px)/1.15 'Oxanium', sans-serif;
     letter-spacing: -.04em;
 }
 
@@ -460,7 +465,7 @@ a {
 
 .admin-btn:hover {
     transform: translateY(-1px);
-    background: #28503b;
+    background: #24252a;
     color: #fff;
 }
 
@@ -499,7 +504,7 @@ a {
 .admin-card-header h2,
 .admin-card-header h3 {
     margin: 0;
-    font: 700 14px 'Manrope', sans-serif;
+    font: 700 14px 'Oxanium', sans-serif;
 }
 
 .admin-card-header p {
@@ -543,7 +548,7 @@ a {
 
 .stat-value {
     margin-top: 15px;
-    font: 800 28px 'Manrope', sans-serif;
+    font: 800 28px 'Oxanium', sans-serif;
     letter-spacing: -.04em;
 }
 
@@ -730,7 +735,7 @@ a {
 
 .admin-form-control:focus {
     border-color: #a8c88b;
-    box-shadow: 0 0 0 3px rgba(201, 243, 106, .2);
+    box-shadow: 0 0 0 3px rgba(237, 36, 66, .2);
 }
 
 .attendance-period-filter {
@@ -914,7 +919,7 @@ a.admin-page-link:hover {
 }
 
 .modal-title {
-    font: 700 16px 'Manrope', sans-serif;
+    font: 700 16px 'Oxanium', sans-serif;
 }
 
 .user-detail-card {
@@ -933,12 +938,12 @@ a.admin-page-link:hover {
     border-radius: 18px;
     background: #eef3ec;
     color: var(--admin-green);
-    font: 800 25px 'Manrope', sans-serif;
+    font: 800 25px 'Oxanium', sans-serif;
 }
 
 .user-detail-info h2 {
     margin: 0;
-    font: 800 21px 'Manrope', sans-serif;
+    font: 800 21px 'Oxanium', sans-serif;
 }
 
 .user-detail-info > p {
@@ -1247,7 +1252,7 @@ body {
 }
 
 body :focus-visible {
-    outline: 3px solid rgba(28, 57, 43, .3);
+    outline: 3px solid rgba(237, 36, 66, .3);
     outline-offset: 2px;
 }
 

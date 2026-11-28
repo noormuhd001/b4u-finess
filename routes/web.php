@@ -5,6 +5,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dahboard\DashboardController;
 use App\Http\Controllers\Profile\UserProfileController;
+use App\Http\Controllers\Profile\PasswordUpdateController;
 use App\Http\Controllers\Progress\ProgressController;
 use App\Http\Controllers\Settings\SettingController;
 use App\Http\Controllers\Workout\WorkoutController;
@@ -70,5 +71,6 @@ Route::prefix('')->middleware('auth', 'activeUser', 'preventHistory')->group(fun
     Route::prefix('profile')->name('profile.')->group(function () {
         Route::get('/', [UserProfileController::class, 'index'])->name('index');
         Route::post('/update', [UserProfileController::class, 'update'])->name('update');
+        Route::post('/password', PasswordUpdateController::class)->name('password.update');
     });
 });

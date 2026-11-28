@@ -7,7 +7,7 @@
     <meta name="description" content="Train with purpose at NR Fitness. Choose your membership, build your routine, and track your progress.">
     <title>NR Fitness | Build your strongest self</title>
     <link rel="icon" type="image/png" href="{{ asset('img/favicon-rounded.png') }}">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
 </head>
@@ -35,8 +35,9 @@
         <section class="landing-hero">
             <div class="hero-backdrop" role="img" aria-label="Athlete training in a gym"></div>
             <div class="hero-content">
-                <span class="hero-eyebrow"><span></span> NR FITNESS / TRAINING CLUB</span>
-                <h1>Find<br>your<br><span>strength</span><br>here.</h1>
+                {{-- <span class="hero-eyebrow"><span></span> NR FITNESS / TRAINING CLUB</span> --}}
+                <h1>Build<br><span>strength</span></h1>
+                <p class="hero-copy">Train hard. Move better. Show up stronger.</p>
                 <div class="hero-actions">
                     <a class="landing-button landing-button-primary" href="{{ route('signUp') }}">Get started <i class="bi bi-arrow-up-right"></i></a>
                     <a class="landing-button landing-button-outline" href="#training">Explore training</a>

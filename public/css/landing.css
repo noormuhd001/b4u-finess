@@ -1,11 +1,11 @@
 :root {
     --landing-bg: #fff;
     --landing-panel: #fff;
-    --landing-line: #e2e8e2;
-    --landing-ink: #17251d;
-    --landing-muted: #68756c;
-    --landing-accent: #315b43;
-    --landing-accent-soft: #eef3ed;
+    --landing-line: #e3e3e4;
+    --landing-ink: #111214;
+    --landing-muted: #696b70;
+    --landing-accent: #ed1d3b;
+    --landing-accent-soft: #fcebed;
 }
 
 * {
@@ -20,7 +20,7 @@ body.landing-page {
     margin: 0;
     background: var(--landing-bg);
     color: var(--landing-ink);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Rajdhani', sans-serif;
 }
 
 .landing-header {
@@ -42,8 +42,8 @@ body.landing-page {
     display: inline-flex;
     align-items: center;
     gap: 11px;
-    color: var(--landing-ink);
-    font: 800 17px 'Manrope', sans-serif;
+    color: #fff;
+    font: 800 17px 'Oxanium', sans-serif;
     letter-spacing: .09em;
     text-decoration: none;
 }
@@ -67,7 +67,7 @@ body.landing-page {
 
 .landing-nav a,
 .landing-footer a {
-    color: #405047;
+    color: #45464a;
     font-size: 16px;
     font-weight: 600;
     text-decoration: none;
@@ -84,15 +84,31 @@ body.landing-page {
     color: var(--landing-accent);
 }
 
+.landing-header .landing-nav a {
+    color: rgba(255, 255, 255, .82);
+}
+
+.landing-header .landing-nav a:hover,
+.landing-header .landing-nav a.active {
+    color: #fff;
+}
+
+.landing-header .landing-nav a.active {
+    text-decoration: underline;
+    text-decoration-color: var(--landing-accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 7px;
+}
+
 .landing-nav .landing-signin {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     padding: 9px 17px;
-    border: 1px solid #315b43;
+    border: 1px solid rgba(255, 255, 255, .65);
     border-radius: 999px;
     background: transparent;
-    color: #315b43;
+    color: #fff;
 }
 
 .landing-nav .landing-signin:hover,
@@ -109,7 +125,7 @@ body.landing-page {
     border: 1px solid var(--landing-line);
     border-radius: 8px;
     background: transparent;
-    color: var(--landing-ink);
+    color: #fff;
     font-size: 22px;
 }
 
@@ -123,15 +139,15 @@ body.landing-page {
     overflow: hidden;
     margin: 0 auto;
     border-bottom: 1px solid var(--landing-line);
-    background: #fff;
+    background: #101114;
 }
 
 .hero-backdrop {
     position: absolute;
     inset: 0;
     background-image:
-        linear-gradient(90deg, rgba(255, 255, 255, .99) 0%, rgba(255, 255, 255, .96) 32%, rgba(255, 255, 255, .78) 55%, rgba(255, 255, 255, .3) 82%, rgba(255, 255, 255, .12) 100%),
-        linear-gradient(0deg, rgba(255, 255, 255, .9) 0%, transparent 33%, transparent 73%, rgba(255, 255, 255, .82) 100%),
+        linear-gradient(90deg, rgba(10, 10, 12, .9) 0%, rgba(18, 18, 20, .68) 36%, rgba(10, 10, 12, .26) 68%, rgba(0, 0, 0, .08) 100%),
+        linear-gradient(0deg, rgba(7, 7, 8, .78) 0%, transparent 38%, rgba(0, 0, 0, .12) 72%, rgba(0, 0, 0, .42) 100%),
         url('../img/login-background.jpg');
     background-position: center, center, center 43%;
     background-size: cover;
@@ -141,12 +157,12 @@ body.landing-page {
 .hero-content {
     position: relative;
     z-index: 1;
-    width: min(900px, 86%);
+    width: min(1280px, 100%);
     display: grid;
-    grid-template-columns: minmax(0, 1.25fr) minmax(190px, .75fr);
+    grid-template-columns: minmax(0, 1fr);
     align-items: center;
     column-gap: 28px;
-    padding: 72px 0 92px clamp(24px, 8vw, 116px);
+    padding: 100px 24px 80px clamp(28px, 8vw, 120px);
 }
 
 .hero-eyebrow {
@@ -158,10 +174,17 @@ body.landing-page {
     display: inline-flex;
     align-items: center;
     gap: 9px;
-    color: var(--landing-accent);
     font-size: 10px;
     font-weight: 800;
     letter-spacing: .16em;
+}
+
+.hero-eyebrow {
+    color: rgba(255, 255, 255, .88);
+}
+
+.section-kicker {
+    color: var(--landing-accent);
 }
 
 .hero-eyebrow span {
@@ -169,15 +192,30 @@ body.landing-page {
     height: 7px;
     border-radius: 50%;
     background: var(--landing-accent);
-    box-shadow: 0 0 12px rgba(49, 91, 67, .25);
+    box-shadow: 0 0 12px rgba(237, 29, 59, .35);
 }
 
 .hero-content h1 {
     grid-column: 1 / -1;
     margin: 20px 0 0;
+    max-width: 1000px;
+    color: #fff;
+    font: 800 clamp(76px, 11vw, 148px)/.78 'Oxanium', sans-serif;
+    letter-spacing: -.045em;
+    text-transform: uppercase;
+}
+
+.hero-content h1 span {
     color: var(--landing-accent);
-    font: 800 clamp(52px, 5.7vw, 82px)/.84 'Manrope', sans-serif;
-    letter-spacing: -.065em;
+}
+
+.hero-copy {
+    max-width: 430px;
+    margin: 20px 0 0;
+    color: rgba(255, 255, 255, .8);
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: .08em;
     text-transform: uppercase;
 }
 
@@ -211,23 +249,23 @@ body.landing-page {
 }
 
 .landing-button-primary {
-    background: #315b43;
+    background: var(--landing-accent);
     color: #fff;
 }
 
 .landing-button-primary:hover {
-    background: #3d694d;
+    background: #bd1530;
     color: #fff;
 }
 
 .landing-button-outline {
-    border-color: #9eaaa0;
-    color: var(--landing-ink);
+    border-color: rgba(255, 255, 255, .58);
+    color: #fff;
 }
 
 .landing-button-outline:hover {
     border-color: var(--landing-accent);
-    color: var(--landing-accent);
+    color: #fff;
 }
 
 .landing-benefits {
@@ -247,8 +285,9 @@ body.landing-page {
 .benefits-heading h2 {
     max-width: 470px;
     margin: 10px 0 0;
-    font: 800 clamp(25px, 3vw, 36px)/1.1 'Manrope', sans-serif;
+    font: 800 clamp(25px, 3vw, 36px)/1.1 'Oxanium', sans-serif;
     letter-spacing: -.04em;
+    text-transform: uppercase;
 }
 
 .benefits-grid {
@@ -268,7 +307,7 @@ body.landing-page {
 
 .benefit-card:hover {
     transform: translateY(-3px);
-    border-color: rgba(49, 91, 67, .35);
+    border-color: rgba(237, 29, 59, .5);
 }
 
 .benefit-card-top {
@@ -286,7 +325,8 @@ body.landing-page {
 
 .benefit-card h3 {
     margin: 24px 0 8px;
-    font: 700 17px 'Manrope', sans-serif;
+    font: 700 17px 'Oxanium', sans-serif;
+    text-transform: uppercase;
 }
 
 .benefit-card p {
@@ -356,8 +396,9 @@ body.landing-page {
 .section-heading h2,
 .landing-cta h2 {
     margin: 13px 0 0;
-    font: 800 clamp(30px, 4vw, 48px)/1.08 'Manrope', sans-serif;
+    font: 800 clamp(30px, 4vw, 48px)/1.08 'Oxanium', sans-serif;
     letter-spacing: -.055em;
+    text-transform: uppercase;
 }
 
 .section-heading h2 span {
@@ -414,7 +455,7 @@ body.landing-page {
 }
 
 .training-card-copy > span {
-    color: #c5dfc8;
+    color: #ff5269;
     font-size: 9px;
     font-weight: 800;
     letter-spacing: .13em;
@@ -422,7 +463,7 @@ body.landing-page {
 
 .training-card-copy h3 {
     margin: 9px 0 5px;
-    font: 700 20px 'Manrope', sans-serif;
+    font: 700 20px 'Oxanium', sans-serif;
     color:white;
 }
 
@@ -461,7 +502,7 @@ body.landing-page {
 }
 
 .membership-section .section-heading h2 span {
-    color: #c5dfc8;
+    color: #ff5269;
 }
 
 .membership-section .section-heading > p {
@@ -469,7 +510,7 @@ body.landing-page {
 }
 
 .membership-section .section-kicker {
-    color: #c5dfc8;
+    color: #ff5269;
 }
 
 .membership-grid {
@@ -498,8 +539,8 @@ body.landing-page {
     right: 16px;
     padding: 6px 9px;
     border-radius: 999px;
-    background: #c5dfc8;
-    color: #1c392b;
+    background: var(--landing-accent);
+    color: #fff;
     font-size: 9px;
     font-weight: 800;
     letter-spacing: .08em;
@@ -507,12 +548,12 @@ body.landing-page {
 }
 
 .membership-card:nth-child(2) {
-    border-color: rgba(197, 223, 200, .55);
+    border-color: rgba(237, 29, 59, .7);
     background: rgba(42, 48, 44, .94);
 }
 
 .plan-index {
-    color: #c5dfc8;
+    color: #ff5269;
     font-size: 10px;
     font-weight: 800;
     letter-spacing: .1em;
@@ -520,7 +561,8 @@ body.landing-page {
 
 .membership-card h3 {
     margin: 14px 0 3px;
-    font: 700 20px 'Manrope', sans-serif;
+    font: 700 20px 'Oxanium', sans-serif;
+    text-transform: uppercase;
 }
 
 .plan-type {
@@ -544,7 +586,7 @@ body.landing-page {
 }
 
 .plan-price strong {
-    font: 800 34px 'Manrope', sans-serif;
+    font: 800 34px 'Oxanium', sans-serif;
     letter-spacing: -.04em;
 }
 
@@ -566,7 +608,7 @@ body.landing-page {
 
 .plan-features li::before {
     margin-right: 9px;
-    color: #c5dfc8;
+    color: #ff5269;
     content: "•";
 }
 
@@ -578,7 +620,7 @@ body.landing-page {
     padding: 0 17px;
     margin-top: auto;
     border-radius: 999px;
-    background: #315b43;
+    background: var(--landing-accent);
     color: #fff;
     font-size: 11px;
     font-weight: 700;
@@ -587,7 +629,7 @@ body.landing-page {
 }
 
 .membership-card > a:hover {
-    background: #3d694d;
+    background: #bd1530;
 }
 
 .membership-empty {
@@ -609,23 +651,23 @@ body.landing-page {
     margin: 0 auto 90px;
     border: 1px solid var(--landing-line);
     border-radius: 8px;
-    background: #1c392b;
+    background: var(--landing-accent);
     color: #fff;
 }
 
 .landing-cta .section-kicker {
-    color: #c5dfc8;
+    color: #fff;
 }
 
 .landing-cta .landing-button-primary {
     border-color: #fff;
     background: #fff;
-    color: #315b43;
+    color: var(--landing-accent);
 }
 
 .landing-cta .landing-button-primary:hover {
-    background: #eaf1e9;
-    color: #315b43;
+    background: #fff0f2;
+    color: #bd1530;
 }
 
 .landing-cta h2 {
@@ -689,8 +731,8 @@ body.landing-page {
         align-items: stretch;
         gap: 0;
         padding: 10px 24px 20px;
-        border-bottom: 1px solid var(--landing-line);
-        background: #fff;
+        border-bottom: 1px solid rgba(255, 255, 255, .14);
+        background: #101114;
     }
 
     .landing-nav.is-open {
@@ -706,6 +748,10 @@ body.landing-page {
     .landing-nav .landing-signin {
         justify-content: center;
         margin-top: 8px;
+    }
+
+    .landing-nav .landing-signin:hover {
+        background: var(--landing-accent);
     }
 
     .landing-hero {
@@ -756,8 +802,8 @@ body.landing-page {
 
     .hero-backdrop {
         background-image:
-            linear-gradient(0deg, rgba(255, 255, 255, .99) 0%, rgba(255, 255, 255, .96) 38%, rgba(255, 255, 255, .82) 68%, rgba(255, 255, 255, .22) 100%),
-            linear-gradient(90deg, rgba(255, 255, 255, .5), transparent),
+            linear-gradient(0deg, rgba(8, 8, 10, .95) 0%, rgba(10, 10, 12, .82) 38%, rgba(12, 12, 14, .48) 68%, rgba(18, 18, 20, .16) 100%),
+            linear-gradient(90deg, rgba(10, 10, 12, .35), transparent),
             url('../img/login-background.jpg');
         background-position: center, center, 63% top;
         background-size: cover;
@@ -769,7 +815,12 @@ body.landing-page {
     }
 
     .hero-content h1 {
-        font-size: clamp(50px, 14vw, 68px);
+        font-size: clamp(56px, 14vw, 82px);
+    }
+
+    .hero-copy {
+        max-width: 340px;
+        font-size: 15px;
     }
 
     .landing-benefits,

@@ -1,9 +1,9 @@
 :root {
-    --auth-ink: #18251d;
-    --auth-muted: #77847c;
-    --auth-line: #e5ebe5;
-    --auth-green: #1c392b;
-    --auth-lime: #c9f36a;
+    --auth-ink: #111214;
+    --auth-muted: #686a6d;
+    --auth-line: #e4e4e5;
+    --auth-green: #e51d3e;
+    --auth-lime: #ed2442;
 }
 
 * {
@@ -15,11 +15,11 @@ body.auth-page {
     margin: 0;
     padding: 28px;
     background:
-        radial-gradient(circle at 8% 10%, rgba(201, 243, 106, .2), transparent 28%),
-        radial-gradient(circle at 90% 88%, rgba(28, 57, 43, .1), transparent 26%),
-        #f3f6f1;
+        radial-gradient(circle at 8% 10%, rgba(237, 36, 66, .12), transparent 28%),
+        radial-gradient(circle at 90% 88%, rgba(17, 18, 20, .08), transparent 26%),
+        #f5f5f5;
     color: var(--auth-ink);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Rajdhani', sans-serif;
 }
 
 .signup-page {
@@ -140,16 +140,16 @@ body.auth-page {
     gap: 11px;
     margin-bottom: 36px;
     color: var(--auth-green);
-    font: 800 13px 'Manrope', sans-serif;
+    font: 800 13px 'Oxanium', sans-serif;
     letter-spacing: .11em;
 }
 
 .auth-brand img {
     width: 60px;
     height: 60px;
-    padding: 5px;
+    padding: 0;
     border-radius: 13px;
-    background: var(--auth-lime);
+    background: transparent;
     object-fit: contain;
 }
 
@@ -160,7 +160,7 @@ body.auth-page {
 .auth-heading h1 {
     margin: 0 0 8px;
     color: var(--auth-ink);
-    font: 800 clamp(26px, 3vw, 34px)/1.15 'Manrope', sans-serif;
+    font: 800 clamp(26px, 3vw, 34px)/1.15 'Oxanium', sans-serif;
     letter-spacing: -.045em;
 }
 
@@ -191,7 +191,7 @@ body.auth-page {
 .auth-page .form-control:focus {
     border-color: #a7c68c;
     background: #fff;
-    box-shadow: 0 0 0 4px rgba(201, 243, 106, .2);
+    box-shadow: 0 0 0 4px rgba(237, 36, 66, .2);
 }
 
 .auth-page .btn {
@@ -237,7 +237,7 @@ body.auth-page {
     border-radius: 0;
     background: transparent;
     color: #345941;
-    font: 700 12px 'DM Sans', sans-serif;
+    font: 700 12px 'Rajdhani', sans-serif;
     text-decoration: underline;
     transition: color .2s ease;
 }
@@ -300,7 +300,7 @@ body.auth-page {
 .auth-visual-copy h2 {
     margin: 10px 0;
     color: #fff;
-    font: 800 clamp(25px, 3vw, 38px)/1.12 'Manrope', sans-serif;
+    font: 800 clamp(25px, 3vw, 38px)/1.12 'Oxanium', sans-serif;
     letter-spacing: -.04em;
 }
 
@@ -411,11 +411,11 @@ body.auth-page {
 .plan-option input:checked + .plan-option-card {
     border-color: #78985e;
     background: #f5faed;
-    box-shadow: 0 0 0 3px rgba(201, 243, 106, .22);
+    box-shadow: 0 0 0 3px rgba(237, 36, 66, .22);
 }
 
 .plan-option input:focus-visible + .plan-option-card {
-    outline: 3px solid rgba(28, 57, 43, .25);
+    outline: 3px solid rgba(237, 36, 66, .25);
     outline-offset: 2px;
 }
 
@@ -460,7 +460,7 @@ body.auth-page {
 
 .plan-option-price {
     color: var(--auth-green);
-    font: 800 13px 'Manrope', sans-serif;
+    font: 800 13px 'Oxanium', sans-serif;
     text-align: right;
     white-space: nowrap;
 }
@@ -468,7 +468,7 @@ body.auth-page {
 .plan-option-price small {
     display: block;
     color: var(--auth-muted);
-    font: 500 9px 'DM Sans', sans-serif;
+    font: 500 9px 'Rajdhani', sans-serif;
 }
 
 .plan-payment-note {
@@ -509,7 +509,7 @@ body.auth-page {
 
 .membership-quote-total strong {
     color: var(--auth-green);
-    font: 800 17px 'Manrope', sans-serif;
+    font: 800 17px 'Oxanium', sans-serif;
 }
 
 .legal-page {
@@ -533,7 +533,7 @@ body.auth-page {
     gap: 10px;
     margin-bottom: 28px;
     color: var(--auth-green);
-    font: 800 12px 'Manrope', sans-serif;
+    font: 800 12px 'Oxanium', sans-serif;
     letter-spacing: .1em;
     text-decoration: none;
 }
@@ -541,22 +541,23 @@ body.auth-page {
 .legal-page .legal-brand img {
     width: 58px;
     height: 58px;
-    padding: 5px;
+    padding: 0;
     border-radius: 12px;
-    background: var(--auth-lime);
+    background: transparent;
+    object-fit: contain;
 }
 
 .legal-page h1 {
     margin-bottom: 8px;
     color: var(--auth-ink);
-    font: 800 clamp(26px, 4vw, 36px) 'Manrope', sans-serif;
+    font: 800 clamp(26px, 4vw, 36px) 'Oxanium', sans-serif;
     letter-spacing: -.04em;
 }
 
 .legal-page h3 {
     margin-top: 28px;
     color: var(--auth-ink);
-    font: 750 17px 'Manrope', sans-serif;
+    font: 750 17px 'Oxanium', sans-serif;
 }
 
 .legal-page p,
@@ -574,7 +575,7 @@ body.auth-page {
 }
 
 .auth-page :focus-visible {
-    outline: 3px solid rgba(28, 57, 43, .32);
+    outline: 3px solid rgba(237, 36, 66, .32);
     outline-offset: 3px;
 }
 

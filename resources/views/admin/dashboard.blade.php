@@ -6,7 +6,7 @@
 @section('content')
     <div class="page-heading">
         <div>
-            <h1>Good to see you, {{ $userData->name }} <span aria-hidden="true">✦</span></h1>
+            <h1>Good to see you, {{ $userData->name }}</h1>
             <p>Here’s what’s happening across your fitness community today.</p>
         </div>
         <div class="page-heading-actions">

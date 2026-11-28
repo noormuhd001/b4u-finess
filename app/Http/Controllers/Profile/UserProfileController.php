@@ -22,6 +22,7 @@ class UserProfileController extends Controller
             'goals' => $goals,
             'isAdmin' => false,
             'profileUpdateRoute' => route('profile.update'),
+            'passwordUpdateRoute' => route('profile.password.update'),
         ]);
     }
 

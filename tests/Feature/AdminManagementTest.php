@@ -15,6 +15,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -108,6 +109,82 @@ class AdminManagementTest extends TestCase
         $this->actingAs($member)
             ->get(route('admin.profile.index'))
             ->assertRedirect(route('login'));
+    }
+
+    public function test_admin_profile_only_shows_account_fields_and_accepts_nullable_fitness_details(): void
+    {
+        $admin = User::factory()->create([
+            'role' => 1,
+            'gender' => null,
+            'height' => null,
+            'weight' => null,
+            'goal' => null,
+        ]);
+
+        $profile = $this->actingAs($admin)
+            ->get(route('admin.profile.index'))
+            ->assertOk();
+
+        $profile->assertDontSee('Membership plan:')
+            ->assertDontSee('Cash payment:')
+            ->assertDontSee('Gender:')
+            ->assertDontSee('Height:')
+            ->assertDontSee('Weight:')
+            ->assertDontSee('name="gender"', false)
+            ->assertDontSee('name="height"', false)
+            ->assertDontSee('name="weight"', false)
+            ->assertDontSee('name="goal"', false);
+
+        $this->actingAs($admin)
+            ->put(route('admin.profile.update'), [
+                'name' => 'Updated Admin',
+                'email' => $admin->email,
+            ])
+            ->assertRedirect(route('admin.profile.index'));
+
+        $this->assertDatabaseHas('users', [
+            'id' => $admin->id,
+            'name' => 'Updated Admin',
+            'gender' => null,
+            'height' => null,
+            'weight' => null,
+            'goal' => null,
+        ]);
+    }
+
+    public function test_admin_can_change_password_from_profile(): void
+    {
+        $admin = User::factory()->create([
+            'role' => 1,
+            'password' => 'current-password',
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.profile.index'))
+            ->assertOk()
+            ->assertSee('Change password')
+            ->assertSee(route('admin.profile.password.update'));
+
+        $this->actingAs($admin)
+            ->from(route('admin.profile.index'))
+            ->post(route('admin.profile.password.update'), [
+                'current_password' => 'current-password',
+                'password' => 'new-admin-password',
+                'password_confirmation' => 'new-admin-password',
+            ])
+            ->assertRedirect(route('admin.profile.index'))
+            ->assertSessionHas('success', 'Your password has been updated.');
+
+        $this->assertTrue(Hash::check('new-admin-password', $admin->fresh()->password));
+    }
+
+    public function test_optional_profile_and_membership_fields_are_nullable_in_the_database(): void
+    {
+        $columns = collect(Schema::getColumns('users'))->keyBy('name');
+
+        foreach (['gender', 'height', 'weight', 'goal', 'membership_plan_id'] as $field) {
+            $this->assertTrue($columns[$field]['nullable'], "{$field} should be nullable.");
+        }
     }
 
     public function test_admin_can_create_member_account(): void

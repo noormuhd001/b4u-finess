@@ -32,7 +32,7 @@ class ProfileUpdateRequest extends FormRequest
             ],
             'height' => 'nullable|numeric|min:50|max:300',
             'weight' => 'nullable|numeric|min:20|max:500',
-            'profile_picture' =>'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'profile_picture' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
     }
 
@@ -54,6 +54,7 @@ class ProfileUpdateRequest extends FormRequest
             'profile_picture.image' => 'Profile picture must be an image.',
             'profile_picture.mimes' => 'Profile picture must be a file of type: jpeg, png, jpg, gif.',
             'profile_picture.max' => 'Profile picture size must not exceed 2MB.',
+            'profile_picture.uploaded' => 'The profile picture could not be uploaded. Choose an image no larger than 2MB.',
         ];
     }
 }
