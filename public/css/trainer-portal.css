@@ -1,11 +1,11 @@
 :root {
-    --trainer-ink: #1b3025;
-    --trainer-green: #1c392b;
-    --trainer-lime: #c9f36a;
-    --trainer-muted: #748078;
-    --trainer-line: #e4eae3;
+    --trainer-ink: #111214;
+    --trainer-green: #e51d3e;
+    --trainer-lime: #ed2442;
+    --trainer-muted: #686a6d;
+    --trainer-line: #e4e4e5;
     --trainer-surface: #fff;
-    --trainer-page: #f5f7f4;
+    --trainer-page: #f5f5f5;
 }
 
 .trainer-portal,
@@ -13,7 +13,7 @@
     min-height: 100vh;
     background: var(--trainer-page);
     color: var(--trainer-ink);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Rajdhani', sans-serif;
 }
 
 .trainer-topbar {
@@ -39,7 +39,7 @@
     align-items: center;
     gap: 10px;
     color: var(--trainer-ink);
-    font: 800 14px 'Manrope', sans-serif;
+    font: 800 14px 'Oxanium', sans-serif;
     letter-spacing: .03em;
     text-decoration: none;
     white-space: nowrap;
@@ -48,6 +48,7 @@
 .trainer-brand img {
     width: 40px;
     height: 40px;
+    border-radius: 10px;
     object-fit: contain;
 }
 
@@ -55,7 +56,7 @@
     display: block;
     margin-top: 3px;
     color: var(--trainer-muted);
-    font: 700 9px 'DM Sans', sans-serif;
+    font: 700 9px 'Rajdhani', sans-serif;
     letter-spacing: .13em;
 }
 
@@ -96,7 +97,7 @@
     flex: 0 0 auto;
     place-items: center;
     border-radius: 50%;
-    background: #e9f0e7;
+    background: #fcebed;
     color: var(--trainer-green);
     font-weight: 800;
 }
@@ -133,7 +134,7 @@
 }
 
 .trainer-logout:hover {
-    background: #f0f3ef;
+    background: #fcebed;
     color: var(--trainer-green);
 }
 
@@ -166,7 +167,7 @@
 .trainer-profile-main h1 {
     margin: 0;
     color: var(--trainer-ink);
-    font: 800 clamp(25px, 3vw, 34px) 'Manrope', sans-serif;
+    font: 800 clamp(25px, 3vw, 34px) 'Oxanium', sans-serif;
 }
 
 .trainer-page-heading p {
@@ -217,7 +218,7 @@
 
 .trainer-panel-heading h2 {
     margin: 0;
-    font: 750 17px 'Manrope', sans-serif;
+    font: 750 17px 'Oxanium', sans-serif;
 }
 
 .trainer-panel-heading p {
@@ -251,7 +252,7 @@
 
 .trainer-member-main h3 {
     margin: 0 0 4px;
-    font: 700 14px 'Manrope', sans-serif;
+    font: 700 14px 'Oxanium', sans-serif;
 }
 
 .trainer-member-main > span,
@@ -300,8 +301,8 @@
 }
 
 .trainer-primary-btn:hover {
-    border-color: #28503b;
-    background: #28503b;
+    border-color: #bd1530;
+    background: #bd1530;
     color: #fff;
 }
 
@@ -323,7 +324,7 @@
 
 .trainer-empty-state h3 {
     margin: 14px 0 5px;
-    font: 700 15px 'Manrope', sans-serif;
+    font: 700 15px 'Oxanium', sans-serif;
 }
 
 .trainer-empty-state p {
@@ -469,7 +470,7 @@
 }
 
 .trainer-plan-date strong {
-    font: 800 14px 'Manrope', sans-serif;
+    font: 800 14px 'Oxanium', sans-serif;
 }
 
 .trainer-plan-date span {
@@ -485,7 +486,7 @@
 .trainer-plan-copy h3,
 .trainer-plan-copy h4 {
     margin: 0 0 5px;
-    font: 700 13px 'Manrope', sans-serif;
+    font: 700 13px 'Oxanium', sans-serif;
 }
 
 .trainer-plan-copy h4 {
@@ -547,8 +548,8 @@
     place-items: center;
     padding: 24px;
     background:
-        radial-gradient(circle at 12% 18%, rgba(201, 243, 106, .20), transparent 30%),
-        radial-gradient(circle at 88% 84%, rgba(28, 57, 43, .08), transparent 30%),
+        radial-gradient(circle at 12% 18%, rgba(237, 36, 66, .14), transparent 30%),
+        radial-gradient(circle at 88% 84%, rgba(17, 18, 20, .08), transparent 30%),
         var(--trainer-page);
 }
 
@@ -567,7 +568,7 @@
 
 .trainer-login-card h1 {
     margin: 0;
-    font: 800 28px 'Manrope', sans-serif;
+    font: 800 28px 'Oxanium', sans-serif;
 }
 
 .trainer-login-intro {

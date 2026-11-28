@@ -12,6 +12,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 class UserModulesTest extends TestCase
@@ -174,6 +176,90 @@ class UserModulesTest extends TestCase
             'id' => $member->id,
             'dark_mode' => true,
         ]);
+    }
+
+    public function test_member_can_change_password_from_profile(): void
+    {
+        $member = User::factory()->create([
+            'role' => 0,
+            'password' => 'current-password',
+        ]);
+
+        $this->actingAs($member)
+            ->get(route('profile.index'))
+            ->assertOk()
+            ->assertSee('Change password')
+            ->assertSee(route('profile.password.update'));
+
+        $this->actingAs($member)
+            ->from(route('profile.index'))
+            ->post(route('profile.password.update'), [
+                'current_password' => 'current-password',
+                'password' => 'new-member-password',
+                'password_confirmation' => 'new-member-password',
+            ])
+            ->assertRedirect(route('profile.index'))
+            ->assertSessionHas('success', 'Your password has been updated.');
+
+        $this->assertTrue(Hash::check('new-member-password', $member->fresh()->password));
+    }
+
+    public function test_member_must_enter_the_current_password_to_change_it(): void
+    {
+        $member = User::factory()->create([
+            'role' => 0,
+            'password' => 'current-password',
+        ]);
+
+        $this->actingAs($member)
+            ->from(route('profile.index'))
+            ->post(route('profile.password.update'), [
+                'current_password' => 'incorrect-password',
+                'password' => 'new-member-password',
+                'password_confirmation' => 'new-member-password',
+            ])
+            ->assertRedirect(route('profile.index'))
+            ->assertSessionHasErrors('current_password');
+
+        $this->assertTrue(Hash::check('current-password', $member->fresh()->password));
+    }
+
+    public function test_member_profile_rejects_invalid_and_oversized_profile_pictures(): void
+    {
+        Storage::fake('public');
+        $member = User::factory()->create([
+            'role' => 0,
+            'image' => 'profile_images/current.png',
+        ]);
+        Storage::disk('public')->put($member->image, 'existing profile image');
+
+        $payload = [
+            'name' => $member->name,
+            'email' => $member->email,
+            'profile_picture' => UploadedFile::fake()->create('avatar.pdf', 10, 'application/pdf'),
+        ];
+
+        $this->actingAs($member)
+            ->post(route('profile.update'), $payload)
+            ->assertRedirect()
+            ->assertSessionHasErrors('profile_picture');
+
+        $this->get(route('profile.index'))
+            ->assertOk()
+            ->assertSee('Profile picture must be an image.')
+            ->assertSee('id="profile-picture-error"', false);
+
+        $payload['profile_picture'] = UploadedFile::fake()->image('oversized.png')->size(2049);
+
+        $this->post(route('profile.update'), $payload)
+            ->assertRedirect()
+            ->assertSessionHasErrors('profile_picture');
+
+        $this->assertDatabaseHas('users', [
+            'id' => $member->id,
+            'image' => 'profile_images/current.png',
+        ]);
+        Storage::disk('public')->assertExists('profile_images/current.png');
     }
 
     public function test_member_can_open_dashboard_and_workout_library(): void

@@ -1,16 +1,16 @@
 :root {
-    --fitness-ink: #17251d;
-    --fitness-muted: #718078;
-    --fitness-line: #e5ebe5;
-    --fitness-paper: #f5f7f3;
+    --fitness-ink: #292326;
+    --fitness-muted: #6b6265;
+    --fitness-line: #eadfe2;
+    --fitness-paper: #faf8f8;
     --fitness-white: #fff;
-    --fitness-green: #1c392b;
-    --fitness-green-soft: #eaf1e9;
-    --fitness-lime: #c9f36a;
-    --fitness-orange: #ec8a4b;
-    --fitness-shadow: 0 12px 34px rgba(26, 49, 36, .06);
-    --fitness-radius-card: 18px;
-    --fitness-radius-control: 11px;
+    --fitness-green: #c6283d;
+    --fitness-green-soft: #fff0f2;
+    --fitness-lime: #ffe4e8;
+    --fitness-orange: #d88a32;
+    --fitness-shadow: 0 12px 34px rgba(17, 18, 20, .07);
+    --fitness-radius-card: 10px;
+    --fitness-radius-control: 6px;
 }
 
 * {
@@ -21,7 +21,7 @@ body.user-app {
     min-height: 100vh;
     background: var(--fitness-paper);
     color: var(--fitness-ink);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Rajdhani', sans-serif;
     font-size: 14px;
     line-height: 1.6;
 }
@@ -33,7 +33,7 @@ body.user-app {
 .user-app h5,
 .user-app h6 {
     color: var(--fitness-ink);
-    font-family: 'Manrope', sans-serif;
+    font-family: 'Oxanium', sans-serif;
     font-weight: 750;
     letter-spacing: -.025em;
 }
@@ -52,10 +52,10 @@ body.user-app {
     z-index: 1030;
     min-height: 84px;
     padding: 11px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, .1);
+    border-bottom: 1px solid rgba(255, 255, 255, .2);
     border-radius: 0;
-    background: var(--fitness-green);
-    box-shadow: 0 8px 28px rgba(24, 49, 34, .12);
+    background: #c6283d;
+    box-shadow: 0 8px 28px rgba(90, 22, 35, .14);
 }
 
 .navbar-custom .container {
@@ -70,15 +70,15 @@ body.user-app {
 .navbar-custom .navbar-brand img {
     width: 54px !important;
     height: 54px;
-    padding: 5px;
-    border-radius: 13px;
-    background: var(--fitness-lime);
+    padding: 0;
+    border-radius: 12px;
+    background: transparent;
     object-fit: contain;
 }
 
 .navbar-brand span {
     color: #fff;
-    font: 800 16px 'Manrope', sans-serif;
+    font: 800 16px 'Oxanium', sans-serif;
     letter-spacing: .08em;
 }
 
@@ -91,7 +91,7 @@ body.user-app {
     position: relative;
     padding: 12px 15px !important;
     border-radius: 10px;
-    color: #c8d5cb;
+    color: rgba(255, 255, 255, .88);
     font-size: 14px;
     font-weight: 650;
     transition: color .2s ease, background .2s ease;
@@ -100,7 +100,7 @@ body.user-app {
 .navbar-custom .nav-link:hover,
 .navbar-custom .nav-link.active {
     color: #fff;
-    background: rgba(255, 255, 255, .09);
+    background: rgba(255, 255, 255, .14);
 }
 
 .navbar-custom .nav-link.active::after {
@@ -119,7 +119,7 @@ body.user-app {
 }
 
 .navbar-custom .navbar-toggler:focus {
-    box-shadow: 0 0 0 3px rgba(201, 243, 106, .3);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, .4);
 }
 
 .navbar-custom .user-menu-link {
@@ -136,8 +136,8 @@ body.user-app {
     place-items: center;
     border: 1px solid rgba(255, 255, 255, .18);
     border-radius: 50%;
-    background: #355642;
-    color: var(--fitness-lime);
+    background: #fff;
+    color: var(--fitness-green);
     font-size: 12px;
     font-weight: 800;
 }
@@ -161,7 +161,7 @@ body.user-app {
 
 .user-app .dropdown-item:hover,
 .user-app .dropdown-item:focus {
-    background: #f0f5ed;
+    background: var(--fitness-green-soft);
     color: var(--fitness-green);
 }
 
@@ -241,8 +241,8 @@ body.user-app {
 .user-app .btn-primary:hover,
 .user-app .btn-orange:hover,
 .user-app .btn-save:hover {
-    border-color: #2a503b;
-    background: #2a503b;
+    border-color: #a91c32;
+    background: #a91c32;
     color: #fff;
 }
 
@@ -257,8 +257,8 @@ body.user-app {
 .user-app .btn-outline-secondary:hover,
 .user-app .btn-cancel:hover,
 .user-app .btn-secondary:hover {
-    border-color: #ccd8cb;
-    background: #f5f8f3;
+    border-color: #e6c6cc;
+    background: #fff4f5;
     color: var(--fitness-green);
 }
 
@@ -296,8 +296,8 @@ body.user-app {
 
 .user-app .form-control:focus,
 .user-app .form-select:focus {
-    border-color: #a7c68c;
-    box-shadow: 0 0 0 3px rgba(201, 243, 106, .22);
+    border-color: #d65b6d;
+    box-shadow: 0 0 0 3px rgba(198, 40, 61, .18);
 }
 
 .user-app .form-check-input:checked {
@@ -315,7 +315,7 @@ body.user-app {
     padding: 6px 10px;
     border: 1px solid var(--fitness-line);
     border-radius: 20px;
-    background: #f8faf7;
+    background: #fff8f9;
     font-size: 10px;
     font-weight: 700;
 }
@@ -326,15 +326,15 @@ body.user-app {
     gap: 5px;
     padding: 6px 9px;
     border-radius: 20px;
-    background: #eaf3e9;
-    color: #3e6049;
+    background: #fff0f2;
+    color: #a51f34;
     font-size: 10px;
     font-weight: 700;
 }
 
 .user-app .state-badge.inactive {
-    background: #fceee9;
-    color: #a85238;
+    background: #fff3e8;
+    color: #8c4d23;
 }
 
 .attendance-dashboard-card {
@@ -377,7 +377,7 @@ body.user-app {
 
 .attendance-checkin-card {
     background:
-        radial-gradient(circle at 100% 0, rgba(201, 243, 106, .14), transparent 35%),
+        radial-gradient(circle at 100% 0, rgba(198, 40, 61, .1), transparent 35%),
         #fff;
 }
 
@@ -457,9 +457,12 @@ body.user-app {
     position: relative;
     overflow: hidden;
     padding: clamp(25px, 4vw, 42px);
+    border: 1px solid #f0d7dc;
+    border-left: 5px solid var(--fitness-green);
     border-radius: 22px;
-    background: var(--fitness-green);
-    color: #fff;
+    background: #fff;
+    box-shadow: var(--fitness-shadow);
+    color: var(--fitness-ink);
 }
 
 .dashboard-hero::after {
@@ -468,9 +471,9 @@ body.user-app {
     right: -48px;
     width: 300px;
     height: 300px;
-    border: 1px solid rgba(201, 243, 106, .19);
+    border: 1px solid rgba(198, 40, 61, .12);
     border-radius: 50%;
-    box-shadow: 0 0 0 35px rgba(201, 243, 106, .04), 0 0 0 75px rgba(201, 243, 106, .035);
+    box-shadow: 0 0 0 35px rgba(198, 40, 61, .025), 0 0 0 75px rgba(198, 40, 61, .02);
     content: "";
 }
 
@@ -479,7 +482,7 @@ body.user-app {
     z-index: 1;
     max-width: 620px;
     margin: 7px 0 9px;
-    color: #fff;
+    color: var(--fitness-ink);
     font-size: clamp(26px, 4vw, 42px);
     letter-spacing: -.05em;
 }
@@ -488,12 +491,12 @@ body.user-app {
     position: relative;
     z-index: 1;
     max-width: 540px;
-    color: #c7d6cb;
+    color: #665c60;
     font-size: 13px;
 }
 
 .dashboard-hero .hero-kicker {
-    color: var(--fitness-lime);
+    color: var(--fitness-green);
     font-size: 10px;
     font-weight: 800;
     letter-spacing: .16em;
@@ -508,13 +511,13 @@ body.user-app {
     gap: 12px;
     margin: 8px 0 16px;
     padding: 11px 14px;
-    border: 1px solid rgba(201, 243, 106, .25);
+    border: 1px solid #f1d7dc;
     border-radius: 14px;
-    background: rgba(255, 255, 255, .08);
+    background: #fff7f8;
 }
 
 .dashboard-membership > i {
-    color: var(--fitness-lime);
+    color: var(--fitness-green);
     font-size: 19px;
 }
 
@@ -524,33 +527,55 @@ body.user-app {
 }
 
 .dashboard-membership small {
-    color: #c7d6cb;
+    color: #6b6265;
     font-size: 9px;
     text-transform: uppercase;
     letter-spacing: .08em;
 }
 
 .dashboard-membership strong {
-    color: #fff;
+    color: var(--fitness-ink);
     font-size: 12px;
 }
 
 .dashboard-payment-status {
     padding: 5px 8px;
     border-radius: 20px;
-    background: rgba(201, 243, 106, .16);
-    color: var(--fitness-lime);
     font-size: 9px;
     font-weight: 750;
     white-space: nowrap;
 }
 
-.dashboard-hero .btn {
+.dashboard-payment-status.is-pending {
+    background: #fff1cf;
+    color: #60420d;
+}
+
+.dashboard-payment-status.is-received {
+    background: #fff0f2;
+    color: #a51f34;
+}
+
+.dashboard-hero .btn:not(.btn-outline-light) {
     position: relative;
     z-index: 1;
-    border-color: var(--fitness-lime);
-    background: var(--fitness-lime);
+    border-color: var(--fitness-green);
+    background: var(--fitness-green);
+    color: #fff;
+}
+
+.dashboard-hero .btn-outline-light {
+    position: relative;
+    z-index: 1;
+    border-color: var(--fitness-green);
+    background: #fff;
     color: var(--fitness-green);
+}
+
+.dashboard-hero .btn-outline-light:hover {
+    border-color: #a91c32;
+    background: #fff4f5;
+    color: #a91c32;
 }
 
 .dashboard-panel-title {
@@ -614,8 +639,8 @@ body.user-app {
     flex: 0 0 34px;
     place-items: center;
     border-radius: 11px;
-    background: #f0f4ee;
-    color: #52665a;
+    background: #fff4f5;
+    color: #6b555a;
     font-size: 11px;
     font-weight: 800;
 }
@@ -710,7 +735,7 @@ body.user-app {
     width: 100%;
     height: 180px;
     display: block;
-    background: #edf2ea;
+    background: #fff4f5;
     object-fit: cover;
 }
 
@@ -748,7 +773,7 @@ body.user-app {
     padding: 19px;
     border: 1px solid var(--fitness-line);
     border-radius: 14px;
-    background: #fafcf9;
+    background: #fff;
 }
 
 .removeWorkoutBtn {
@@ -769,8 +794,8 @@ body.user-app {
 .custom-table th {
     padding: 13px 15px;
     border-bottom: 1px solid var(--fitness-line);
-    background: #f8faf7;
-    color: #758178;
+    background: #faf6f7;
+    color: #766d70;
     font-size: 9px;
     font-weight: 800;
     letter-spacing: .08em;
@@ -798,6 +823,10 @@ body.user-app {
     padding: clamp(22px, 4vw, 38px);
 }
 
+.password-change-card {
+    margin-top: 24px;
+}
+
 .profile-header {
     margin-bottom: 25px;
     text-align: center;
@@ -807,7 +836,7 @@ body.user-app {
     width: 104px;
     height: 104px;
     margin-bottom: 13px;
-    border: 4px solid #edf4e8;
+    border: 4px solid #fff0f2;
     border-radius: 50%;
     object-fit: cover;
 }
@@ -836,8 +865,8 @@ body.user-app {
     margin: 0;
     border: 1px solid var(--fitness-line);
     border-radius: 11px;
-    background: #fbfcfa;
-    color: #47554c;
+    background: #fffafa;
+    color: #494145;
     font-size: 11px;
 }
 
@@ -887,39 +916,39 @@ body.user-app {
 
 .user-footer {
     padding: 24px 0;
-    border-top: 1px solid rgba(255, 255, 255, .1);
-    background: #14281d;
-    color: #c6d1c9;
+    border-top: 1px solid rgba(255, 255, 255, .2);
+    background: #c6283d;
+    color: #fff;
 }
 
 .user-footer .footer-brand {
     color: #fff;
-    font: 800 12px 'Manrope', sans-serif;
+    font: 800 12px 'Oxanium', sans-serif;
     letter-spacing: .1em;
 }
 
 .user-footer small {
-    color: #9eaea2;
+    color: rgba(255, 255, 255, .78);
     font-size: 10px;
 }
 
 .user-footer a {
-    color: #dce6dd;
+    color: rgba(255, 255, 255, .92);
     font-size: 11px;
     text-decoration: none;
 }
 
 .user-footer a:hover {
-    color: var(--fitness-lime);
+    color: #ffe4e8;
 }
 
 body.dark-mode.user-app {
-    --fitness-ink: #edf3ee;
-    --fitness-muted: #a6b2a9;
-    --fitness-line: #34443a;
-    --fitness-paper: #111a14;
-    --fitness-white: #1b281f;
-    --fitness-green-soft: #2b3f30;
+    --fitness-ink: #f7edf0;
+    --fitness-muted: #c6aeb4;
+    --fitness-line: #583840;
+    --fitness-paper: #24171b;
+    --fitness-white: #301e23;
+    --fitness-green-soft: #49262f;
     color: var(--fitness-ink);
 }
 
@@ -928,21 +957,21 @@ body.dark-mode.user-app {
 .dark-mode.user-app .settings-card,
 .dark-mode.user-app .workout-card {
     border-color: var(--fitness-line);
-    background: #1b281f;
+    background: #301e23;
     color: var(--fitness-ink);
 }
 
 .dark-mode.user-app .dropdown-menu {
     border-color: var(--fitness-line);
-    background: #1b281f;
+    background: #301e23;
 }
 
 .dark-mode.user-app .dropdown-item {
-    color: #edf3ee;
+    color: #f7edf0;
 }
 
 .dark-mode.user-app .dropdown-item:hover {
-    background: #2b3f30;
+    background: #49262f;
 }
 
 .dark-mode.user-app .card h1,
@@ -957,9 +986,9 @@ body.dark-mode.user-app {
 
 .dark-mode.user-app .form-control,
 .dark-mode.user-app .form-select {
-    border-color: #405044;
-    background-color: #202e24;
-    color: #edf3ee;
+    border-color: #65434c;
+    background-color: #35232a;
+    color: #f7edf0;
 }
 
 .dark-mode.user-app .progress-table,
@@ -967,21 +996,21 @@ body.dark-mode.user-app {
 .dark-mode.user-app .progress-table td,
 .dark-mode.user-app .custom-table td,
 .dark-mode.user-app .list-group-item {
-    background-color: #1b281f;
-    color: #edf3ee;
+    background-color: #301e23;
+    color: #f7edf0;
 }
 
 .dark-mode.user-app .progress-table th,
 .dark-mode.user-app .custom-table th {
-    background: #243329;
-    color: #b0beb3;
+    background: #3a272d;
+    color: #d7c3c8;
 }
 
 .dark-mode.user-app .profile-info p,
 .dark-mode.user-app .workout-item,
 .dark-mode.user-app .badge-tile {
     border-color: var(--fitness-line);
-    background: #202e24;
+    background: #35232a;
     color: var(--fitness-ink);
 }
 
@@ -989,8 +1018,8 @@ body.dark-mode.user-app {
 .dark-mode.user-app .btn-secondary,
 .dark-mode.user-app .btn-cancel {
     border-color: var(--fitness-line);
-    background: #243329;
-    color: #e5ece6;
+    background: #3a272d;
+    color: #f7edf0;
 }
 
 @media (max-width: 991.98px) {
@@ -1064,7 +1093,7 @@ body.dark-mode.user-app {
 }
 
 .user-app :focus-visible {
-    outline: 3px solid rgba(28, 57, 43, .32);
+    outline: 3px solid rgba(198, 40, 61, .32);
     outline-offset: 2px;
 }
 

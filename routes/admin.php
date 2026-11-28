@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\MembershipPlanController;
 use App\Http\Controllers\Admin\MembershipOfferController;
 use App\Http\Controllers\Admin\ProgressController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Profile\PasswordUpdateController;
 use App\Http\Controllers\Admin\TrainerManagementController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\WorkoutManagementController;
@@ -18,6 +19,7 @@ Route::middleware(['auth', 'activeUser', 'Admin', 'preventHistory'])->group(func
         Route::get('/attendance', [AttendanceManagementController::class, 'index'])->name('attendance.index');
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
         Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+        Route::post('/profile/password', PasswordUpdateController::class)->name('profile.password.update');
         // Route::get('/workout', [WorkoutController::class, 'index'])->name('workout');
         // Route::get('/about-us', [AboutUsController::class, 'index'])->name('about-us');
         // Route::get('/settings', [SettingController::class, 'index'])->name('settings');

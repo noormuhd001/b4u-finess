@@ -21,6 +21,7 @@ class ProfileController extends Controller
             'goals' => $goals,
             'isAdmin' => true,
             'profileUpdateRoute' => route('admin.profile.update'),
+            'passwordUpdateRoute' => route('admin.profile.password.update'),
         ]);
     }
 

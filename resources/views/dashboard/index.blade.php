@@ -16,7 +16,9 @@
                 <div class="dashboard-membership">
                     <i class="bi bi-card-checklist"></i>
                     <span><small>Your membership</small><strong>{{ $userData->membershipPlan->name }} · {{ $userData->membership_duration_months ?: 1 }} {{ \Illuminate\Support\Str::plural('month', $userData->membership_duration_months ?: 1) }} · ₹{{ number_format((float) ($userData->membership_final_price ?? ($userData->membershipPlan->price * ($userData->membership_duration_months ?: 1))), 2) }}</strong></span>
-                    <span class="dashboard-payment-status">{{ ucfirst($userData->cash_payment_status ?? 'pending') }} payment</span>
+                    <span class="dashboard-payment-status {{ ($userData->cash_payment_status ?? 'pending') === 'received' ? 'is-received' : 'is-pending' }}">
+                        {{ ucfirst($userData->cash_payment_status ?? 'pending') }} payment
+                    </span>
                 </div>
             @endif
             <div class="d-flex flex-wrap gap-2 {{ $userData->membershipPlan ? '' : 'mt-4' }}">
@@ -233,15 +235,15 @@
                             datasets: [{
                                 label: 'Weight (kg)',
                                 data: @json($weights),
-                                borderColor: '#345a40',
-                                backgroundColor: 'rgba(201, 243, 106, .24)',
+                                borderColor: '#c6283d',
+                                backgroundColor: 'rgba(198, 40, 61, .12)',
                                 fill: true,
                                 tension: .36,
                                 borderWidth: 2.5,
                                 pointRadius: 4,
                                 pointHoverRadius: 6,
-                                pointBackgroundColor: '#c9f36a',
-                                pointBorderColor: '#345a40',
+                                pointBackgroundColor: '#fff',
+                                pointBorderColor: '#c6283d',
                             }]
                         },
                         options: {
