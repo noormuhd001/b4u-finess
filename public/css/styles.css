@@ -21,7 +21,7 @@ body.user-app {
     min-height: 100vh;
     background: var(--fitness-paper);
     color: var(--fitness-ink);
-    font-family: 'DM Sans', 'Segoe UI', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     font-size: 14px;
     line-height: 1.6;
 }
@@ -33,7 +33,7 @@ body.user-app {
 .user-app h5,
 .user-app h6 {
     color: var(--fitness-ink);
-    font-family: 'Manrope', 'Segoe UI', sans-serif;
+    font-family: 'Manrope', sans-serif;
     font-weight: 750;
     letter-spacing: -.025em;
 }

@@ -7,7 +7,7 @@
     <title>Sign in | NR Fitness</title>
     <link rel="icon" type="image/png" href="{{ asset('img/favicon-rounded.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
@@ -62,6 +62,7 @@
                     <p class="mt-3 text-center small">Don’t have an account?
                         <a href="{{ route('signUp') }}" class="text-decoration-none">Register</a>
                     </p>
+                    <p class="text-center small mb-0"><a href="{{ route('trainer.login') }}" class="text-decoration-none">Trainer? Sign in to your coach portal</a></p>
                 </form>
 
                 <div class="text-center mt-4 small">

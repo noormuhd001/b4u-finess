@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\MembershipPlan;
 use App\Models\ProgressLog;
+use App\Models\Trainer;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,7 +43,9 @@ class UserManagementController extends Controller
 
     public function show(User $user)
     {
-        $user->load('membershipPlan');
+        $user->load(['membershipPlan', 'trainer']);
+        $canAssignTrainer = $user->canBeAssignedTrainer();
+        $trainers = $canAssignTrainer ? Trainer::orderBy('name')->get() : collect();
         $lastAttendance = $user->attendanceRecords()->latest('checked_in_at')->first();
         $attendanceCount = $user->attendanceRecords()->count();
         $progress = $user->progress()
@@ -50,7 +53,27 @@ class UserManagementController extends Controller
             ->latest('workout_on')
             ->paginate(10);
 
-        return view('admin.user-management.show', compact('user', 'progress', 'lastAttendance', 'attendanceCount'));
+        return view('admin.user-management.show', compact('user', 'progress', 'lastAttendance', 'attendanceCount', 'canAssignTrainer', 'trainers'));
+    }
+
+    public function assignTrainer(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'trainer_id' => ['nullable', 'integer', Rule::exists('trainers', 'id')],
+        ]);
+
+        $trainerId = $validated['trainer_id'] ?? null;
+
+        if ($trainerId !== null && ! $user->canBeAssignedTrainer()) {
+            return back()->withErrors([
+                'trainer_id' => 'A trainer can only be assigned to a member with an active, non-Basic subscription.',
+            ]);
+        }
+
+        $user->update(['trainer_id' => $trainerId]);
+
+        return redirect()->route('admin.user-management.show', $user)
+            ->with('success', $trainerId !== null ? 'Trainer assigned successfully.' : 'Trainer assignment removed.');
     }
 
     public function store(Request $request)
@@ -75,6 +98,7 @@ class UserManagementController extends Controller
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
             'role' => ['required', Rule::in(array_keys(config('constant.role')))],
             'membership_plan_id' => ['nullable', 'integer', Rule::exists('membership_plans', 'id')],
+            'membership_duration_months' => ['nullable', 'integer', Rule::in([1, 3, 6, 12])],
             'cash_payment_status' => ['required', Rule::in(['pending', 'received'])],
         ]);
 
@@ -89,9 +113,15 @@ class UserManagementController extends Controller
         }
 
         $planChanged = (int) $user->membership_plan_id !== (int) ($validated['membership_plan_id'] ?? 0);
+        $durationMonths = (int) ($validated['membership_duration_months'] ?? $user->membership_duration_months ?? 1);
+        $durationChanged = $durationMonths !== (int) ($user->membership_duration_months ?? 1);
         $wasPaid = $user->cash_payment_status === 'received';
+        $validated['membership_duration_months'] = $durationMonths;
         $user->update($validated);
-        $this->syncMembershipDates($user, $wasPaid, $planChanged);
+        if ($planChanged || $durationChanged) {
+            $this->refreshMembershipPrice($user);
+        }
+        $this->syncMembershipDates($user, $wasPaid, $planChanged || $durationChanged);
 
         return redirect()->route('admin.user-management.index')->with('success', 'User details updated successfully.');
     }
@@ -120,7 +150,7 @@ class UserManagementController extends Controller
         );
     }
 
-    public function renewMembership(User $user)
+    public function renewMembership(Request $request, User $user)
     {
         if ((int) $user->role !== 0) {
             return back()->with('error', 'Only member accounts can be renewed.');
@@ -131,6 +161,10 @@ class UserManagementController extends Controller
             return back()->with('error', 'Assign a membership plan before recording a renewal.');
         }
 
+        $validated = $request->validate([
+            'duration_months' => ['required', 'integer', Rule::in([1, 3, 6, 12])],
+        ]);
+        $durationMonths = (int) $validated['duration_months'];
         $renewalStartsAt = $user->membership_expires_at?->isFuture()
             ? $user->membership_expires_at->copy()
             : now();
@@ -138,8 +172,12 @@ class UserManagementController extends Controller
         if (! $user->membership_started_at) {
             $user->membership_started_at = $renewalStartsAt;
         }
-        $user->membership_expires_at = $renewalStartsAt->copy()
-            ->addMonthsNoOverflow($user->membershipPlan->duration_months);
+        $user->membership_duration_months = $durationMonths;
+        $user->membership_expires_at = $renewalStartsAt->copy()->addMonthsNoOverflow($durationMonths);
+        $user->membership_original_price = number_format((float) $user->membershipPlan->price * $durationMonths, 2, '.', '');
+        $user->membership_discount_amount = '0.00';
+        $user->membership_final_price = $user->membership_original_price;
+        $user->membership_offer_id = null;
         $user->cash_payment_status = 'received';
         $user->save();
 
@@ -206,6 +244,10 @@ class UserManagementController extends Controller
             return;
         }
 
+        if ($user->membership_original_price === null) {
+            $this->refreshMembershipPrice($user);
+        }
+
         if (! $wasPaid || ! $user->membership_started_at) {
             $user->membership_started_at = now();
         }
@@ -213,9 +255,29 @@ class UserManagementController extends Controller
         if (! $wasPaid || ! $user->membership_expires_at || $planChanged) {
             $user->membership_expires_at = $user->membership_started_at
                 ->copy()
-                ->addMonthsNoOverflow($user->membershipPlan->duration_months);
+                ->addMonthsNoOverflow($user->membership_duration_months ?: $user->membershipPlan->duration_months);
         }
 
+        $user->save();
+    }
+
+    private function refreshMembershipPrice(User $user): void
+    {
+        $user->load('membershipPlan');
+        if (! $user->membershipPlan) {
+            $user->membership_original_price = null;
+            $user->membership_discount_amount = null;
+            $user->membership_final_price = null;
+            $user->membership_offer_id = null;
+            return;
+        }
+
+        $durationMonths = $user->membership_duration_months ?: 1;
+        $subtotal = number_format((float) $user->membershipPlan->price * $durationMonths, 2, '.', '');
+        $user->membership_original_price = $subtotal;
+        $user->membership_discount_amount = '0.00';
+        $user->membership_final_price = $subtotal;
+        $user->membership_offer_id = null;
         $user->save();
     }
 }

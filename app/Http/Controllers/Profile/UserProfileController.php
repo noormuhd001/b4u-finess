@@ -12,7 +12,7 @@ class UserProfileController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $user->load('membershipPlan');
+        $user->load(['membershipPlan', 'membershipOffer']);
         $genders = config('constant.gender');
         $goals = config('constant.goal');
 

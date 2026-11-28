@@ -24,9 +24,14 @@
                 <i class="bi bi-calendar-check"></i><span class="menu-text">Attendance</span>
             </a>
         </li>
-        <li class="{{ request()->routeIs('admin.membership-plans*') ? 'active' : '' }}">
+        <li class="{{ request()->routeIs('admin.membership-plans*', 'admin.membership-offers*') ? 'active' : '' }}">
             <a href="{{ route('admin.membership-plans.index') }}">
-                <i class="bi bi-card-checklist"></i><span class="menu-text">Membership plans</span>
+                <i class="bi bi-card-checklist"></i><span class="menu-text">Membership</span>
+            </a>
+        </li>
+        <li class="{{ request()->routeIs('admin.trainers*') ? 'active' : '' }}">
+            <a href="{{ route('admin.trainers.index') }}">
+                <i class="bi bi-person-badge"></i><span class="menu-text">Trainers</span>
             </a>
         </li>
         <li class="{{ request()->routeIs('admin.workouts*') ? 'active' : '' }}">

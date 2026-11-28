@@ -13,7 +13,7 @@ class AttendanceController extends Controller
         $user = Auth::user();
         abort_unless((int) $user->role === 0, 403);
 
-        $user->load('membershipPlan');
+        $user->load(['membershipPlan', 'membershipOffer']);
         $lastVisit = $user->attendanceRecords()->latest('checked_in_at')->first();
         $checkedInToday = $user->attendanceRecords()
             ->whereDate('check_in_date', today())

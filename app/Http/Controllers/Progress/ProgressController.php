@@ -24,19 +24,16 @@ class ProgressController extends Controller
     public function index()
     {
         try {
-            $progress = Progress::where('user_id', Auth::id())->latest()->first();
+            $today = Carbon::today()->toDateString();
+            $progress = Progress::where('user_id', Auth::id())
+                ->whereDate('workout_on', $today)
+                ->with('logs.workout')
+                ->first();
             $parts = Workout::select('body_part')->distinct()->pluck('body_part');
             $workouts = Workout::get();
 
-            $todaysLogs = null;
-            $totalKcal = null;
-            if ($progress) {
-                $today = \Carbon\Carbon::today()->toDateString();
-                if ($progress->workout_on->toDateString() === $today) {
-                    $todaysLogs = $progress->logs;
-                    $totalKcal = $progress->avg_kcal_burned;
-                }
-            }
+            $todaysLogs = $progress ? $progress->logs : null;
+            $totalKcal = $progress ? $progress->avg_kcal_burned : null;
 
             return view('progress.index', compact('progress', 'parts', 'workouts', 'todaysLogs', 'totalKcal'));
         } catch (Exception $e) {
@@ -61,22 +58,25 @@ class ProgressController extends Controller
         try {
             $userId = Auth::id();
             $validated = $request->validated();
-            $existing = Progress::where('user_id', $userId)
-                ->whereDate('workout_on', $validated['workout_on'])
-                ->first();
-
-            if ($existing) {
-                return back()->with('error', 'You already have a progress entry for this date.');
-            }
 
             $earnedBadges = DB::transaction(function () use ($validated, $userId) {
-                $progress = Progress::create([
-                    'user_id' => $userId,
-                    'current_weight' => $validated['weight'],
-                    'workout_on' => $validated['workout_on'],
-                ]);
+                $progress = Progress::where('user_id', $userId)
+                    ->whereDate('workout_on', $validated['workout_on'])
+                    ->lockForUpdate()
+                    ->first();
 
-                $totalKcal = 0;
+                if ($progress) {
+                    $progress->update(['current_weight' => $validated['weight']]);
+                } else {
+                    $progress = Progress::create([
+                        'user_id' => $userId,
+                        'current_weight' => $validated['weight'],
+                        'workout_on' => $validated['workout_on'],
+                        'avg_kcal_burned' => 0,
+                    ]);
+                }
+
+                $totalKcal = (float) $progress->logs()->sum('kcal_burned');
 
                 foreach ($validated['workouts_completed'] as $log) {
                     $workout = Workout::findOrFail($log['workout_id']);

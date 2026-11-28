@@ -15,7 +15,7 @@
             @if ($userData->membershipPlan)
                 <div class="dashboard-membership">
                     <i class="bi bi-card-checklist"></i>
-                    <span><small>Your membership</small><strong>{{ $userData->membershipPlan->name }} · ₹{{ number_format((float) $userData->membershipPlan->price, 2) }}</strong></span>
+                    <span><small>Your membership</small><strong>{{ $userData->membershipPlan->name }} · {{ $userData->membership_duration_months ?: 1 }} {{ \Illuminate\Support\Str::plural('month', $userData->membership_duration_months ?: 1) }} · ₹{{ number_format((float) ($userData->membership_final_price ?? ($userData->membershipPlan->price * ($userData->membership_duration_months ?: 1))), 2) }}</strong></span>
                     <span class="dashboard-payment-status">{{ ucfirst($userData->cash_payment_status ?? 'pending') }} payment</span>
                 </div>
             @endif
@@ -24,6 +24,45 @@
                 <a href="{{ route('workout') }}" class="btn btn-outline-light">Explore workouts</a>
             </div>
         </section>
+
+        @if ($userData->trainer)
+            <section class="card mb-4">
+                <div class="card-body d-flex flex-column flex-sm-row align-items-sm-center gap-3 p-4">
+                    @if ($userData->trainer->photo)
+                        <img src="{{ asset('storage/'.$userData->trainer->photo) }}" alt="{{ $userData->trainer->name }}" class="rounded-circle" style="width:88px;height:88px;object-fit:cover">
+                    @else
+                        <span class="today-stat-icon flex-shrink-0"><i class="bi bi-person-badge"></i></span>
+                    @endif
+                    <div>
+                        <span class="text-muted small">Your personal trainer</span>
+                        <h2 class="h5 mb-1">{{ $userData->trainer->name }}</h2>
+                        <p class="mb-1">{{ $userData->trainer->specialty }} · {{ $userData->trainer->experience_years }} {{ \Illuminate\Support\Str::plural('year', $userData->trainer->experience_years) }} experience</p>
+                        @if ($userData->trainer->bio)<p class="text-muted small mb-1">{{ $userData->trainer->bio }}</p>@endif
+                        <div class="d-flex flex-wrap gap-3 small">
+                            @if ($userData->trainer->email)<a href="mailto:{{ $userData->trainer->email }}">{{ $userData->trainer->email }}</a>@endif
+                            @if ($userData->trainer->phone)<a href="tel:{{ $userData->trainer->phone }}">{{ $userData->trainer->phone }}</a>@endif
+                        </div>
+                        @if ($dailyTrainerPlan)
+                            <div class="trainer-daily-plan mt-3 pt-3 border-top">
+                                <span class="text-muted small">Today’s coaching · {{ $dailyTrainerPlan->plan_date->format('M d, Y') }}</span>
+                                <h3 class="h6 mt-2 mb-1">Training instructions</h3>
+                                <p class="trainer-daily-copy mb-2">{{ $dailyTrainerPlan->daily_instruction }}</p>
+                                @if ($dailyTrainerPlan->diet_plan)
+                                    <h3 class="h6 mb-1">Diet plan</h3>
+                                    <p class="trainer-daily-copy mb-2">{{ $dailyTrainerPlan->diet_plan }}</p>
+                                @endif
+                                @if ($dailyTrainerPlan->progress_feedback)
+                                    <h3 class="h6 mb-1">Progress feedback</h3>
+                                    <p class="trainer-daily-copy mb-0">{{ $dailyTrainerPlan->progress_feedback }}</p>
+                                @endif
+                            </div>
+                        @else
+                            <p class="text-muted small mb-0 mt-2">Your trainer hasn’t posted today’s coaching plan yet.</p>
+                        @endif
+                    </div>
+                </div>
+            </section>
+        @endif
 
         <section class="attendance-dashboard-card mb-4">
             <span class="attendance-dashboard-icon"><i class="bi bi-calendar-check"></i></span>

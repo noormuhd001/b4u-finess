@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\MembershipOffer;
 use App\Models\MembershipPlan;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -12,8 +13,9 @@ class MembershipPlanController extends Controller
     public function index()
     {
         $plans = MembershipPlan::withCount('users')->orderBy('name')->get();
+        $offers = MembershipOffer::with('plans')->orderByDesc('created_at')->get();
 
-        return view('admin.membership-plans.index', compact('plans'));
+        return view('admin.membership-plans.index', compact('plans', 'offers'));
     }
 
     public function store(Request $request)
@@ -46,7 +48,7 @@ class MembershipPlanController extends Controller
 
     private function validatedData(Request $request, ?MembershipPlan $membershipPlan = null): array
     {
-        return $request->validate([
+        $validated = $request->validate([
             'name' => [
                 'required',
                 'string',
@@ -55,8 +57,18 @@ class MembershipPlanController extends Controller
             ],
             'description' => ['nullable', 'string', 'max:1000'],
             'price' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
-            'duration_months' => ['required', 'integer', 'min:1', 'max:120'],
+            'features_text' => ['nullable', 'string', 'max:2000'],
+            'duration_months' => ['sometimes', 'required', 'integer', 'min:1', 'max:120'],
             'is_active' => ['required', 'boolean'],
         ]);
+
+        $validated['features'] = array_values(array_filter(array_map(
+            'trim',
+            preg_split('/\R/u', $validated['features_text'] ?? '') ?: []
+        )));
+        unset($validated['features_text']);
+        $validated['duration_months'] = 1;
+
+        return $validated;
     }
 }

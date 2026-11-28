@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Jobs\Auth\SendForgotPasswordJob;
 use App\Models\Badges;
 use App\Models\Progress;
+use App\Models\ProgressLog;
 use App\Models\User;
 use App\Models\Workout;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -62,6 +63,41 @@ class UserModulesTest extends TestCase
             'reps' => 10,
             'weight' => 20,
             'kcal_burned' => 60,
+        ]);
+    }
+
+    public function test_member_can_add_another_workout_to_a_saved_daily_progress_entry(): void
+    {
+        $member = User::factory()->create(['role' => 0]);
+        $workout = $this->createWorkout();
+        $date = today()->toDateString();
+        $progress = $this->createProgress($member, $date);
+        ProgressLog::create([
+            'progress_id' => $progress->id,
+            'user_id' => $member->id,
+            'workout_id' => $workout->id,
+            'set_number' => 3,
+            'reps' => 10,
+            'weight' => 20,
+            'kcal_burned' => 60,
+        ]);
+        $progress->update(['avg_kcal_burned' => 60]);
+
+        $this->actingAs($member)
+            ->get(route('progress.index'))
+            ->assertOk()
+            ->assertSee('Add another workout');
+
+        $this->post(route('progress.store'), $this->workoutPayload($workout, $date))
+            ->assertRedirect(route('progress.index'))
+            ->assertSessionHas('success', 'Workout added successfully!');
+
+        $this->assertDatabaseCount('progress', 1);
+        $this->assertDatabaseCount('progress_logs', 2);
+        $this->assertDatabaseHas('progress', [
+            'id' => $progress->id,
+            'avg_kcal_burned' => 120,
+            'current_weight' => 70,
         ]);
     }
 

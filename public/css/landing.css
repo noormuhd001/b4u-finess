@@ -491,6 +491,20 @@ body.landing-page {
     backdrop-filter: blur(5px);
 }
 
+.membership-popular {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    padding: 6px 9px;
+    border-radius: 999px;
+    background: #c5dfc8;
+    color: #1c392b;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
 .membership-card:nth-child(2) {
     border-color: rgba(197, 223, 200, .55);
     background: rgba(42, 48, 44, .94);

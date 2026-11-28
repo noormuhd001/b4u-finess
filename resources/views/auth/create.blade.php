@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'NR Fitness - Register')</title>
 
     <!-- Favicon -->
@@ -12,11 +13,11 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
 
-<body class="auth-page d-flex align-items-center justify-content-center login-container">
+<body class="auth-page signup-page d-flex align-items-center justify-content-center login-container">
 
     <div class="login-wrapper">
         <!-- Left Section: Form -->
@@ -65,17 +66,14 @@
                             @foreach ($membershipPlans as $plan)
                                 <label class="plan-option">
                                     <input type="radio" name="membership_plan_id" value="{{ $plan->id }}"
-                                        @checked(old('membership_plan_id') == $plan->id) required>
+                                        @checked((string) $selectedPlanId === (string) $plan->id) required>
                                     <span class="plan-option-card">
                                         <span class="plan-radio"><i class="bi bi-check"></i></span>
                                         <span class="plan-option-details">
                                             <span class="plan-option-name">{{ $plan->name }}</span>
                                             <span class="plan-option-description">{{ $plan->description ?: 'A plan for your fitness journey' }}</span>
                                         </span>
-                                        <span class="plan-option-price">
-                                            ₹{{ number_format((float) $plan->price, 0) }}
-                                            <small>/ {{ $plan->duration_months }} {{ \Illuminate\Support\Str::plural('month', $plan->duration_months) }}</small>
-                                        </span>
+                                        <span class="plan-option-price">₹{{ number_format((float) $plan->price, 0) }}<small>/ month</small></span>
                                     </span>
                                 </label>
                             @endforeach
@@ -86,7 +84,47 @@
                         @error('membership_plan_id')
                             <div class="text-danger small mt-1">{{ $message }}</div>
                         @enderror
-                        <p class="plan-payment-note"><i class="bi bi-cash-coin me-1"></i>Pay in cash directly to the manager. Your payment will show as pending until received.</p>
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-6">
+                                <label class="form-label" for="duration-months">Subscription duration</label>
+                                <select class="form-select @error('duration_months') is-invalid @enderror" id="duration-months" name="duration_months" required>
+                                    @foreach ([1, 3, 6, 12] as $months)
+                                        <option value="{{ $months }}" @selected((int) old('duration_months', 1) === $months)>{{ $months }} {{ \Illuminate\Support\Str::plural('month', $months) }}{{ $months === 12 ? ' (1 year)' : '' }}</option>
+                                    @endforeach
+                                </select>
+                                @error('duration_months')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="membership-offer">Available offer</label>
+                                <select class="form-select @error('offer_id') is-invalid @enderror" id="membership-offer" name="offer_id">
+                                    <option value="">No offer</option>
+                                    @foreach ($availableOffers as $offer)
+                                        <option value="{{ $offer->id }}"
+                                            data-plan-ids="{{ $offer->plans->pluck('id')->join(',') }}"
+                                            data-durations="{{ implode(',', $offer->applicable_durations) }}"
+                                            @selected((string) old('offer_id') === (string) $offer->id)>
+                                            {{ $offer->title }}{{ $offer->coupon_code ? ' · '.$offer->coupon_code : '' }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('offer_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="membership-coupon">Or enter a coupon code</label>
+                                <div class="input-group">
+                                    <input class="form-control @error('coupon_code') is-invalid @enderror" id="membership-coupon" name="coupon_code" value="{{ old('coupon_code') }}" maxlength="50" autocomplete="off">
+                                    <button class="btn btn-outline-secondary" id="apply-membership-coupon" type="button">Apply</button>
+                                </div>
+                                @error('coupon_code')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+                            </div>
+                        </div>
+                        <div class="membership-quote mt-3" aria-live="polite">
+                            <div><span>Original price</span><strong id="membership-subtotal">₹0.00</strong></div>
+                            <div><span>Discount</span><strong id="membership-discount">−₹0.00</strong></div>
+                            <div class="membership-quote-total"><span>Amount due</span><strong id="membership-total">₹0.00</strong></div>
+                            <p id="membership-quote-message" class="small text-muted mb-0">Choose a plan to see your price.</p>
+                        </div>
+                        <p class="plan-payment-note"><i class="bi bi-cash-coin me-1"></i>Payment is made in cash at the gym. Your membership starts after an administrator confirms payment.</p>
                     </div>
 
                     <!-- Password -->
@@ -111,7 +149,7 @@
                         @enderror
                     </div>
 
-                    <button type="submit" class="btn w-100" @disabled($membershipPlans->isEmpty())>Create account</button>
+                    <button type="submit" class="btn w-100" id="create-account-button" @disabled($membershipPlans->isEmpty())>Create account</button>
 
                     <p class="mt-3 text-center small">
                         Already have an account?
@@ -161,6 +199,115 @@
             `;
             });
         });
+    </script>
+    <script>
+        const membershipForm = document.querySelector('form[action="{{ route('register') }}"]');
+        const planInputs = [...membershipForm.querySelectorAll('input[name="membership_plan_id"]')];
+        const durationInput = document.getElementById('duration-months');
+        const offerInput = document.getElementById('membership-offer');
+        const couponInput = document.getElementById('membership-coupon');
+        const quoteMessage = document.getElementById('membership-quote-message');
+        const submitButton = document.getElementById('create-account-button');
+        const quoteUrl = @json(route('membership.quote'));
+        const currency = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' });
+        let quoteReady = false;
+        let quoteRequest = 0;
+
+        function selectedPlanId() {
+            return membershipForm.querySelector('input[name="membership_plan_id"]:checked')?.value;
+        }
+
+        function refreshAvailableOffers() {
+            const planId = selectedPlanId();
+            const duration = durationInput.value;
+            [...offerInput.options].forEach((option) => {
+                if (!option.value) return;
+                const eligible = option.dataset.planIds.split(',').includes(planId)
+                    && option.dataset.durations.split(',').includes(duration);
+                option.hidden = !eligible;
+                option.disabled = !eligible;
+                if (!eligible && option.selected) offerInput.value = '';
+            });
+        }
+
+        async function refreshQuote() {
+            const planId = selectedPlanId();
+            if (!planId) {
+                quoteReady = false;
+                quoteMessage.textContent = 'Choose a plan to see your price.';
+                return;
+            }
+
+            const requestId = ++quoteRequest;
+            quoteReady = false;
+            quoteMessage.textContent = 'Calculating your price…';
+            const couponCode = couponInput.value.trim();
+            const selectedOfferId = offerInput.value;
+            const payload = {
+                plan_id: planId,
+                duration_months: durationInput.value,
+                offer_id: selectedOfferId || null,
+                coupon_code: selectedOfferId ? null : (couponCode || null),
+            };
+
+            try {
+                const response = await fetch(quoteUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    },
+                    body: JSON.stringify(payload),
+                });
+                const result = await response.json();
+                if (requestId !== quoteRequest) return;
+                if (!response.ok) {
+                    const errors = result.errors || {};
+                    throw new Error(Object.values(errors).flat()[0] || 'Unable to calculate this offer.');
+                }
+
+                document.getElementById('membership-subtotal').textContent = currency.format(result.subtotal);
+                document.getElementById('membership-discount').textContent = '−' + currency.format(result.discount);
+                document.getElementById('membership-total').textContent = currency.format(result.total);
+                quoteMessage.textContent = result.offer_title
+                    ? result.offer_title + ' applied.'
+                    : 'Pay in cash at the gym after creating your account.';
+                quoteMessage.classList.remove('text-danger');
+                quoteReady = true;
+            } catch (error) {
+                if (requestId !== quoteRequest) return;
+                quoteMessage.textContent = error.message;
+                quoteMessage.classList.add('text-danger');
+            }
+        }
+
+        planInputs.forEach((input) => input.addEventListener('change', () => {
+            refreshAvailableOffers();
+            refreshQuote();
+        }));
+        durationInput.addEventListener('change', () => {
+            refreshAvailableOffers();
+            refreshQuote();
+        });
+        offerInput.addEventListener('change', () => {
+            couponInput.value = '';
+            refreshQuote();
+        });
+        couponInput.addEventListener('input', () => {
+            if (couponInput.value.trim()) offerInput.value = '';
+            quoteReady = false;
+        });
+        document.getElementById('apply-membership-coupon').addEventListener('click', refreshQuote);
+        membershipForm.addEventListener('submit', (event) => {
+            if (!quoteReady) {
+                event.preventDefault();
+                refreshQuote();
+            }
+        });
+
+        refreshAvailableOffers();
+        refreshQuote();
     </script>
 </body>
 

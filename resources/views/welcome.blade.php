@@ -7,7 +7,7 @@
     <meta name="description" content="Train with purpose at NR Fitness. Choose your membership, build your routine, and track your progress.">
     <title>NR Fitness | Build your strongest self</title>
     <link rel="icon" type="image/png" href="{{ asset('img/favicon-rounded.png') }}">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
 </head>
@@ -113,23 +113,30 @@
         <section class="membership-section landing-section" id="membership">
             <div class="section-heading">
                 <div><span class="section-kicker">YOUR MEMBERSHIP, YOUR MOVE</span><h2>Find your <span>starting point.</span></h2></div>
-                <p>Choose a plan that fits your training. Cash payments are confirmed in person by the gym manager.</p>
+                <p>Choose Basic, Regular, or Premium. Select a 1, 3, 6, or 12 month subscription and see available offers at signup.</p>
             </div>
             @if ($membershipPlans->isNotEmpty())
                 <div class="membership-grid">
                     @foreach ($membershipPlans as $plan)
                         <article class="membership-card">
+                            @if (strcasecmp($plan->name, 'Regular') === 0)
+                                <span class="membership-popular">Popular</span>
+                            @endif
                             <span class="plan-index">0{{ $loop->iteration }}</span>
                             <h3>{{ $plan->name }}</h3>
                             <span class="plan-type">Membership</span>
                             <p>{{ $plan->description ?: 'A membership to support your training routine.' }}</p>
-                            <div class="plan-price"><strong>₹{{ number_format((float) $plan->price, 0) }}</strong><span>/ {{ $plan->duration_months }} {{ \Illuminate\Support\Str::plural('month', $plan->duration_months) }}</span></div>
+                            <div class="plan-price"><strong>₹{{ number_format((float) $plan->price, 0) }}</strong><span>/ month</span></div>
                             <ul class="plan-features">
-                                <li>Access to the workout library</li>
-                                <li>Log your training sessions</li>
-                                <li>Keep your gym visits organized</li>
+                                @forelse ($plan->features ?? [] as $feature)
+                                    <li>{{ $feature }}</li>
+                                @empty
+                                    <li>Access to the workout library</li>
+                                    <li>Log your training sessions</li>
+                                    <li>Keep your gym visits organized</li>
+                                @endforelse
                             </ul>
-                            <a href="{{ route('signUp') }}">Choose this plan <i class="bi bi-arrow-right"></i></a>
+                            <a href="{{ route('signUp', ['plan' => $plan->id]) }}">Choose this plan <i class="bi bi-arrow-right"></i></a>
                         </article>
                     @endforeach
                 </div>

@@ -41,6 +41,9 @@ class UserStoreRequest extends FormRequest
                 'integer',
                 Rule::exists('membership_plans', 'id')->where('is_active', true),
             ],
+            'duration_months' => ['nullable', 'integer', Rule::in([1, 3, 6, 12])],
+            'offer_id' => ['nullable', 'integer', Rule::exists('membership_offers', 'id')],
+            'coupon_code' => ['nullable', 'string', 'max:50'],
         ];
     }
 

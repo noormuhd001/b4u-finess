@@ -152,6 +152,76 @@
         formConfirmationElement.addEventListener('hidden.bs.modal', function () {
             pendingConfirmationForm = null;
         });
+
+        document.addEventListener('submit', function (event) {
+            const form = event.target;
+            const modal = form instanceof HTMLFormElement ? form.closest('.modal') : null;
+            if (!modal || form.elements.namedItem('_validation_form')) {
+                return;
+            }
+
+            const marker = document.createElement('input');
+            marker.type = 'hidden';
+            marker.name = '_validation_form';
+            marker.value = modal.id;
+            form.appendChild(marker);
+        });
+
+        const validationMessages = @json($errors->getMessages());
+        const validationModalId = @json(old('_validation_form'));
+        const validationModal = validationModalId ? document.getElementById(validationModalId) : null;
+        const validationScope = validationModal || document;
+        const normalizeFieldName = name => name.replace(/\[\]/g, '').replace(/\[(\d+)\]/g, '.$1');
+
+        Object.entries(validationMessages).forEach(([name, messages]) => {
+            const normalizedName = normalizeFieldName(name);
+            const baseName = normalizedName.replace(/\.\d+$/, '');
+            const fields = Array.from(validationScope.querySelectorAll('[name]')).filter(field => {
+                const fieldName = normalizeFieldName(field.getAttribute('name'));
+                return fieldName === normalizedName || fieldName === baseName || fieldName.startsWith(normalizedName + '.');
+            });
+            const feedbackGroups = new Set();
+
+            fields.forEach(field => {
+                field.classList.add('is-invalid');
+                field.setAttribute('aria-invalid', 'true');
+                const group = field.closest('.d-flex.flex-wrap.gap-3')
+                    || field.closest('.mb-3')
+                    || field.closest('[class*="col-"]')
+                    || field.parentElement;
+                if (group) {
+                    feedbackGroups.add(group);
+                }
+            });
+
+            feedbackGroups.forEach((group, index) => {
+                const feedback = document.createElement('div');
+                feedback.className = 'admin-inline-feedback';
+                feedback.id = 'validation-feedback-' + name.replace(/[^a-zA-Z0-9_-]/g, '-') + '-' + index;
+                feedback.textContent = messages[0];
+                group.appendChild(feedback);
+                fields.filter(field => group.contains(field)).forEach(field => {
+                    const describedBy = field.getAttribute('aria-describedby');
+                    field.setAttribute('aria-describedby', [describedBy, feedback.id].filter(Boolean).join(' '));
+                });
+            });
+        });
+
+        if (validationModal) {
+            const showValidationModal = function () {
+                bootstrap.Modal.getOrCreateInstance(validationModal).show();
+            };
+            const tabPane = validationModal.closest('.tab-pane');
+            if (tabPane && !tabPane.classList.contains('active')) {
+                const tab = document.querySelector('[data-bs-target="#' + tabPane.id + '"]');
+                if (tab) {
+                    tab.addEventListener('shown.bs.tab', showValidationModal, { once: true });
+                    bootstrap.Tab.getOrCreateInstance(tab).show();
+                }
+            } else {
+                showValidationModal();
+            }
+        }
     </script>
     @stack('scripts')
 </body>

@@ -60,8 +60,16 @@
                         </div>
                         @if ($user->membershipPlan)
                             <div class="attendance-detail-row">
-                                <span>Price</span><strong>₹{{ number_format((float) $user->membershipPlan->price, 2) }} / {{ $user->membershipPlan->duration_months }} {{ \Illuminate\Support\Str::plural('month', $user->membershipPlan->duration_months) }}</strong>
+                                <span>Subscription</span><strong>{{ $user->membership_duration_months ?: 1 }} {{ \Illuminate\Support\Str::plural('month', $user->membership_duration_months ?: 1) }}</strong>
                             </div>
+                            <div class="attendance-detail-row">
+                                <span>Amount due</span><strong>₹{{ number_format((float) ($user->membership_final_price ?? ($user->membershipPlan->price * ($user->membership_duration_months ?: 1))), 2) }}</strong>
+                            </div>
+                            @if ((float) ($user->membership_discount_amount ?? 0) > 0)
+                                <div class="attendance-detail-row">
+                                    <span>Discount</span><strong>−₹{{ number_format((float) $user->membership_discount_amount, 2) }}</strong>
+                                </div>
+                            @endif
                         @endif
                         <div class="attendance-detail-row">
                             <span>Payment</span><strong>{{ ucfirst($user->cash_payment_status ?? 'pending') }}</strong>
