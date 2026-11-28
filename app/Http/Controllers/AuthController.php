@@ -8,14 +8,18 @@ use App\Http\Requests\Auth\UpdatePasswordRequest;
 use App\Http\Requests\Auth\UserStoreRequest;
 use App\Jobs\Auth\SendForgotPasswordJob;
 use App\Mail\Auth\RegistrationOtpMail;
+use App\Models\MembershipOffer;
 use App\Models\MembershipPlan;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
+use App\Services\MembershipPricing;
 
 class AuthController extends Controller
 {
@@ -31,6 +35,7 @@ class AuthController extends Controller
             $credentials = $request->only('email', 'password');
 
             if (Auth::attempt($credentials + ['status' => true])) {
+                Auth::guard('trainer')->logout();
                 $request->session()->regenerate();
                 $user = Auth::user();
 
@@ -61,12 +66,24 @@ class AuthController extends Controller
         }
     }
 
-    public function signUp()
+    public function signUp(Request $request)
     {
         try {
             $membershipPlans = MembershipPlan::where('is_active', true)->orderBy('price')->get();
+            $availableOffers = MembershipOffer::query()
+                ->where('is_active', true)
+                ->whereDate('starts_at', '<=', today())
+                ->whereDate('expires_at', '>=', today())
+                ->where(function ($query) {
+                    $query->whereNull('maximum_usage')
+                        ->orWhereColumn('usage_count', '<', 'maximum_usage');
+                })
+                ->with('plans')
+                ->orderBy('title')
+                ->get();
+            $selectedPlanId = old('membership_plan_id', $request->query('plan'));
 
-            return view('auth.create', compact('membershipPlans'));
+            return view('auth.create', compact('membershipPlans', 'availableOffers', 'selectedPlanId'));
         } catch (Exception $e) {
             report($e);
 
@@ -74,27 +91,52 @@ class AuthController extends Controller
         }
     }
 
-    public function register(UserStoreRequest $request)
+    public function register(UserStoreRequest $request, MembershipPricing $pricing)
     {
         try {
             $otp = (string) random_int(100000, 999999);
-            $user = User::create([
-                'name' => $request->input('username'),
-                'email' => $request->input('email'),
-                'password' => Hash::make($request->input('password')),
-                'membership_plan_id' => $request->input('membership_plan_id'),
-                'cash_payment_status' => 'pending',
-                'status' => false,
-            ]);
-            $user->registration_otp_hash = Hash::make($otp);
-            $user->registration_otp_expires_at = now()->addMinutes(10);
-            $user->save();
+            $plan = MembershipPlan::where('is_active', true)->findOrFail($request->integer('membership_plan_id'));
+            $durationMonths = $request->integer('duration_months') ?: 1;
+            $user = DB::transaction(function () use ($request, $pricing, $plan, $durationMonths, $otp) {
+                $offer = $pricing->findApplicableOffer(
+                    $plan,
+                    $durationMonths,
+                    $request->filled('offer_id') ? $request->integer('offer_id') : null,
+                    $request->input('coupon_code'),
+                    true,
+                );
+                $quote = $pricing->quote($plan, $durationMonths, $offer);
+                $user = User::create([
+                    'name' => $request->input('username'),
+                    'email' => $request->input('email'),
+                    'password' => Hash::make($request->input('password')),
+                    'membership_plan_id' => $plan->id,
+                    'membership_duration_months' => $durationMonths,
+                    'membership_original_price' => $quote['subtotal'],
+                    'membership_discount_amount' => $quote['discount'],
+                    'membership_final_price' => $quote['total'],
+                    'membership_offer_id' => $offer?->id,
+                    'cash_payment_status' => 'pending',
+                    'status' => false,
+                ]);
+                $user->registration_otp_hash = Hash::make($otp);
+                $user->registration_otp_expires_at = now()->addMinutes(10);
+                $user->save();
+
+                if ($offer) {
+                    $offer->increment('usage_count');
+                }
+
+                return $user;
+            });
 
             Mail::to($user->email)->send(new RegistrationOtpMail($user->name, $otp));
 
             return redirect()->route('registration.verify', ['email' => $user->email])
                 ->with('success', 'Your account is registered. Enter the code sent to your email to activate it.')
                 ->with('otp_sent', true);
+        } catch (ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             report($e);
 

@@ -1,0 +1,725 @@
+:root {
+    --trainer-ink: #1b3025;
+    --trainer-green: #1c392b;
+    --trainer-lime: #c9f36a;
+    --trainer-muted: #748078;
+    --trainer-line: #e4eae3;
+    --trainer-surface: #fff;
+    --trainer-page: #f5f7f4;
+}
+
+.trainer-portal,
+.trainer-auth-page {
+    min-height: 100vh;
+    background: var(--trainer-page);
+    color: var(--trainer-ink);
+    font-family: 'DM Sans', sans-serif;
+}
+
+.trainer-topbar {
+    position: sticky;
+    z-index: 20;
+    top: 0;
+    border-bottom: 1px solid var(--trainer-line);
+    background: rgba(255, 255, 255, .96);
+    backdrop-filter: blur(12px);
+}
+
+.trainer-topbar-inner {
+    width: min(1180px, calc(100% - 40px));
+    min-height: 76px;
+    display: flex;
+    align-items: center;
+    gap: 42px;
+    margin: 0 auto;
+}
+
+.trainer-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--trainer-ink);
+    font: 800 14px 'Manrope', sans-serif;
+    letter-spacing: .03em;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.trainer-brand img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.trainer-brand small {
+    display: block;
+    margin-top: 3px;
+    color: var(--trainer-muted);
+    font: 700 9px 'DM Sans', sans-serif;
+    letter-spacing: .13em;
+}
+
+.trainer-nav {
+    display: flex;
+    align-self: stretch;
+    align-items: center;
+    gap: 24px;
+    flex: 1;
+}
+
+.trainer-nav a {
+    display: inline-flex;
+    min-height: 76px;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    color: var(--trainer-muted);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.trainer-nav a.active,
+.trainer-nav a:hover {
+    border-color: var(--trainer-green);
+    color: var(--trainer-green);
+}
+
+.trainer-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.trainer-avatar,
+.trainer-member-avatar {
+    display: inline-grid;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 50%;
+    background: #e9f0e7;
+    color: var(--trainer-green);
+    font-weight: 800;
+}
+
+.trainer-avatar {
+    width: 38px;
+    height: 38px;
+}
+
+.trainer-user-name {
+    max-width: 150px;
+    overflow: hidden;
+    font-size: 12px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.trainer-user form {
+    margin-left: 5px;
+}
+
+.trainer-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: #647168;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.trainer-logout:hover {
+    background: #f0f3ef;
+    color: var(--trainer-green);
+}
+
+.trainer-main {
+    width: min(1180px, calc(100% - 40px));
+    display: grid;
+    gap: 22px;
+    margin: 0 auto;
+    padding: 36px 0 56px;
+}
+
+.trainer-page-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 4px;
+}
+
+.trainer-eyebrow {
+    display: block;
+    margin-bottom: 8px;
+    color: #64766a;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .15em;
+}
+
+.trainer-page-heading h1,
+.trainer-profile-main h1 {
+    margin: 0;
+    color: var(--trainer-ink);
+    font: 800 clamp(25px, 3vw, 34px) 'Manrope', sans-serif;
+}
+
+.trainer-page-heading p {
+    margin: 8px 0 0;
+    color: var(--trainer-muted);
+    font-size: 14px;
+}
+
+.trainer-member-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border: 1px solid var(--trainer-line);
+    border-radius: 12px;
+    background: var(--trainer-surface);
+    color: var(--trainer-muted);
+    font-size: 12px;
+}
+
+.trainer-member-count i {
+    color: var(--trainer-green);
+    font-size: 18px;
+}
+
+.trainer-member-count strong {
+    color: var(--trainer-ink);
+    font-size: 16px;
+}
+
+.trainer-panel,
+.trainer-member-profile {
+    overflow: hidden;
+    border: 1px solid var(--trainer-line);
+    border-radius: 18px;
+    background: var(--trainer-surface);
+    box-shadow: 0 8px 28px rgba(27, 48, 37, .045);
+}
+
+.trainer-panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 22px 24px;
+    border-bottom: 1px solid var(--trainer-line);
+}
+
+.trainer-panel-heading h2 {
+    margin: 0;
+    font: 750 17px 'Manrope', sans-serif;
+}
+
+.trainer-panel-heading p {
+    margin: 5px 0 0;
+    color: var(--trainer-muted);
+    font-size: 12px;
+}
+
+.trainer-member-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 24px;
+    border-bottom: 1px solid #edf0ec;
+}
+
+.trainer-member-row:last-child {
+    border-bottom: 0;
+}
+
+.trainer-member-avatar {
+    width: 46px;
+    height: 46px;
+    font-size: 16px;
+}
+
+.trainer-member-main {
+    min-width: 0;
+    flex: 1;
+}
+
+.trainer-member-main h3 {
+    margin: 0 0 4px;
+    font: 700 14px 'Manrope', sans-serif;
+}
+
+.trainer-member-main > span,
+.trainer-member-meta small {
+    color: var(--trainer-muted);
+    font-size: 12px;
+}
+
+.trainer-member-meta {
+    display: grid;
+    gap: 4px;
+    min-width: 150px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.trainer-outline-btn,
+.trainer-primary-btn {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 15px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.trainer-outline-btn {
+    border: 1px solid var(--trainer-line);
+    background: #fff;
+    color: var(--trainer-ink);
+}
+
+.trainer-outline-btn:hover {
+    border-color: #b7c8b9;
+    background: #f8faf7;
+    color: var(--trainer-green);
+}
+
+.trainer-primary-btn {
+    border: 1px solid var(--trainer-green);
+    background: var(--trainer-green);
+    color: #fff;
+}
+
+.trainer-primary-btn:hover {
+    border-color: #28503b;
+    background: #28503b;
+    color: #fff;
+}
+
+.trainer-empty-state {
+    padding: 44px 20px;
+    text-align: center;
+}
+
+.trainer-empty-state > span {
+    display: inline-grid;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    border-radius: 15px;
+    background: #eef3ec;
+    color: var(--trainer-green);
+    font-size: 20px;
+}
+
+.trainer-empty-state h3 {
+    margin: 14px 0 5px;
+    font: 700 15px 'Manrope', sans-serif;
+}
+
+.trainer-empty-state p {
+    margin: 0;
+    color: var(--trainer-muted);
+    font-size: 12px;
+}
+
+.trainer-empty-compact {
+    padding: 28px 20px;
+}
+
+.trainer-pagination {
+    padding: 16px 24px;
+    border-top: 1px solid var(--trainer-line);
+}
+
+.trainer-password-panel {
+    padding-bottom: 22px;
+}
+
+.trainer-password-form {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+    align-items: end;
+    gap: 14px;
+    padding: 20px 24px 0;
+}
+
+.trainer-password-form .form-label,
+.trainer-coaching-form .form-label {
+    color: #47554c;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.trainer-password-form .form-control,
+.trainer-coaching-form .form-control {
+    min-height: 44px;
+    border-color: var(--trainer-line);
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+.trainer-back-link a {
+    color: #5d6e62;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.trainer-back-link a:hover {
+    color: var(--trainer-green);
+}
+
+.trainer-member-profile {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 24px;
+}
+
+.trainer-member-avatar-large {
+    width: 64px;
+    height: 64px;
+    font-size: 22px;
+}
+
+.trainer-profile-main {
+    min-width: 200px;
+    flex: 1;
+}
+
+.trainer-profile-main h1 {
+    font-size: 22px;
+}
+
+.trainer-profile-main p {
+    margin: 5px 0 0;
+    color: var(--trainer-muted);
+    font-size: 13px;
+}
+
+.trainer-profile-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.trainer-profile-tags span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border-radius: 9px;
+    background: #f2f5f1;
+    color: #4a5b4f;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.trainer-coaching-form {
+    display: grid;
+    gap: 16px;
+    padding: 22px 24px 24px;
+}
+
+.trainer-form-date {
+    max-width: 250px;
+}
+
+.trainer-coaching-form textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.trainer-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.trainer-plan-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 20px 24px;
+    border-bottom: 1px solid #edf0ec;
+}
+
+.trainer-plan-item:last-child {
+    border-bottom: 0;
+}
+
+.trainer-plan-date {
+    display: grid;
+    min-width: 58px;
+    gap: 2px;
+    padding: 9px 7px;
+    border-radius: 11px;
+    background: #f2f5f1;
+    text-align: center;
+}
+
+.trainer-plan-date strong {
+    font: 800 14px 'Manrope', sans-serif;
+}
+
+.trainer-plan-date span {
+    color: var(--trainer-muted);
+    font-size: 10px;
+}
+
+.trainer-plan-copy {
+    min-width: 0;
+    flex: 1;
+}
+
+.trainer-plan-copy h3,
+.trainer-plan-copy h4 {
+    margin: 0 0 5px;
+    font: 700 13px 'Manrope', sans-serif;
+}
+
+.trainer-plan-copy h4 {
+    margin-top: 12px;
+}
+
+.trainer-plan-copy p {
+    margin: 0;
+    color: #58665c;
+    font-size: 13px;
+    line-height: 1.65;
+    white-space: pre-line;
+}
+
+.trainer-daily-copy {
+    color: #58665c;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
+.trainer-progress-table thead th {
+    padding: 13px 20px;
+    border-bottom-color: var(--trainer-line);
+    background: #f8faf7;
+    color: #637168;
+    font-size: 10px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.trainer-progress-table tbody td {
+    padding: 15px 20px;
+    color: #46564b;
+    font-size: 13px;
+}
+
+.trainer-exercise-details {
+    margin-top: 5px;
+    color: var(--trainer-muted);
+    font-size: 11px;
+}
+
+.trainer-exercise-details summary {
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.trainer-exercise-details ul {
+    display: grid;
+    gap: 3px;
+    margin: 7px 0 0;
+    padding-left: 17px;
+}
+
+.trainer-auth-page {
+    display: grid;
+    min-height: 100vh;
+    place-items: center;
+    padding: 24px;
+    background:
+        radial-gradient(circle at 12% 18%, rgba(201, 243, 106, .20), transparent 30%),
+        radial-gradient(circle at 88% 84%, rgba(28, 57, 43, .08), transparent 30%),
+        var(--trainer-page);
+}
+
+.trainer-login-card {
+    width: min(100%, 460px);
+    padding: 38px;
+    border: 1px solid var(--trainer-line);
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 24px 70px rgba(27, 48, 37, .10);
+}
+
+.trainer-login-brand {
+    margin-bottom: 38px;
+}
+
+.trainer-login-card h1 {
+    margin: 0;
+    font: 800 28px 'Manrope', sans-serif;
+}
+
+.trainer-login-intro {
+    margin: 8px 0 24px;
+    color: var(--trainer-muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.trainer-login-card .form-label,
+.trainer-login-card .form-check-label {
+    color: #47554c;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.trainer-login-card .form-control {
+    min-height: 46px;
+    border-color: var(--trainer-line);
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+.trainer-login-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 9px;
+    margin: 22px 0 0;
+    color: #a0aaa2;
+    font-size: 12px;
+}
+
+.trainer-login-footer a {
+    color: #506356;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+@media (max-width: 767.98px) {
+    .trainer-topbar-inner,
+    .trainer-main {
+        width: min(100% - 28px, 600px);
+    }
+
+    .trainer-topbar-inner {
+        min-height: 66px;
+        flex-wrap: wrap;
+        gap: 0 18px;
+        padding: 9px 0;
+    }
+
+    .trainer-brand img {
+        width: 34px;
+        height: 34px;
+    }
+
+    .trainer-nav {
+        order: 3;
+        width: 100%;
+        flex-basis: 100%;
+    }
+
+    .trainer-nav a {
+        min-height: 38px;
+    }
+
+    .trainer-user {
+        gap: 7px;
+        margin-left: auto;
+    }
+
+    .trainer-user-name {
+        display: none;
+    }
+
+    .trainer-logout {
+        padding: 8px;
+    }
+
+    .trainer-logout span {
+        display: none;
+    }
+
+    .trainer-main {
+        gap: 16px;
+        padding: 24px 0 40px;
+    }
+
+    .trainer-page-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .trainer-panel-heading,
+    .trainer-member-row,
+    .trainer-plan-item {
+        padding-right: 16px;
+        padding-left: 16px;
+    }
+
+    .trainer-member-row {
+        flex-wrap: wrap;
+        gap: 10px 12px;
+    }
+
+    .trainer-member-main {
+        flex-basis: calc(100% - 60px);
+    }
+
+    .trainer-member-meta {
+        margin-left: 58px;
+    }
+
+    .trainer-member-row > .trainer-outline-btn {
+        margin-left: auto;
+    }
+
+    .trainer-password-form {
+        grid-template-columns: 1fr;
+        padding: 18px 16px 0;
+    }
+
+    .trainer-member-profile {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        padding: 18px;
+    }
+
+    .trainer-profile-tags {
+        width: 100%;
+    }
+
+    .trainer-coaching-form {
+        padding: 18px 16px 20px;
+    }
+
+    .trainer-plan-item {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .trainer-plan-copy {
+        flex-basis: calc(100% - 76px);
+    }
+
+    .trainer-plan-item > .trainer-outline-btn {
+        margin-left: 70px;
+    }
+
+    .trainer-login-card {
+        padding: 28px 22px;
+    }
+}

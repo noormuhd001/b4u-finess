@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,7 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'preventHistory' => \App\Http\Middleware\PreventHistory::class,
             'Admin' => \App\Http\Middleware\AdminMiddleware::class,
             'activeUser' => \App\Http\Middleware\ActiveUserMiddleware::class,
+            'activeTrainer' => \App\Http\Middleware\EnsureActiveTrainer::class,
         ]);
+        $middleware->redirectGuestsTo(fn (Request $request) => $request->is('trainer*')
+            ? route('trainer.login')
+            : route('login'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

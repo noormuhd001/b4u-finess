@@ -685,6 +685,14 @@ a {
     font-size: 12px;
 }
 
+.admin-inline-feedback {
+    display: block;
+    margin-top: 5px;
+    color: #b42318;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
 .workout-filter-form {
     display: flex;
     flex-wrap: wrap;
@@ -938,6 +946,49 @@ a.admin-page-link:hover {
     color: var(--admin-muted);
 }
 
+.trainer-assignment-body {
+    display: grid;
+    gap: 20px;
+}
+
+.trainer-assigned-summary {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.trainer-assigned-summary .entity-name,
+.trainer-assigned-summary .entity-meta {
+    display: block;
+}
+
+.trainer-assigned-photo {
+    width: 58px;
+    height: 58px;
+    flex: 0 0 58px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.trainer-assignment-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 14px;
+}
+
+.trainer-assignment-field {
+    width: min(100%, 360px);
+}
+
+.trainer-assignment-field .admin-form-control {
+    width: 100%;
+}
+
+.trainer-assignment-form .admin-btn {
+    min-width: 150px;
+}
+
 body {
     font-size: 15px;
 }
@@ -1176,6 +1227,22 @@ body {
         flex-basis: 52px;
         border-radius: 15px;
         font-size: 21px;
+    }
+
+    .trainer-assignment-body {
+        gap: 17px;
+    }
+
+    .trainer-assignment-field {
+        width: 100%;
+    }
+
+    .trainer-assignment-form {
+        gap: 12px;
+    }
+
+    .trainer-assignment-form .admin-btn {
+        width: 100%;
     }
 }
 

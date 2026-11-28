@@ -31,7 +31,11 @@
                     <p><i class="bi bi-card-checklist text-success" aria-hidden="true"></i> Membership plan:
                         {{ $user->membershipPlan?->name ?? 'No plan assigned' }}
                         @if ($user->membershipPlan)
-                            · ₹{{ number_format((float) $user->membershipPlan->price, 2) }} / {{ $user->membershipPlan->duration_months }} {{ \Illuminate\Support\Str::plural('month', $user->membershipPlan->duration_months) }}
+                            · {{ $user->membership_duration_months ?: 1 }} {{ \Illuminate\Support\Str::plural('month', $user->membership_duration_months ?: 1) }}
+                            · Amount due ₹{{ number_format((float) ($user->membership_final_price ?? ($user->membershipPlan->price * ($user->membership_duration_months ?: 1))), 2) }}
+                            @if ((float) ($user->membership_discount_amount ?? 0) > 0)
+                                · Saved ₹{{ number_format((float) $user->membership_discount_amount, 2) }}{{ $user->membershipOffer ? ' with '.$user->membershipOffer->title : '' }}
+                            @endif
                         @endif
                     </p>
                     <p><i class="bi bi-calendar-event text-success" aria-hidden="true"></i> Membership valid until:

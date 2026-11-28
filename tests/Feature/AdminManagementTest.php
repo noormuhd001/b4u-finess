@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Mail\Auth\RegistrationOtpMail;
 use App\Models\AttendanceRecord;
 use App\Models\Badges;
+use App\Models\MembershipOffer;
 use App\Models\MembershipPlan;
 use App\Models\User;
 use App\Models\Workout;
@@ -347,7 +348,7 @@ class AdminManagementTest extends TestCase
             'duration_months' => 1,
         ]);
         $this->assertDatabaseHas('membership_plans', [
-            'name' => 'Regular with PT',
+            'name' => 'Regular',
             'price' => 1000,
             'duration_months' => 1,
         ]);
@@ -356,6 +357,169 @@ class AdminManagementTest extends TestCase
             'price' => 2000,
             'duration_months' => 1,
         ]);
+    }
+
+    public function test_member_can_quote_and_register_a_discounted_year_subscription(): void
+    {
+        Mail::fake();
+        $plan = MembershipPlan::create([
+            'name' => 'Basic',
+            'price' => 500,
+            'duration_months' => 1,
+            'is_active' => true,
+        ]);
+        $offer = MembershipOffer::create([
+            'title' => 'Yearly saving',
+            'description' => 'Ten percent off yearly Basic subscriptions.',
+            'discount_type' => 'percentage',
+            'discount_value' => 10,
+            'applicable_durations' => [12],
+            'starts_at' => today()->toDateString(),
+            'expires_at' => today()->addDays(10)->toDateString(),
+            'maximum_usage' => 1,
+            'is_active' => true,
+        ]);
+        $offer->plans()->attach($plan);
+
+        $this->postJson(route('membership.quote'), [
+            'plan_id' => $plan->id,
+            'duration_months' => 12,
+            'offer_id' => $offer->id,
+        ])->assertOk()->assertExactJson([
+            'subtotal' => '6000.00',
+            'discount' => '600.00',
+            'total' => '5400.00',
+            'offer_id' => $offer->id,
+            'offer_title' => 'Yearly saving',
+        ]);
+
+        $this->post(route('register'), [
+            'username' => 'Yearly Member',
+            'email' => 'yearly@example.com',
+            'password' => 'StrongPass1!',
+            'confirm_password' => 'StrongPass1!',
+            'membership_plan_id' => $plan->id,
+            'duration_months' => 12,
+            'offer_id' => $offer->id,
+        ])->assertRedirect(route('registration.verify', ['email' => 'yearly@example.com']));
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'yearly@example.com',
+            'membership_duration_months' => 12,
+            'membership_original_price' => '6000.00',
+            'membership_discount_amount' => '600.00',
+            'membership_final_price' => '5400.00',
+            'membership_offer_id' => $offer->id,
+        ]);
+        $this->assertDatabaseHas('membership_offers', [
+            'id' => $offer->id,
+            'usage_count' => 1,
+        ]);
+
+        $this->postJson(route('membership.quote'), [
+            'plan_id' => $plan->id,
+            'duration_months' => 12,
+            'offer_id' => $offer->id,
+        ])->assertUnprocessable()->assertJsonValidationErrors('offer_id');
+    }
+
+    public function test_admin_can_create_and_deactivate_an_offer(): void
+    {
+        $admin = User::factory()->create(['role' => 1]);
+        $plan = MembershipPlan::create([
+            'name' => 'Regular',
+            'price' => 1000,
+            'duration_months' => 1,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.membership-offers.index'))
+            ->assertRedirect(route('admin.membership-plans.index').'#membership-offers');
+
+        $this->actingAs($admin)
+            ->get(route('admin.membership-plans.index'))
+            ->assertOk()
+            ->assertSee('Plans')
+            ->assertSee('Membership offers');
+
+        $this->actingAs($admin)->post(route('admin.membership-offers.store'), [
+            'title' => 'Welcome offer',
+            'description' => 'Welcome discount',
+            'discount_type' => 'fixed',
+            'discount_value' => 200,
+            'plan_ids' => [$plan->id],
+            'applicable_durations' => [1, 3, 6, 12],
+            'starts_at' => today()->toDateString(),
+            'expires_at' => today()->addMonth()->toDateString(),
+            'coupon_code' => 'welcome200',
+            'maximum_usage' => 25,
+            'is_active' => 1,
+        ])->assertRedirect(route('admin.membership-offers.index'));
+
+        $offer = MembershipOffer::where('title', 'Welcome offer')->firstOrFail();
+        $this->assertSame('WELCOME200', $offer->coupon_code);
+        $this->assertTrue($offer->plans->contains($plan));
+        $this->actingAs($admin)
+            ->get(route('admin.membership-plans.index'))
+            ->assertOk()
+            ->assertSee('Welcome offer')
+            ->assertSee('WELCOME200');
+
+        $this->postJson(route('membership.quote'), [
+            'plan_id' => $plan->id,
+            'duration_months' => 3,
+            'coupon_code' => 'welcome200',
+        ])->assertOk()->assertJsonPath('subtotal', '3000.00')
+            ->assertJsonPath('discount', '200.00')
+            ->assertJsonPath('total', '2800.00');
+
+        $this->actingAs($admin)->put(route('admin.membership-offers.update', $offer), [
+            'title' => 'Updated welcome offer',
+            'description' => 'Updated discount',
+            'discount_type' => 'fixed',
+            'discount_value' => 250,
+            'plan_ids' => [$plan->id],
+            'applicable_durations' => [3, 6, 12],
+            'starts_at' => today()->toDateString(),
+            'expires_at' => today()->addMonth()->toDateString(),
+            'coupon_code' => 'welcome250',
+            'maximum_usage' => 25,
+            'is_active' => 1,
+        ])->assertRedirect(route('admin.membership-offers.index'));
+
+        $this->assertDatabaseHas('membership_offers', [
+            'id' => $offer->id,
+            'title' => 'Updated welcome offer',
+            'coupon_code' => 'WELCOME250',
+        ]);
+
+        $this->actingAs($admin)->patch(route('admin.membership-offers.status', $offer->fresh()), [
+            'is_active' => 0,
+        ])->assertRedirect(route('admin.membership-offers.index'));
+
+        $this->assertFalse($offer->fresh()->is_active);
+    }
+
+    public function test_invalid_membership_offer_submission_returns_to_offers_tab_with_field_errors(): void
+    {
+        $admin = User::factory()->create(['role' => 1]);
+
+        $this->actingAs($admin)
+            ->post(route('admin.membership-offers.store'), [
+                '_validation_form' => 'createOfferModal',
+                'title' => '',
+                'discount_type' => 'percentage',
+                'discount_value' => 150,
+                'plan_ids' => [],
+                'applicable_durations' => [],
+                'starts_at' => today()->toDateString(),
+                'expires_at' => today()->toDateString(),
+                'is_active' => 1,
+            ])
+            ->assertRedirect(route('admin.membership-plans.index').'#membership-offers')
+            ->assertSessionHasErrors(['title', 'discount_value', 'plan_ids', 'applicable_durations'])
+            ->assertSessionHas('_old_input', fn (array $input): bool => $input['_validation_form'] === 'createOfferModal');
     }
 
     public function test_active_paid_member_can_check_in_only_once_per_day(): void
@@ -497,6 +661,23 @@ class AdminManagementTest extends TestCase
         $this->assertDatabaseHas('workouts', [
             'workout_name' => 'Goblet Squat',
             'body_part' => 'Legs',
+        ]);
+    }
+
+    public function test_admin_cannot_upload_a_workout_image_larger_than_five_megabytes(): void
+    {
+        Storage::fake('public');
+        $admin = User::factory()->create(['role' => 1]);
+
+        $this->actingAs($admin)->post(route('admin.workouts.store'), [
+            'workout_name' => 'Oversized Image Workout',
+            'body_part' => 'Legs',
+            'kcal_per_minute' => 7,
+            'image' => UploadedFile::fake()->image('oversized.jpg')->size(5121),
+        ])->assertSessionHasErrors('image');
+
+        $this->assertDatabaseMissing('workouts', [
+            'workout_name' => 'Oversized Image Workout',
         ]);
     }
 

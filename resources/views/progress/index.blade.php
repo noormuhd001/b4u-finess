@@ -10,7 +10,7 @@
 @section('content')
     @php
         $today = \Carbon\Carbon::today()->toDateString();
-        $todaysProgress = $progress && $progress->workout_on->toDateString() === $today ? $progress : null;
+        $todaysProgress = $progress;
     @endphp
 
     <div class="container">
@@ -75,24 +75,29 @@
                     @else
                         <p class="text-muted">No individual exercises were added.</p>
                     @endif
+                    <button type="button" class="btn btn-outline-primary mt-3" id="showWorkoutFormBtn">
+                        <i class="bi bi-plus-lg"></i> Add another workout
+                    </button>
                 </div>
             </section>
-        @else
+        @endif
+
+        <div id="workoutFormContainer" @if ($todaysProgress && !$errors->any()) hidden @endif>
             <form action="{{ route('progress.store') }}" method="POST">
                 @csrf
                 <section class="card progress-form-card mb-4">
                     <div class="dashboard-panel-title">
-                        <div><h2>Session details</h2><p>Start with a date and your current weight.</p></div>
+                        <div><h2>{{ $todaysProgress ? 'Add workout details' : 'Session details' }}</h2><p>Start with a date and your current weight.</p></div>
                         <span class="today-stat-icon"><i class="bi bi-journal-check"></i></span>
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label" for="current-weight">Current weight (kg)</label>
-                            <input id="current-weight" type="number" step="0.1" min="20" max="500" name="weight" class="form-control" value="{{ old('weight', auth()->user()->weight) }}" required>
+                            <input id="current-weight" type="number" step="0.1" min="20" max="500" name="weight" class="form-control" value="{{ old('weight', $todaysProgress->current_weight ?? auth()->user()->weight) }}" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label" for="workout-date">Workout date</label>
-                            <input id="workout-date" type="date" name="workout_on" class="form-control" value="{{ old('workout_on', $today) }}" max="{{ $today }}" required>
+                            <input id="workout-date" type="date" name="workout_on" class="form-control" value="{{ old('workout_on', $todaysProgress ? $todaysProgress->workout_on->toDateString() : $today) }}" max="{{ $today }}" required>
                         </div>
                     </div>
                 </section>
@@ -140,11 +145,11 @@
                     </div>
                     <div class="d-flex flex-wrap gap-2 mt-3">
                         <button type="button" class="btn btn-outline-secondary" id="addWorkoutBtn"><i class="bi bi-plus-lg"></i> Add another exercise</button>
-                        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i> Save progress</button>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i> {{ $todaysProgress ? 'Save workout' : 'Save progress' }}</button>
                     </div>
                 </section>
             </form>
-        @endif
+        </div>
     </div>
 @endsection
 
@@ -164,6 +169,16 @@
 
             const wrapper = document.getElementById('workouts-wrapper');
             const addWorkoutBtn = document.getElementById('addWorkoutBtn');
+            const workoutFormContainer = document.getElementById('workoutFormContainer');
+            const showWorkoutFormBtn = document.getElementById('showWorkoutFormBtn');
+
+            if (showWorkoutFormBtn && workoutFormContainer) {
+                showWorkoutFormBtn.addEventListener('click', function () {
+                    workoutFormContainer.hidden = false;
+                    workoutFormContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            }
+
             if (!wrapper || !addWorkoutBtn) return;
 
             let workoutIndex = 1;

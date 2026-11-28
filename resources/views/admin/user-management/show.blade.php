@@ -35,6 +35,12 @@
                 <span class="role-badge">{{ $user->formatted_role_name }}</span>
                 <span class="state-badge {{ $user->status ? '' : 'inactive' }}">{{ $user->status ? 'Active account' : 'Inactive account' }}</span>
                 <span class="soft-badge">Plan: {{ $user->membershipPlan?->name ?? 'Not assigned' }}</span>
+                @if ($user->membershipPlan)
+                    <span class="soft-badge">{{ $user->membership_duration_months ?: 1 }} {{ \Illuminate\Support\Str::plural('month', $user->membership_duration_months ?: 1) }} · ₹{{ number_format((float) ($user->membership_final_price ?? ($user->membershipPlan->price * ($user->membership_duration_months ?: 1))), 2) }}</span>
+                    @if ((float) ($user->membership_discount_amount ?? 0) > 0)
+                        <span class="soft-badge">Discount ₹{{ number_format((float) $user->membership_discount_amount, 2) }}{{ $user->membershipOffer ? ' · '.$user->membershipOffer->title : '' }}</span>
+                    @endif
+                @endif
                 <span class="state-badge {{ $user->cash_payment_status === 'received' ? '' : 'inactive' }}">Cash payment {{ $user->cash_payment_status ?? 'pending' }}</span>
                 @if ($user->membership_expires_at)
                     <span class="state-badge {{ $user->membership_expires_at->isFuture() ? '' : 'inactive' }}">
@@ -47,6 +53,54 @@
             </div>
         </div>
     </section>
+
+    @if ((int) $user->role === 0)
+        <section class="admin-card mb-4">
+            <div class="admin-card-header">
+                <div>
+                    <h2>Personal trainer</h2>
+                    <p>Trainer assignments require an active subscription on a plan other than Basic.</p>
+                </div>
+            </div>
+            <div class="admin-card-body trainer-assignment-body">
+                @if ($user->trainer)
+                    <div class="trainer-assigned-summary">
+                        @if ($user->trainer->photo)
+                            <img src="{{ asset('storage/'.$user->trainer->photo) }}" alt="" class="trainer-assigned-photo">
+                        @else
+                            <span class="avatar-initial">{{ strtoupper(substr($user->trainer->name, 0, 1)) }}</span>
+                        @endif
+                        <div>
+                            <strong class="entity-name">{{ $user->trainer->name }}</strong>
+                            <span class="entity-meta">{{ $user->trainer->specialty }} · {{ $user->trainer->experience_years }} {{ \Illuminate\Support\Str::plural('year', $user->trainer->experience_years) }} experience</span>
+                        </div>
+                    </div>
+                @endif
+                @if ($canAssignTrainer || $user->trainer)
+                    <form method="POST" action="{{ route('admin.user-management.trainer', $user) }}" class="trainer-assignment-form">
+                        @csrf
+                        @method('PATCH')
+                        <div class="trainer-assignment-field">
+                            <label class="admin-form-label" for="user-trainer">Assign trainer</label>
+                            <select class="form-select admin-form-control" id="user-trainer" name="trainer_id">
+                                <option value="">No trainer assigned</option>
+                                @if ($user->trainer && ! $canAssignTrainer)
+                                    <option value="{{ $user->trainer->id }}" selected>{{ $user->trainer->name }} (current)</option>
+                                @endif
+                                @foreach ($trainers as $trainer)
+                                    <option value="{{ $trainer->id }}" @selected($user->trainer_id === $trainer->id)>{{ $trainer->name }} — {{ $trainer->specialty }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <button class="admin-btn" type="submit">Save trainer</button>
+                    </form>
+                    @error('trainer_id')<div class="text-danger small mt-2">{{ $message }}</div>@enderror
+                @elseif (! $user->trainer)
+                    <p class="text-secondary mb-0">This member is not eligible for a trainer. An active non-Basic subscription is required.</p>
+                @endif
+            </div>
+        </section>
+    @endif
 
     @if ((int) $user->role === 0 && $user->membershipPlan)
         <div class="modal fade" id="recordRenewalModal" tabindex="-1" aria-labelledby="recordRenewalTitle" aria-hidden="true">
@@ -67,8 +121,7 @@
                             <div>
                                 <p class="mb-2">Confirm that you received the cash payment from this member.</p>
                                 <p class="text-secondary small mb-0">
-                                    This marks the payment as received and extends the
-                                    {{ $user->membershipPlan->duration_months }}-month membership.
+                                    This marks the payment as received and renews the selected subscription duration.
                                     @if ($user->membership_expires_at?->isFuture())
                                         The new period will start after the current expiry date ({{ $user->membership_expires_at->format('M d, Y') }}).
                                     @else
@@ -76,6 +129,15 @@
                                     @endif
                                 </p>
                             </div>
+                        </div>
+                        <div class="mt-3">
+                            <label class="admin-form-label" for="renewal-duration">Subscription duration</label>
+                            <select class="form-select admin-form-control" id="renewal-duration" name="duration_months" required>
+                                @foreach ([1, 3, 6, 12] as $months)
+                                    <option value="{{ $months }}" @selected((int) ($user->membership_duration_months ?: 1) === $months)>{{ $months }} {{ \Illuminate\Support\Str::plural('month', $months) }}</option>
+                                @endforeach
+                            </select>
+                            <p class="entity-meta mt-2 mb-0">₹{{ number_format((float) $user->membershipPlan->price, 2) }} per month. Any offer must be applied by the member at checkout.</p>
                         </div>
                     </div>
                     <div class="modal-footer">

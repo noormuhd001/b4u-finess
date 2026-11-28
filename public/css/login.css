@@ -19,7 +19,42 @@ body.auth-page {
         radial-gradient(circle at 90% 88%, rgba(28, 57, 43, .1), transparent 26%),
         #f3f6f1;
     color: var(--auth-ink);
-    font-family: 'DM Sans', 'Segoe UI', sans-serif;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.signup-page {
+    align-items: flex-start !important;
+}
+
+.signup-page .login-wrapper {
+    width: min(760px, 100%);
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.signup-page .login-left {
+    padding: clamp(24px, 5vw, 52px);
+}
+
+.signup-page .login-card {
+    max-width: 620px;
+}
+
+.signup-page .login-right {
+    display: none;
+}
+
+.signup-page .plan-options,
+.signup-page .plan-option,
+.signup-page .plan-option-card {
+    width: 100%;
+    min-width: 0;
+}
+
+.signup-page .plan-option-description {
+    display: block;
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 
 .login-container {
@@ -202,7 +237,7 @@ body.auth-page {
     border-radius: 0;
     background: transparent;
     color: #345941;
-    font: 700 12px 'DM Sans', 'Segoe UI', sans-serif;
+    font: 700 12px 'DM Sans', sans-serif;
     text-decoration: underline;
     transition: color .2s ease;
 }
@@ -441,6 +476,40 @@ body.auth-page {
     color: var(--auth-muted);
     font-size: 10px;
     line-height: 1.5;
+}
+
+.membership-quote {
+    display: grid;
+    gap: 7px;
+    padding: 14px;
+    border: 1px solid var(--auth-line);
+    border-radius: 11px;
+    background: #f8faf7;
+    font-size: 12px;
+}
+
+.membership-quote > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.membership-quote > div > span,
+.membership-quote > p {
+    color: var(--auth-muted);
+}
+
+.membership-quote-total {
+    padding-top: 8px;
+    border-top: 1px solid var(--auth-line);
+    color: var(--auth-ink);
+    font-size: 14px;
+}
+
+.membership-quote-total strong {
+    color: var(--auth-green);
+    font: 800 17px 'Manrope', sans-serif;
 }
 
 .legal-page {

@@ -8,6 +8,7 @@ use App\Http\Controllers\Profile\UserProfileController;
 use App\Http\Controllers\Progress\ProgressController;
 use App\Http\Controllers\Settings\SettingController;
 use App\Http\Controllers\Workout\WorkoutController;
+use App\Http\Controllers\MembershipCheckoutController;
 use App\Models\MembershipPlan;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,7 @@ Route::get('/login', function () {
 })->name('login');
 
 Route::get('/about-us', [AboutUsController::class, 'index'])->name('about-us');
+Route::post('/membership/quote', [MembershipCheckoutController::class, 'quote'])->name('membership.quote');
 
 Route::post('login', [AuthController::class, 'login'])->name('login.post');
 Route::get('signup', [AuthController::class, 'signUp'])->name('signUp');
@@ -42,6 +44,7 @@ Route::get('terms-and-conditions', [AuthController::class, 'termsAndConditions']
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 include 'admin.php';
+include 'trainer.php';
 Route::prefix('')->middleware('auth', 'activeUser', 'preventHistory')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');

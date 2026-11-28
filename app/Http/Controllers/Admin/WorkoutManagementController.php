@@ -38,7 +38,7 @@ class WorkoutManagementController extends Controller
             'workout_name' => ['required', 'string', 'max:255'],
             'body_part' => ['required', 'string', Rule::in(self::BODY_PARTS)],
             'kcal_per_minute' => ['required', 'numeric', 'min:0', 'max:1000'],
-            'image' => ['required', 'image', 'max:11192'],
+            'image' => ['required', 'image', 'max:5120'],
         ]);
 
         $validated['image'] = $request->file('image')->store('workouts', 'public');

@@ -34,6 +34,12 @@ class User extends Authenticatable
         'role',
         'status',
         'membership_plan_id',
+        'membership_duration_months',
+        'membership_original_price',
+        'membership_discount_amount',
+        'membership_final_price',
+        'membership_offer_id',
+        'trainer_id',
         'cash_payment_status',
     ];
 
@@ -65,12 +71,31 @@ class User extends Authenticatable
             'registration_otp_expires_at' => 'datetime',
             'membership_started_at' => 'datetime',
             'membership_expires_at' => 'datetime',
+            'membership_duration_months' => 'integer',
+            'membership_original_price' => 'decimal:2',
+            'membership_discount_amount' => 'decimal:2',
+            'membership_final_price' => 'decimal:2',
         ];
     }
 
     public function membershipPlan(): BelongsTo
     {
         return $this->belongsTo(MembershipPlan::class);
+    }
+
+    public function membershipOffer(): BelongsTo
+    {
+        return $this->belongsTo(MembershipOffer::class);
+    }
+
+    public function trainer(): BelongsTo
+    {
+        return $this->belongsTo(Trainer::class);
+    }
+
+    public function trainerDailyPlans(): HasMany
+    {
+        return $this->hasMany(TrainerDailyPlan::class);
     }
 
     public function attendanceRecords(): HasMany
@@ -85,6 +110,13 @@ class User extends Authenticatable
             && $this->cash_payment_status === 'received'
             && $this->membership_plan_id !== null
             && $this->membership_expires_at?->isFuture() === true;
+    }
+
+    public function canBeAssignedTrainer(): bool
+    {
+        return $this->hasActiveMembership()
+            && $this->membershipPlan !== null
+            && strcasecmp(trim($this->membershipPlan->name), 'basic') !== 0;
     }
 
     public function badges()
