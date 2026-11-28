@@ -423,6 +423,7 @@ body.landing-page {
 .training-card-copy h3 {
     margin: 9px 0 5px;
     font: 700 20px 'Manrope', sans-serif;
+    color:white;
 }
 
 .training-card-copy p {
